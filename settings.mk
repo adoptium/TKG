@@ -41,11 +41,11 @@ P=:
 AND_IF_SUCCESS=&&
 PROPS_DIR=props_unix
 
--include $(TEST_ROOT)$(D)TestConfig$(D)autoGenEnv.mk
-include $(TEST_ROOT)$(D)TestConfig$(D)envSettings.mk
-include $(TEST_ROOT)$(D)TestConfig$(D)utils.mk
-include $(TEST_ROOT)$(D)TestConfig$(D)testEnv.mk
-include $(TEST_ROOT)$(D)TestConfig$(D)featureSettings.mk
+-include $(TEST_ROOT)$(D)TKG$(D)autoGenEnv.mk
+include $(TEST_ROOT)$(D)TKG$(D)envSettings.mk
+include $(TEST_ROOT)$(D)TKG$(D)utils.mk
+include $(TEST_ROOT)$(D)TKG$(D)testEnv.mk
+include $(TEST_ROOT)$(D)TKG$(D)featureSettings.mk
 
 ifndef JDK_VERSION
 	export JDK_VERSION:=8
@@ -159,9 +159,9 @@ JAVA_COMMAND:=$(Q)$(TEST_JDK_HOME)$(D)bin$(D)java$(Q)
 #######################################
 # common dir and jars
 #######################################
-LIB_DIR=$(JVM_TEST_ROOT)$(D)TestConfig$(D)lib
+LIB_DIR=$(JVM_TEST_ROOT)$(D)TKG$(D)lib
 TESTNG=$(LIB_DIR)$(D)testng.jar$(P)$(LIB_DIR)$(D)jcommander.jar
-RESOURCES_DIR=$(JVM_TEST_ROOT)$(D)TestConfig$(D)resources
+RESOURCES_DIR=$(JVM_TEST_ROOT)$(D)TKG$(D)resources
 
 #######################################
 # cmdlinetester jars
@@ -173,10 +173,10 @@ CMDLINETESTER_RESJAR=$(Q)$(JVM_TEST_ROOT)$(D)functional$(D)cmdline_options_testr
 # testng report dir
 #######################################
 ifndef UNIQUEID
-	GETID := $(TEST_ROOT)$(D)TestConfig$(D)scripts$(D)getUniqueId.pl
+	GETID := $(TEST_ROOT)$(D)TKG$(D)scripts$(D)getUniqueId.pl
 	export UNIQUEID := $(shell perl $(GETID) -v)
 endif
-TESTOUTPUT := $(TEST_ROOT)$(D)TestConfig$(D)test_output_$(UNIQUEID)
+TESTOUTPUT := $(TEST_ROOT)$(D)TKG$(D)test_output_$(UNIQUEID)
 ifeq ($(TEST_ITERATIONS), 1)
 	REPORTDIR_NQ = $(TESTOUTPUT)$(D)$@
 else
@@ -223,7 +223,7 @@ endif
 # include configure makefile
 #######################################
 ifndef MACHINE_MK
--include $(JVM_TEST_ROOT)$(D)TestConfig$(D)machineConfigure.mk
+-include $(JVM_TEST_ROOT)$(D)TKG$(D)machineConfigure.mk
 else
 -include $(MACHINE_MK)$(D)machineConfigure.mk
 endif
@@ -232,7 +232,7 @@ endif
 # include openj9 specific settings
 #######################################
 ifeq ($(JDK_IMPL), $(filter $(JDK_IMPL),openj9 ibm))
-	include $(TEST_ROOT)$(D)TestConfig$(D)openj9Settings.mk
+	include $(TEST_ROOT)$(D)TKG$(D)openj9Settings.mk
 endif
 
 #######################################
@@ -291,13 +291,13 @@ endif
 # Define the EXCLUDE_FILE to be used for temporarily excluding failed tests.
 # This macro is used in /test/Utils/src/org/openj9/test/util/IncludeExcludeTestAnnotationTransformer
 ifndef EXCLUDE_FILE
-	export EXCLUDE_FILE:=$(JVM_TEST_ROOT)$(D)TestConfig$(D)resources$(D)excludes$(D)$(JCL_VERSION)_exclude_$(JDK_VERSION).txt
+	export EXCLUDE_FILE:=$(TEST_ROOT)$(D)TestConfig$(D)resources$(D)excludes$(D)$(JCL_VERSION)_exclude_$(JDK_VERSION).txt
 endif
 
 #######################################
 # failed target
 #######################################
-FAILEDTARGETS = $(TEST_ROOT)$(D)TestConfig$(D)failedtargets.mk
+FAILEDTARGETS = $(TEST_ROOT)$(D)TKG$(D)failedtargets.mk
 
 #######################################
 # result Summary
@@ -313,4 +313,4 @@ rmResultFile:
 	@$(RM) $(Q)$(TEMPRESULTFILE)$(Q)
 
 resultsSummary:
-	@perl $(Q)$(TEST_ROOT)$(D)TestConfig$(D)scripts$(D)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --tapFile=$(Q)$(TAPRESULTFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(CUSTOM_TARGET)
+	@perl $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(D)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --tapFile=$(Q)$(TAPRESULTFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(CUSTOM_TARGET)

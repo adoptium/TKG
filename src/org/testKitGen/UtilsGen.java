@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UtilsGen {
-	private static String utilsmk = Options.getProjectRootDir() + "/TestConfig/" + Constants.UTILSMK;
-	private static String dependmk = Options.getProjectRootDir() + "/TestConfig/" + Constants.DEPENDMK;
+	private static String utilsmk = Options.getProjectRootDir() + "/TKG/" + Constants.UTILSMK;
+	private static String dependmk = Options.getProjectRootDir() + "/TKG/" + Constants.DEPENDMK;
 
 	private UtilsGen() {
 	}

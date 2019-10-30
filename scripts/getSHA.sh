@@ -13,7 +13,7 @@
 # limitations under the License.
 
 REPO_DIR=""
-OUTPUT_FILE="../TestConfig/SHA.txt"
+OUTPUT_FILE="../SHA.txt"
 
 
 usage ()
@@ -21,7 +21,7 @@ usage ()
 	echo 'This script use git command to get sha in the provided REPO_DIR HEAD and write the info into the OUTPUT_FILE'
 	echo 'Usage : '
 	echo '                --repo_dir: local git repo dir'
-	echo '                --output_file: the file to write the sha info to. Default is to ../TestConfig/SHA.txt'
+	echo '                --output_file: the file to write the sha info to. Default is to ../SHA.txt'
 
 }
 

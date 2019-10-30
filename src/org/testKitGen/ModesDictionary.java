@@ -34,8 +34,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ModesDictionary {
-	private static String modesXml = Options.getProjectRootDir() + "/TestConfig/" + Constants.MODESXML;
-	private static String ottawaCsv = Options.getProjectRootDir() + "/TestConfig/" + Constants.OTTAWACSV;
+	private static String modesXml = Options.getProjectRootDir() + "/TKG/" + Constants.MODESXML;
+	private static String ottawaCsv = Options.getProjectRootDir() + "/TKG/" + Constants.OTTAWACSV;
 	private static Map<String, String> spec2platMap = new HashMap<String, String>();
 	private static Map<String, List<String>> invalidSpecsMap = new HashMap<String, List<String>>();
 	private static Map<String, String> clArgsMap = new HashMap<String, String>();

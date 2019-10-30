@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class Counter {
 	private static Map<String, Integer> count = new HashMap<String, Integer>();
-	private static String countmk = Options.getProjectRootDir() + "/TestConfig/" + Constants.COUNTMK;
+	private static String countmk = Options.getProjectRootDir() + "/TKG/" + Constants.COUNTMK;
 
 	private Counter(Options op) {
 	}
