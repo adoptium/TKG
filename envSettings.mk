@@ -1,0 +1,70 @@
+##############################################################################
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##############################################################################
+
+#
+# Makefile to compare auto detect values with setting values
+#
+
+-include autoGenEnv.mk
+
+HOTSPOT_IMPLS=$(or hotspot,sap)
+
+ifneq ($(AUTO_DETECT), false) 
+    ifndef SPEC
+        export SPEC:=$(DETECTED_SPEC)
+    else
+        ifneq ($(SPEC), $(DETECTED_SPEC))
+            ifeq ($(DETECTED_JDK_IMPL), $(HOTSPOT_IMPLS))
+                ifeq ($(SPEC), linux_ppc-64_cmprssptrs_le)
+                    ifneq ($(DETECTED_SPEC), linux_ppc-64_le)
+                        $(error DETECTED_SPEC value is $(DETECTED_SPEC), settled SPEC value is $(SPEC). SPEC value does not match. Please reset or unset SPEC)
+                    endif
+                else ifneq ($(SPEC), $(DETECTED_SPEC)_cmprssptrs)
+                    $(error DETECTED_SPEC value is $(DETECTED_SPEC), settled SPEC value is $(SPEC). SPEC value does not match. Please reset or unset SPEC)
+                endif
+            else
+                $(error DETECTED_SPEC value is $(DETECTED_SPEC), settled SPEC value is $(SPEC). SPEC value does not match. Please reset or unset SPEC)
+            endif 
+        endif
+    endif
+
+    ifndef JDK_VERSION
+		export JDK_VERSION:=$(DETECTED_JDK_VERSION)
+    else
+        ifneq ($(JDK_VERSION), $(DETECTED_JDK_VERSION))
+            $(error DETECTED_JDK_VERSION value is $(DETECTED_JDK_VERSION), settled JDK_VERSION value is $(JDK_VERSION). JDK_VERSION value does not match. Please reset or unset JDK_VERSION)
+        endif
+    endif
+
+    ifndef JDK_IMPL
+		export JDK_IMPL:=$(DETECTED_JDK_IMPL)
+    else
+        ifneq ($(JDK_IMPL), $(DETECTED_JDK_IMPL))
+            ifneq ($(JDK_IMPL), sap)
+                $(error DETECTED_JDK_IMPL value is $(DETECTED_JDK_IMPL), settled JDK_IMPL value is $(JDK_IMPL). JDK_IMPL value does not match. Please reset or unset JDK_IMPL)
+	        endif
+	    endif
+	endif
+else
+    ifndef SPEC
+        $(error Please export AUTO_DETECT=true or export SPEC value manually (i.e., export SPEC=linux_x86-64_cmprssptrs))
+    endif
+    ifndef JDK_VERSION
+        $(error Please export AUTO_DETECT=true or export JDK_VERSION value manually (i.e., export JDK_VERSION=8))
+    endif
+    ifndef JDK_IMPL
+        $(error Please export AUTO_DETECT=true or export JDK_IMPL value manually (i.e., export JDK_IMPL=openj9))
+    endif
+endif
+
