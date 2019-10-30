@@ -92,7 +92,7 @@ public class MkGen {
 
 		f.write("endif\n\n");
 		f.write("SUBDIRS = " + String.join(" ", subdirs) + "\n\n");
-		f.write("include $(TEST_ROOT)$(D)TestConfig$(D)" + Constants.SETTINGSMK + "\n\n");
+		f.write("include $(TEST_ROOT)$(D)TKG$(D)" + Constants.SETTINGSMK + "\n\n");
 		f.close();
 	}
 
@@ -281,7 +281,7 @@ public class MkGen {
 			f.write("-include " + include + "\n\n");
 		}
 
-		f.write("include $(TEST_ROOT)$(D)TestConfig$(D)" + Constants.DEPENDMK + "\n\n");
+		f.write("include $(TEST_ROOT)$(D)TKG$(D)" + Constants.DEPENDMK + "\n\n");
 
 		for (TestInfo testInfo : testInfoArr) {
 			writeSingleTest(testInfo, f);

@@ -54,9 +54,9 @@
 		<attribute name="repoDir" default="." />
 		<sequential>
 			<exec executable="bash" failonerror="false">
-				<arg line="${TEST_ROOT}/TestConfig/scripts/getSHA.sh" />
+				<arg line="${TEST_ROOT}/TKG/scripts/getSHA.sh" />
 				<arg line="--repo_dir @{repoDir}" />
-				<arg line="--output_file ${TEST_ROOT}/TestConfig/SHA.txt" />
+				<arg line="--output_file ${TEST_ROOT}/TKG/SHA.txt" />
 			</exec>
 		</sequential>
 	</macrodef>
@@ -80,12 +80,12 @@
 	<target name="stage_test_material" depends="-create_test_directory">
 		<copy todir="${ascii.test.dir}">
 			<fileset dir="${ascii.workspace.dir}">
-				<include name="TestConfig/**" />
+				<include name="TKG/**" />
 				<include name="*.mk" />
 			</fileset>
 		</copy>
 
-		<chmod dir="${ascii.test.dir}/TestConfig" perm="755"/>
+		<chmod dir="${ascii.test.dir}/TKG" perm="755"/>
 
 		<chmod file="${ascii.test.dir}/*.mk" perm="755"/>
 	</target>
