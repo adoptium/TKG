@@ -15,13 +15,29 @@
 use strict;
 use File::Spec::Functions;
 use Time::Local;
-use experimental qw( switch );
 use File::Basename;
 
 our $TRUE = 1;
 our $FALSE = 0;
 our $SUCCESS = 1;
 our $FAILURE = 0;
+
+
+my $path;
+my $location;
+my $compileLog;
+my $arg = $ARGV[0];
+if ($arg =~ /^\-\-compileLogPath=/) {
+	($path) = $arg =~ /^\-\-compileLogPath=(.*)/;
+}
+
+if ($path) {
+	$location = dirname($path);
+	open (LOGFILE, "<$path");
+	$compileLog = <LOGFILE>;
+	close LOGFILE;
+	moveTDUMPS($compileLog, $location);
+}
 
 sub logMsg {
 	my ($second,$minute,$hour,$day,$month,$year,undef,undef,undef) = localtime;
@@ -122,13 +138,10 @@ sub moveTDUMPS {
 		}
 		# Dump failed due to no space left on the machine, so print out warning message
 		if ($file =~ /IEATDUMP failure for DSN='.*' RC=0x00000008 RSN=0x00000026/) {
-			logMsg("ERROR: TDUMP failed due to no space left on machine");
 			my ($tdump) = $file =~ /IEATDUMP failure for DSN='(.*)'/;
-			$parsedNames{$tdump} = 1;
+			logMsg("ERROR: TDUMP failed due to no space left on machine. $tdump cannot be found.");
 		}
 	}
-	#my $addDump = "JENKINS.JVM.JENKINS3.D191111.T140833.X&DS";
-	#$parsedNames{$addDump} = 1;
 	push(@dumplist, keys(%parsedNames));
 	if (!@dumplist) {
 		logMsg("No dumps names found in logs/supplied");
@@ -171,16 +184,12 @@ sub moveTDUMPS {
 			}
 			my $dump01;
 			for (my $i=1; $i <= $numFiles; $i++) {
-				given ($i) {
-					when ($i < 10) {
-						$dump01 = $dump.".X00".$i;
-					}
-					when ($i < 100) { 
-						$dump01 = $dump.".X0".$i;
-					}
-					when ($i < 1000) {
-						$dump01 = $dump.".X".$i;
-					}
+				if (($i >= 1) && ($i < 10)) {
+					$dump01 = $dump.".X00".$i;
+				} elsif (($i >= 10) && ($i < 100)) { 
+					$dump01 = $dump.".X0".$i;
+				} else {
+					$dump01 = $dump.".X".$i;
 				}
 				logMsg("Looking for $dump01 \n");
 				logMsg("Appending the contents of ${dump01} to $coreDump \n");
