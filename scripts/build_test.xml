@@ -33,17 +33,10 @@
 			<var name="build.list" value= "*/build.xml" />
 		</then>
 		<else>
+			<var name="build.list" value="TestConfig/build.xml" />
 			<for list="${BUILD_LIST}" param="builddir">
 				<sequential>
-					<if>
-						<equals arg1="${build.list}" arg2="" />
-						<then>
-							<var name="build.list" value="@{builddir}/build.xml" />
-						</then>
-						<else>
-							<var name="build.list" value="${build.list},@{builddir}/build.xml" />
-						</else>
-					</if>
+					<var name="build.list" value="${build.list},@{builddir}/build.xml" />
 				</sequential>
 			</for>
 		</else>
