@@ -17,6 +17,9 @@ use warnings;
 use Data::Dumper;
 use File::Basename;
 use File::Path qw/make_path/;
+use FindBin;
+use lib $FindBin::Bin;
+require "moveDmp.pl";
 
 my $resultFile;
 my $failuremkarg;
@@ -131,6 +134,10 @@ sub resultReporter {
 						$tapString .= "  ---\n";
 						if (($diagnostic eq 'failure') || ($diagnostic eq 'all')) {
 							$tapString .= $output;
+						}
+						if ($spec =~ /zos/) {
+							my $dmpDir = dirname($resultFile).'/'.$testName;
+							moveTDUMPS($output, $dmpDir);
 						}
 					} elsif ($result eq ($testName . "_DISABLED\n")) {
 						$result =~ s/_DISABLED\n$//;
