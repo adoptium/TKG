@@ -17,8 +17,7 @@ use warnings;
 use Data::Dumper;
 use File::Basename;
 use File::Path qw/make_path/;
-use FindBin;
-use lib $FindBin::Bin;
+use lib ".";
 require "moveDmp.pl";
 
 my $resultFile;
