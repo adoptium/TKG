@@ -14,6 +14,11 @@
 
 package org.testKitGen;
 
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+
 public class Options {
 	private static String spec = "";
 	private static String jdkVersion = "";
@@ -22,6 +27,9 @@ public class Options {
 	private static String buildList = "";
 	private static String iterations = "";
 	private static String testFlag = "";
+	private static String testTarget = "";
+	private static Set<String> testSet = new HashSet<String>();
+	private static String testName = null;
 
 	private static final String usage = "Usage:\n"
 			+ "    java TestKitGen --spec=[linux_x86-64] --jdkVersion=[8|9|...] --impl=[openj9|ibm|hotspot|sap] [options]\n\n"
@@ -68,6 +76,47 @@ public class Options {
 		return testFlag;
 	}
 
+	public static Set<String> getTestSet() {
+		return testSet;
+	}
+
+	public static String getTestName() {
+		return testName;
+	}
+
+	public static void parseTestTarget() {
+		List<Set<String>> sets = new ArrayList<Set<String>>();
+		sets.add(new HashSet<String>(Constants.ALLLEVELS));
+		sets.add(new HashSet<String>(Constants.ALLGROUPS));
+		sets.add(new HashSet<String>(Constants.ALLTYPES));
+
+		if (testTarget.equals("all") || testTarget.equals("")) {
+			for (Set<String> set : sets) {
+				testSet.addAll(set);
+			}
+		} else {
+			String[] targets = testTarget.split("\\.");
+			int i = 0;
+			int j = 0;
+			while (i < sets.size()) {
+				if (j < targets.length && sets.get(i).contains(targets[j])) {
+					testSet.add(targets[j]);
+					i++;
+					j++;
+				} else {
+					testSet.addAll(sets.get(i));
+					i++;
+				}
+			}
+			if (j != targets.length) {
+				testName = testTarget;
+				for (Set<String> set : sets) {
+					testSet.addAll(set);
+				}
+			}
+		}
+	}
+
 	public static void parse(String[] args) {
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
@@ -88,11 +137,15 @@ public class Options {
 				iterations = arglc.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--testflag=")) {
 				testFlag = arglc.substring(arg.indexOf("=") + 1);
+			} else if (arglc.startsWith("--testtarget=")) {
+				// test Target is case sensitive
+				testTarget = arg.substring(arg.indexOf("=") + 1);
 			} else {
 				System.err.println("Invalid option " + args[i]);
 				System.err.println(usage);
 				System.exit(1);
 			}
 		}
+		parseTestTarget();
 	}
 }

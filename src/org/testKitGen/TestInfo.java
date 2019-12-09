@@ -26,7 +26,6 @@ import org.w3c.dom.NodeList;
 
 public class TestInfo {
 	private Element testEle;
-	private boolean valid;
 	private String testCaseName;
 	private String command;
 	private String platformRequirements;
@@ -56,77 +55,38 @@ public class TestInfo {
 		this.disabledReasons = null;
 	}
 
-	public void parseInfo() {
-		this.testCaseName = testEle.getElementsByTagName("testCaseName").item(0).getTextContent().trim();
-		validate();
-		if (isValid()) {
-			command = testEle.getElementsByTagName("command").item(0).getTextContent().trim();
+	public boolean parseInfo() {
+		if (!validate()) return false;
 
-			NodeList preqNodes = testEle.getElementsByTagName("platformRequirements");
-			if (preqNodes.getLength() > 0) {
-				platformRequirements = preqNodes.item(0).getTextContent().trim();
-			}
+		command = testEle.getElementsByTagName("command").item(0).getTextContent().trim();
 
-			NodeList variationsNodes = testEle.getElementsByTagName("variation");
-			for (int i = 0; i < variationsNodes.getLength(); i++) {
-				String subTestName = testCaseName + "_" + i;
-				vars.add(new Variation(subTestName, variationsNodes.item(i).getTextContent(), platformRequirements));
-			}
-			if (vars.size() == 0) {
-				String subTestName = testCaseName + "_0";
-				vars.add(new Variation(subTestName, "NoOptions", platformRequirements));
-			}
-
-			NodeList capabilitiesNodes = testEle.getElementsByTagName("capabilities");
-			if (capabilitiesNodes.getLength() > 0) {
-				String[] capabilityReqs_Arr = capabilitiesNodes.item(0).getTextContent().split(",");
-				for (String capabilityReq : capabilityReqs_Arr) {
-					String[] colonSplit = capabilityReq.trim().split(":");
-					capabilities.put(colonSplit[0], colonSplit[1]);
-				}
-			}
-
-			NodeList aotNodes = testEle.getElementsByTagName("aot");
-			if (Options.getTestFlag().contains("aot")) {
-				// aot defaults to "applicable" when testFlag contains AOT
-				if (aotNodes.getLength() == 0 || aotNodes.item(0).getTextContent().trim().equals("applicable")) {
-					aotOptions = "$(AOT_OPTIONS) ";
-				} else if (aotNodes.item(0).getTextContent().trim().equals("explicit")) {
-					// When test tagged with AOT explicit, its test command has AOT options and runs
-					// multiple times explicitly
-					iterations = 1;
-				}
-			}
-
-			NodeList disabledNodes = testEle.getElementsByTagName("disabled");
-			if (disabledNodes.getLength() > 0) {
-				disabledReasons = disabledNodes.item(0).getTextContent().split("[\t\n]");
-			}
-
-			getElements(levels, "level", Constants.ALLLEVELS);
-			// level defaults to "extended"
-			if (levels.size() == 0) {
-				levels.add("extended");
-			}
-			for (int i = 0; i < levels.size(); i++) {
-				if (!levelStr.isEmpty()) {
-					levelStr += ",";
-				}
-				levelStr = levelStr + "level." + levels.get(i);
-			}
-
-			getElements(groups, "group", Constants.ALLGROUPS);
-			// group defaults to "extended"
-			if (groups.size() == 0) {
-				groups.add("functional");
-			}
-
-			getElements(types, "type", Constants.ALLTYPES);
-			// type defaults to "regular"
-			if (types.size() == 0) {
-				types.add("regular");
+		NodeList capabilitiesNodes = testEle.getElementsByTagName("capabilities");
+		if (capabilitiesNodes.getLength() > 0) {
+			String[] capabilityReqs_Arr = capabilitiesNodes.item(0).getTextContent().split(",");
+			for (String capabilityReq : capabilityReqs_Arr) {
+				String[] colonSplit = capabilityReq.trim().split(":");
+				capabilities.put(colonSplit[0], colonSplit[1]);
 			}
 		}
+
+		NodeList aotNodes = testEle.getElementsByTagName("aot");
+		if (Options.getTestFlag().contains("aot")) {
+			// aot defaults to "applicable" when testFlag contains AOT
+			if (aotNodes.getLength() == 0 || aotNodes.item(0).getTextContent().trim().equals("applicable")) {
+				aotOptions = "$(AOT_OPTIONS) ";
+			} else if (aotNodes.item(0).getTextContent().trim().equals("explicit")) {
+				// When test tagged with AOT explicit, its test command has AOT options and runs
+				// multiple times explicitly
+				iterations = 1;
+			}
+		}
+
+		NodeList disabledNodes = testEle.getElementsByTagName("disabled");
+		if (disabledNodes.getLength() > 0) {
+			disabledReasons = disabledNodes.item(0).getTextContent().split("[\t\n]");
+		}
+
+		return true;
 	}
 
 	private void getElements(List<String> list, String tag, List<String> all) {
@@ -142,10 +102,6 @@ public class TestInfo {
 		}
 	}
 
-	public boolean isValid() {
-		return valid;
-	}
-
 	private String joinStrList(List<String> list) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < list.size(); i++) {
@@ -157,8 +113,9 @@ public class TestInfo {
 		return sb.toString();
 	}
 
-	private void validate() {
-		valid = true;
+	private boolean validate() {
+		this.testCaseName = testEle.getElementsByTagName("testCaseName").item(0).getTextContent().trim();
+
 		// Do not generate make taget if impl doesn't match the exported impl
 		NodeList implNodes = testEle.getElementsByTagName("impl");
 
@@ -168,8 +125,7 @@ public class TestInfo {
 			getElements(impls, "impl", Constants.ALLIMPLS);
 			isValidImpl = impls.contains(Options.getImpl());
 		}
-
-		valid &= isValidImpl;
+		if (!isValidImpl) return false;
 
 		// Do not generate make target if subset doesn't match the exported jdk_version
 		NodeList subsets = testEle.getElementsByTagName("subset");
@@ -197,10 +153,9 @@ public class TestInfo {
 				}
 			}
 		}
+		if (!isValidSubset) return false;
 
-		valid &= isValidSubset;
-
-		// Do not generate make taget if the test is AOT not applicable when test flag
+		// Do not generate make target if the test is AOT not applicable when test flag
 		// is set to AOT
 		NodeList aot = testEle.getElementsByTagName("aot");
 
@@ -209,8 +164,77 @@ public class TestInfo {
 		if (aot.getLength() > 0 && Options.getTestFlag().contains("aot")) {
 			isValidAot = !aot.item(0).getTextContent().trim().equals("nonapplicable");
 		}
+		if (!isValidAot) return false;
 
-		valid &= isValidAot;
+		NodeList preqNodes = testEle.getElementsByTagName("platformRequirements");
+		if (preqNodes.getLength() > 0) {
+			platformRequirements = preqNodes.item(0).getTextContent().trim();
+		}
+
+		NodeList variationsNodes = testEle.getElementsByTagName("variation");
+		for (int i = 0; i < variationsNodes.getLength(); i++) {
+			String subTestName = testCaseName + "_" + i;
+			vars.add(new Variation(subTestName, variationsNodes.item(i).getTextContent(), platformRequirements));
+		}
+		if (vars.size() == 0) {
+			String subTestName = testCaseName + "_0";
+			vars.add(new Variation(subTestName, "NoOptions", platformRequirements));
+		}
+
+		if (Options.getTestName() != null) {
+			// If a test name is specified in target, only generate the matching make target
+			if (!Options.getTestName().equals(testCaseName)) {
+				boolean isNameValid = false;
+				for (Variation v : vars) {
+					if (v.getSubTestName().equals(Options.getTestName())) {
+						isNameValid = true;
+					}
+				}
+				if (!isNameValid) return false;
+			}
+		}
+
+		getElements(levels, "level", Constants.ALLLEVELS);
+		// level defaults to "extended"
+		if (levels.size() == 0) {
+			levels.add("extended");
+		}
+		for (int i = 0; i < levels.size(); i++) {
+			if (!levelStr.isEmpty()) {
+				levelStr += ",";
+			}
+			levelStr = levelStr + "level." + levels.get(i);
+		}
+
+		if (!checkTestCategory(levels)) return false;
+
+		getElements(groups, "group", Constants.ALLGROUPS);
+		// group defaults to "extended"
+		if (groups.size() == 0) {
+			groups.add("functional");
+		}
+
+		if (!checkTestCategory(groups)) return false;
+
+		getElements(types, "type", Constants.ALLTYPES);
+		// type defaults to "regular"
+		if (types.size() == 0) {
+			types.add("regular");
+		}
+
+		if (!checkTestCategory(types)) return false;
+
+		return true;
+	}
+
+	private boolean checkTestCategory(List<String> category) {
+		// If category(level/group/type) is specificed in target, only generate matching make taget
+		for (String s : category) {
+			if (Options.getTestSet().contains(s)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public String getTestCaseName() {

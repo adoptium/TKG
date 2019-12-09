@@ -43,7 +43,7 @@ PROPS_DIR=props_unix
 
 -include $(TEST_ROOT)$(D)TKG$(D)autoGenEnv.mk
 include $(TEST_ROOT)$(D)TKG$(D)envSettings.mk
-include $(TEST_ROOT)$(D)TKG$(D)utils.mk
+-include $(TEST_ROOT)$(D)TKG$(D)utils.mk
 include $(TEST_ROOT)$(D)TKG$(D)testEnv.mk
 include $(TEST_ROOT)$(D)TKG$(D)featureSettings.mk
 

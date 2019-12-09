@@ -13,26 +13,38 @@
 ##############################################################################
 
 #
-# If AUTO_DETECT is turned on, compile and execute envDetector in build_envInfo.xml.
-# Otherwise, call makeGen.mk
+# Makefile to run various JVM tests
 #
 
-.PHONY: testconfig
+.DEFAULT_GOAL := test
 
 D = /
 
-ifndef TEST_JDK_HOME
-$(error Please provide TEST_JDK_HOME value.)
-else
-export TEST_JDK_HOME:=$(subst \,/,$(TEST_JDK_HOME))
+SUBDIRS = ..
+
+ifndef TEST_ROOT
+	TEST_ROOT := $(shell pwd)$(D)..
 endif
 
-testconfig:
-	ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME)
-ifneq ($(AUTO_DETECT), false)
-	@echo "AUTO_DETECT is set to true"
-	${TEST_JDK_HOME}$(D)bin$(D)java -cp .$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector JavaInfo
-else
-	@echo "AUTO_DETECT is set to false"
-endif
-	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) TESTTARGET=$(TESTTARGET)
+include settings.mk
+
+include count.mk
+
+runtest:
+	@$(MAKE) -C $(TEST_ROOT) -f autoGen.mk _all
+
+.PHONY: runtest
+
+test: compile runtest
+	@$(ECHO) "All Tests Completed"
+
+.PHONY: test
+
+.NOTPARALLEL: test
+
+failed:
+	@$(MAKE) -f failedtargets.mk failed
+
+.PHONY: failed
+
+.NOTPARALLEL: failed

@@ -109,8 +109,7 @@ public class MkGen {
 					include = currentElement.getTextContent();
 				} else if (currentElement.getNodeName().equals("test")) {
 					TestInfo testInfo = new TestInfo(currentElement);
-					testInfo.parseInfo();
-					if (testInfo.isValid()) {
+					if (testInfo.parseInfo()) {
 						testInfoArr.add(testInfo);
 					}
 				}

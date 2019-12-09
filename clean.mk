@@ -12,27 +12,22 @@
 # limitations under the License.
 ##############################################################################
 
-#
-# If AUTO_DETECT is turned on, compile and execute envDetector in build_envInfo.xml.
-# Otherwise, call makeGen.mk
-#
-
-.PHONY: testconfig
+.DEFAULT_GOAL := clean
 
 D = /
 
-ifndef TEST_JDK_HOME
-$(error Please provide TEST_JDK_HOME value.)
-else
-export TEST_JDK_HOME:=$(subst \,/,$(TEST_JDK_HOME))
+ifndef TEST_ROOT
+	TEST_ROOT := $(shell pwd)$(D)..
 endif
 
-testconfig:
-	ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME)
-ifneq ($(AUTO_DETECT), false)
-	@echo "AUTO_DETECT is set to true"
-	${TEST_JDK_HOME}$(D)bin$(D)java -cp .$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector JavaInfo
-else
-	@echo "AUTO_DETECT is set to false"
-endif
-	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) TESTTARGET=$(TESTTARGET)
+include settings.mk
+
+cleanBuild:
+	$(RM) -r $(BUILD_ROOT)
+
+clean: cleanBuild
+	$(RM) -r $(TEST_ROOT)$(D)TKG$(D)test_output_*
+	$(RM) $(FAILEDTARGETS)
+	ant -f $(TEST_ROOT)$(D)TKG$(D)scripts/build_tools.xml clean
+
+.PHONY: cleanBuild clean
