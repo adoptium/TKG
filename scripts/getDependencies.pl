@@ -69,10 +69,10 @@ my %asm_all = (
 	fname => 'asm-all.jar',
 	sha1 => '535f141f6c8fc65986a3469839a852a3266d1025'
 );
-my %asm_7_2 = (
-	url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/7.2/asm-7.2.jar',
-	fname => 'asm-7.2.jar',
-	sha1 => 'fa637eb67eb7628c915d73762b681ae7ff0b9731'
+my %asm_7_3 = (
+	url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/7.3/asm-7.3.jar',
+	fname => 'asm-7.3.jar',
+	sha1 => '90a3b0a43015bbc7d668fa9c0a4402966ad3eb8f'
 );
 my %commons_cli = (
 	url => 'https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar',
@@ -121,7 +121,7 @@ my %jaxb_api = (
 # Put all dependent jars hash to array to prepare downloading
 my @jars_info = (
 	\%asm_all,
-	\%asm_7_2,
+	\%asm_7_3,
 	\%commons_cli,
 	\%commons_exec,
 	\%javassist,
