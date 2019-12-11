@@ -136,9 +136,13 @@ ARCH_INFO:=$(word 2,$(WORD_LIST))
 
 BITS=bits.32
 ARCH=arch.$(ARCH_INFO)
-ifneq (,$(findstring -64,$(ARCH_INFO)))
+ifneq (,$(findstring 64,$(ARCH_INFO)))
 	BITS=bits.64
-	ARCH:=arch.$(subst -64,,$(ARCH_INFO))
+	ifneq (,$(findstring -64,$(ARCH_INFO)))
+		ARCH:=arch.$(subst -64,,$(ARCH_INFO))
+	else
+		ARCH:=arch.$(subst 64,,$(ARCH_INFO))
+	endif
 else
 	ifneq (,$(findstring 390,$(ARCH_INFO)))
 		BITS=bits.31
