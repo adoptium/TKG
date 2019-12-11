@@ -17,8 +17,8 @@ use warnings;
 use Data::Dumper;
 use File::Basename;
 use File::Path qw/make_path/;
-use FindBin;
-use lib $FindBin::Bin;
+use lib ".";
+require "moveDmp.pl";
 
 my $resultFile;
 my $failuremkarg;
@@ -36,7 +36,9 @@ my %spec2jenkinsFile = (
 	'linux_aarch64_cmprssptrs'     => 'openjdk_aarch64_linux',
 	'linux_aarch64'                => 'openjdk_aarch64_linux_xl',
 	'linux_ppc-64_cmprssptrs_le'   => 'openjdk_ppc64le_linux',
+	'linux_ppc-64_le'              => 'openjdk_ppc64le_linux_xl',
 	'linux_390-64_cmprssptrs'      => 'openjdk_s390x_linux',
+	'linux_390-64'                 => 'openjdk_s390x_linux_xl',
 	'aix_ppc-64_cmprssptrs'        => 'openjdk_ppc64_aix',
 	'zos_390-64_cmprssptrs'        => 'openjdk_s390x_zos',
 	'osx_x86-64_cmprssptrs'        => 'openjdk_x86-64_mac',
@@ -135,7 +137,6 @@ sub resultReporter {
 							$tapString .= $output;
 						}
 						if ($spec =~ /zos/) {
-							require "moveDmp.pl";
 							my $dmpDir = dirname($resultFile).'/'.$testName;
 							moveTDUMPS($output, $dmpDir, $spec);
 						}
