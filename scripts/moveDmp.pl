@@ -22,21 +22,25 @@ our $FALSE = 0;
 our $SUCCESS = 1;
 our $FAILURE = 0;
 
-
 my $path;
-my $location;
-my $compileLog;
-my $arg = $ARGV[0];
-if ($arg =~ /^\-\-compileLogPath=/) {
-	($path) = $arg =~ /^\-\-compileLogPath=(.*)/;
+my $testRoot;
+my $spec;
+for (my $i = 0; $i < scalar(@ARGV); $i++) {
+	my $arg = $ARGV[$i];
+	if ($arg =~ /^\-\-compileLogPath=/) {
+		($path) = $arg =~ /^\-\-compileLogPath=(.*)/;
+	} elsif ($arg =~ /^\-\-testRoot=/) {
+		($testRoot) = $arg =~ /^\-\-testRoot=(.*)/;
+	} elsif ($arg =~ /^\-\-spec=/) {
+		($spec) = $arg =~ /^\-\-spec=(.*)/;
+	}
 }
 
-if ($path) {
-	$location = dirname($path);
-	open (LOGFILE, "<$path");
-	$compileLog = <LOGFILE>;
-	close LOGFILE;
-	moveTDUMPS($compileLog, $location);
+if ($path && $testRoot && $spec) {
+	my $location = dirname($path);
+	open my $Log, '<', "$path";
+	my $compileLog = do { local $/; <$Log> };
+	moveTDUMPS($compileLog, $location, $spec);
 }
 
 sub logMsg {
@@ -118,14 +122,16 @@ sub checkLog {
 }
 
 sub moveTDUMPS {
-	my ($file, $moveLocation) = @_;
-	logMsg("Moving the TDUMPS to '$moveLocation', using the log to identify the TDUMP name to be moved");
-	if ($^O ne 'os390') {
-		return;
-	}
+	my ($file, $moveLocation, $spec) = @_;
 	my @dumplist = ();
 	# Use a hash to ensure that each dump is only dealt with once
 	my %parsedNames = ();
+	logMsg("Attempting to move the TDUMPS to '$moveLocation', using the log to identify the TDUMP name to be moved");
+	if ($spec !~ /zos/) {
+		my $moveCMD = "find ".${testRoot}." -name 'core.*.dmp' -exec mv -t ".${moveLocation}." '{}' +";
+		qx($moveCMD);
+		return;
+	}
 	if ($file) {
 		if ($file =~ /IEATDUMP success for DSN='.*'/) {
 			my ($tdump) = $file =~ /IEATDUMP success for DSN='(.*)'/;

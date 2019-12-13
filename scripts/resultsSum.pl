@@ -138,7 +138,7 @@ sub resultReporter {
 						}
 						if ($spec =~ /zos/) {
 							my $dmpDir = dirname($resultFile).'/'.$testName;
-							moveTDUMPS($output, $dmpDir);
+							moveTDUMPS($output, $dmpDir, $spec);
 						}
 					} elsif ($result eq ($testName . "_DISABLED\n")) {
 						$result =~ s/_DISABLED\n$//;
