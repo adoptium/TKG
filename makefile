@@ -65,7 +65,7 @@ clean: cleanBuild
 # download all dependent jars
 #######################################
 getdependency:
-	perl scripts$(D)getDependencies.pl -path '$(TEST_ROOT)$(D)TestConfig$(D)lib' -task default -os $(OS)
+	perl scripts$(D)getDependencies.pl -path '$(TEST_ROOT)$(D)TKG$(D)lib' -task default -os $(OS)
 
 #######################################
 # compile all tests under $(TEST_ROOT)
