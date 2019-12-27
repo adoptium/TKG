@@ -29,24 +29,24 @@ my $jdkImpl = "";
 my $buildList = "";
 my $spec = "";
 my $customTarget = "";
-my %spec2jenkinsFile = (
-	'linux_x86-64_cmprssptrs'      => 'openjdk_x86-64_linux',
-	'linux_x86-64'                 => 'openjdk_x86-64_linux_xl',
-	'linux_arm'                    => 'openjdk_aarch32_linux',
-	'linux_aarch64_cmprssptrs'     => 'openjdk_aarch64_linux',
-	'linux_aarch64'                => 'openjdk_aarch64_linux_xl',
-	'linux_ppc-64_cmprssptrs_le'   => 'openjdk_ppc64le_linux',
-	'linux_ppc-64_le'              => 'openjdk_ppc64le_linux_xl',
-	'linux_390-64_cmprssptrs'      => 'openjdk_s390x_linux',
-	'linux_390-64'                 => 'openjdk_s390x_linux_xl',
-	'aix_ppc-64_cmprssptrs'        => 'openjdk_ppc64_aix',
-	'zos_390-64_cmprssptrs'        => 'openjdk_s390x_zos',
-	'osx_x86-64_cmprssptrs'        => 'openjdk_x86-64_mac',
-	'osx_x86-64'                   => 'openjdk_x86-64_mac_xl',
-	'win_x86-64_cmprssptrs'        => 'openjdk_x86-64_windows',
-	'win_x86-64'                   => 'openjdk_x86-64_windows_xl',
-	'win_x86'                      => 'openjdk_x86-32_windows',
-	'sunos_sparcv9-64_cmprssptrs'  => 'openjdk_sparcv9_solaris',
+my %spec2platform = (
+	'linux_x86-64_cmprssptrs'      => 'x86-64_linux',
+	'linux_x86-64'                 => 'x86-64_linux_xl',
+	'linux_arm'                    => 'aarch32_linux',
+	'linux_aarch64_cmprssptrs'     => 'aarch64_linux',
+	'linux_aarch64'                => 'aarch64_linux_xl',
+	'linux_ppc-64_cmprssptrs_le'   => 'ppc64le_linux',
+	'linux_ppc-64_le'              => 'ppc64le_linux_xl',
+	'linux_390-64_cmprssptrs'      => 's390x_linux',
+	'linux_390-64'                 => 's390x_linux_xl',
+	'aix_ppc-64_cmprssptrs'        => 'ppc64_aix',
+	'zos_390-64_cmprssptrs'        => 's390x_zos',
+	'osx_x86-64_cmprssptrs'        => 'x86-64_mac',
+	'osx_x86-64'                   => 'x86-64_mac_xl',
+	'win_x86-64_cmprssptrs'        => 'x86-64_windows',
+	'win_x86-64'                   => 'x86-64_windows_xl',
+	'win_x86'                      => 'x86-32_windows',
+	'sunos_sparcv9-64_cmprssptrs'  => 'sparcv9_solaris',
 );
 
 for (my $i = 0; $i < scalar(@ARGV); $i++) {
@@ -223,19 +223,19 @@ sub resultReporter {
 		if ($buildList ne '') {
 			$buildParam = "&BUILD_LIST=" . $buildList;
 		}
-		my $jenkinFileParam = "";
-		if (exists $spec2jenkinsFile{$spec}) {
-			$jenkinFileParam = "&JenkinsFile=" . $spec2jenkinsFile{$spec};
+		my $platformParam = "";
+		if (exists $spec2platform{$spec}) {
+			$platformParam = "&PLATFORM=" . $spec2platform{$spec};
 		}
 		my $customTargetParam = "";
 		if ($customTarget ne '') {
 			$customTargetParam = "&CUSTOM_TARGET=" . $customTarget;
 		}
 		print "To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:\n";
-		print "<Jenkins URL>/parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$jenkinFileParam$customTargetParam&TARGET=<FAILED test target>\n\n";
+		print "<Jenkins URL>/parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$platformParam$customTargetParam&TARGET=<FAILED test target>\n\n";
 		print "For example, to rebuild the failed tests in <Jenkins URL>=https://ci.adoptopenjdk.net/job/Grinder, use the following links:\n";
 		foreach my $failedTarget (@failed) {
-			print "https://ci.adoptopenjdk.net/job/Grinder/parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$jenkinFileParam$customTargetParam&TARGET=$failedTarget\n";
+			print "https://ci.adoptopenjdk.net/job/Grinder/parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$platformParam$customTargetParam&TARGET=$failedTarget\n";
 		}
 		print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 	}
