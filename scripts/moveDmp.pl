@@ -126,12 +126,12 @@ sub moveTDUMPS {
 	my @dumplist = ();
 	# Use a hash to ensure that each dump is only dealt with once
 	my %parsedNames = ();
-	logMsg("Attempting to move the TDUMPS to '$moveLocation', using the log to identify the TDUMP name to be moved");
 	if ($spec !~ /zos/) {
 		my $moveCMD = "find ".${testRoot}." -name 'core.*.dmp' -exec mv -t ".${moveLocation}." '{}' +";
 		qx($moveCMD);
 		return;
 	}
+	logMsg("Attempting to move the TDUMPS to '$moveLocation', using the log to identify the TDUMP name to be moved");
 	if ($file) {
 		if ($file =~ /IEATDUMP success for DSN='.*'/) {
 			my ($tdump) = $file =~ /IEATDUMP success for DSN='(.*)'/;
