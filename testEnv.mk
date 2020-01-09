@@ -19,10 +19,10 @@ testEnvTeardown:
 
 ifneq (,$(findstring JITAAS,$(TEST_FLAG)))
 testEnvSetup:
-	$(TEST_JDK_HOME)/bin/java -XX:StartAsJITServer &
+	$(TEST_JDK_HOME)/bin/jitserver &
 
 testEnvTeardown:
-	pkill -9 -xf "$(TEST_JDK_HOME)/bin/java -XX:StartAsJITServer"; true
+	pkill -9 -xf "$(TEST_JDK_HOME)/bin/jitserver"; true
 
 RESERVED_OPTIONS += -XX:+UseJITServer
 endif
