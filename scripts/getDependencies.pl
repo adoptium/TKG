@@ -65,7 +65,7 @@ print "os   is set to $os\n";
 #   shaalg - optional. sha is calculated based on shaalg (default value is sha1)
 
 my %asm_all = (
-	url => 'http://central.maven.org/maven2/org/ow2/asm/asm-all/6.0_BETA/asm-all-6.0_BETA.jar',
+	url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm-all/6.0_BETA/asm-all-6.0_BETA.jar',
 	fname => 'asm-all.jar',
 	sha1 => '535f141f6c8fc65986a3469839a852a3266d1025'
 );
@@ -75,32 +75,32 @@ my %asm_7_2 = (
 	sha1 => 'fa637eb67eb7628c915d73762b681ae7ff0b9731'
 );
 my %commons_cli = (
-	url => 'http://central.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar',
+	url => 'https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar',
 	fname => 'commons-cli.jar',
 	sha1 => '2bf96b7aa8b611c177d329452af1dc933e14501c'
 );
 my %commons_exec = (
-	url => 'http://central.maven.org/maven2/org/apache/commons/commons-exec/1.1/commons-exec-1.1.jar',
+	url => 'https://repo1.maven.org/maven2/org/apache/commons/commons-exec/1.1/commons-exec-1.1.jar',
 	fname => 'commons-exec.jar',
 	sha1 => '07dfdf16fade726000564386825ed6d911a44ba1'
 );
 my %javassist = (
-	url => 'http://central.maven.org/maven2/org/javassist/javassist/3.20.0-GA/javassist-3.20.0-GA.jar',
+	url => 'https://repo1.maven.org/maven2/org/javassist/javassist/3.20.0-GA/javassist-3.20.0-GA.jar',
 	fname => 'javassist.jar',
 	sha1 => 'a9cbcdfb7e9f86fbc74d3afae65f2248bfbf82a0'
 );
 my %junit4 = (
-	url => 'http://central.maven.org/maven2/junit/junit/4.10/junit-4.10.jar',
+	url => 'https://repo1.maven.org/maven2/junit/junit/4.10/junit-4.10.jar',
 	fname => 'junit4.jar',
 	sha1 => 'e4f1766ce7404a08f45d859fb9c226fc9e41a861'
 );
 my %testng = (
-	url => 'http://central.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
+	url => 'https://repo1.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
 	fname => 'testng.jar',
 	sha1 => '10c93c2c0d165e895a7582dfd8b165f108658db5'
 );
 my %jcommander = (
-	url => 'http://central.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.jar',
+	url => 'https://repo1.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.jar',
 	fname => 'jcommander.jar',
 	sha1 => 'bfcb96281ea3b59d626704f74bc6d625ff51cbce'
 );
@@ -113,7 +113,7 @@ my %asmtools = (
 );
 # this is needed for JDK11 and up
 my %jaxb_api = (
-	url => 'http://central.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.0/jaxb-api-2.3.0.jar',
+	url => 'https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.0/jaxb-api-2.3.0.jar',
 	fname => 'jaxb-api.jar',
 	sha1 => '99f802e0cb3e953ba3d6e698795c4aeb98d37c48'
 );
