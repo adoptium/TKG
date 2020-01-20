@@ -232,7 +232,14 @@ sub downloadFile {
 	my $output;
 	# ToDo: should use curl only
 	if ($os eq 'os.zos') {
-		$output = qx{curl -k -o $filename $url 2>&1};	
+                # Delete existing file in case it is tagged incorrectly which curl would then honour..
+                qx(rm $filename);
+                # .txt SHA files are in ISO8859-1
+                if ('.txt' eq substr $filename, -length('.txt')) {
+                    $output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl -k -o $filename $url 2>&1};
+                } else {
+                    $output = qx{_ENCODE_FILE_NEW=UNTAGGED curl -k -o $filename $url 2>&1};
+                }
 	} else {
 		$output = qx{wget --no-check-certificate --quiet --output-document=$filename $url 2>&1};
 	}
