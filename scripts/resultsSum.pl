@@ -267,6 +267,7 @@ sub failureMkGen {
 					. "ifndef TEST_ROOT\n"
 					. "\tTEST_ROOT := \$(shell pwd)\$(D)..\n"
 					. "endif\n\n"
+					. "include settings.mk\n\n"
 					. "failed:\n";
 		foreach my $target (@$failureTargets) {
 			print $fhOut '	@$(MAKE) -C $(TEST_ROOT) -f autoGen.mk ' . $target . "\n";

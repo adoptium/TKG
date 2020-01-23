@@ -30,7 +30,6 @@ ifndef TEST_ROOT
 	TEST_ROOT := $(shell pwd)$(D)..
 endif
 
-
 #######################################
 # run test
 #######################################
@@ -38,9 +37,13 @@ _TESTTARGET = $(firstword $(MAKECMDGOALS))
 TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
 ifneq (compile, $(_TESTTARGET))
 ifneq (clean, $(_TESTTARGET))
+ifneq (test, $(_TESTTARGET))
+ifneq (_failed, $(_TESTTARGET))
 $(_TESTTARGET):
 	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) TESTTARGET=$(TESTTARGET)
 	$(MAKE) -f runtest.mk $(_TESTTARGET)
+endif
+endif
 endif
 endif
 
@@ -57,6 +60,27 @@ else
 	@echo "AUTO_DETECT is set to false"
 endif
 	$(MAKE) -f compile.mk compile
+
+#######################################
+# compile and run all tests
+#######################################
+test: compile _all
+	@$(ECHO) "All Tests Completed"
+
+.PHONY: test
+
+.NOTPARALLEL: test
+
+#######################################
+# run failed tests
+#######################################
+_failed:
+	@$(MAKE) -f failedtargets.mk _failed
+
+.PHONY: _failed
+
+.NOTPARALLEL: _failed
+
 
 #######################################
 # clean
