@@ -24,9 +24,7 @@ public final class Constants {
 	public static final String MODESXML = "resources/modes.xml";
 	public static final String OTTAWACSV = "resources/ottawa.csv";
 	public static final String TESTMK = "autoGen.mk";
-	public static final String DEPENDMK = "dependencies.mk";
 	public static final String UTILSMK = "utils.mk";
-	public static final String COUNTMK = "count.mk";
 	public static final String SETTINGSMK = "settings.mk";
 	public static final String HEADERCOMMENTS = "########################################################\n"
 			+ "# This is an auto generated file. Please do NOT modify!\n"

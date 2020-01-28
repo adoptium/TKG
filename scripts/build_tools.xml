@@ -42,8 +42,6 @@
 
 	<target name="clean" description="clean up">
 		<delete file="../autoGenEnv.mk" />
-		<delete file="../count.mk" />
-		<delete file="../dependencies.mk" />
 		<delete file="../utils.mk" />
 		<delete dir="${build}" />
 	</target>
