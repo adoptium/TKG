@@ -27,24 +27,3 @@ ifndef TEST_ROOT
 endif
 
 include settings.mk
-
-include count.mk
-
-runtest:
-	@$(MAKE) -C $(TEST_ROOT) -f autoGen.mk _all
-
-.PHONY: runtest
-
-test: compile runtest
-	@$(ECHO) "All Tests Completed"
-
-.PHONY: test
-
-.NOTPARALLEL: test
-
-failed:
-	@$(MAKE) -f failedtargets.mk failed
-
-.PHONY: failed
-
-.NOTPARALLEL: failed
