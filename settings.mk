@@ -246,7 +246,7 @@ TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
 SUBDIRS_TESTTARGET = $(SUBDIRS:%=$(TESTTARGET)-%)
 
 $(SUBDIRS_TESTTARGET):
-	@if [ -f $(@:$(TESTTARGET)-%=%)$(D)autoGen.mk ]; then \
+	@if [ -f $(Q)$(@:$(TESTTARGET)-%=%)/autoGen.mk$(Q) ]; then \
 		$(MAKE) -C $(@:$(TESTTARGET)-%=%) -f autoGen.mk $(TESTTARGET); \
 	fi
 
