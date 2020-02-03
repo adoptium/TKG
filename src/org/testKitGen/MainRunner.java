@@ -27,8 +27,7 @@ public class MainRunner {
 		System.out.println("\nStarting to generate test make files.\n");
 		ModesDictionary.parse();
 		MkTreeGen.start();
-		UtilsGen.start();
-		Counter.generateFile();
+		Utils.generateFile();
 		System.out.println("\nMake files are generated successfully.\n");
 	}
 }

@@ -73,11 +73,8 @@ public class MkTreeGen {
 			}
 		}
 
-		if (playlistXML != null || !subdirs.isEmpty()) {
-			MkGen mg = new MkGen(playlistXML, absolutedir, currentdirs, subdirs);
-			mg.start();
-			return true;
-		}
-		return false;
+		MkGen mg = new MkGen(playlistXML, absolutedir, currentdirs, subdirs);
+		boolean rt = mg.start();
+		return rt;
 	}
 }

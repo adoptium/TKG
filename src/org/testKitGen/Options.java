@@ -30,6 +30,7 @@ public class Options {
 	private static String testTarget = "";
 	private static Set<String> testSet = new HashSet<String>();
 	private static String testName = null;
+	private static boolean isDisabledTarget = false;
 
 	private static final String usage = "Usage:\n"
 			+ "    java TestKitGen --spec=[linux_x86-64] --jdkVersion=[8|9|...] --impl=[openj9|ibm|hotspot|sap] [options]\n\n"
@@ -84,11 +85,29 @@ public class Options {
 		return testName;
 	}
 
+	public static boolean isDisabledTarget() {
+		return isDisabledTarget;
+	}
+
+	public static String getTestTarget() {
+		return testTarget;
+	}
+
 	public static void parseTestTarget() {
 		List<Set<String>> sets = new ArrayList<Set<String>>();
 		sets.add(new HashSet<String>(Constants.ALLLEVELS));
 		sets.add(new HashSet<String>(Constants.ALLGROUPS));
 		sets.add(new HashSet<String>(Constants.ALLTYPES));
+
+		if (testTarget.startsWith("echo.disabled.")) {
+			isDisabledTarget = true;
+			testTarget = testTarget.substring(new String("echo.disabled.").length());
+		}
+
+		if (testTarget.startsWith("disabled.")) {
+			isDisabledTarget = true;
+			testTarget = testTarget.substring(testTarget.indexOf(".") + 1);
+		}
 
 		if (testTarget.equals("all") || testTarget.equals("")) {
 			for (Set<String> set : sets) {
@@ -96,16 +115,13 @@ public class Options {
 			}
 		} else {
 			String[] targets = testTarget.split("\\.");
-			int i = 0;
 			int j = 0;
-			while (i < sets.size()) {
+			for (int i = 0; i < sets.size(); i++) {
 				if (j < targets.length && sets.get(i).contains(targets[j])) {
 					testSet.add(targets[j]);
-					i++;
 					j++;
 				} else {
 					testSet.addAll(sets.get(i));
-					i++;
 				}
 			}
 			if (j != targets.length) {

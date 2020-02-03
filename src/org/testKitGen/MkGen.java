@@ -40,7 +40,7 @@ public class MkGen {
 	private String makeFile;
 	private List<TestInfo> testInfoArr;
 	private String include;
-	private Map<String, ArrayList<String>> groupTargets;
+	private Map<String, ArrayList<String>> testMap;
 
 	public MkGen(File playlistXML, String absolutedir, ArrayList<String> currentdirs, List<String> subdirs) {
 		this.playlistXML = playlistXML;
@@ -48,32 +48,37 @@ public class MkGen {
 		this.subdirs = subdirs;
 		this.makeFile = absolutedir + "/" + Constants.TESTMK;
 		this.testInfoArr = new ArrayList<TestInfo>();
-		this.groupTargets = new HashMap<String, ArrayList<String>>();
+		this.testMap = new HashMap<String, ArrayList<String>>();
 	}
 
-	public void start() {
-		System.out.println();
-		System.out.println("Generating make file " + makeFile);
+	public boolean start() {
+		File file = new File(makeFile); 
+		file.delete();
 
 		try {
-			writeVars();
-		} catch (IOException e) {
+			if (!subdirs.isEmpty()) {
+				writeVars();
+				if (processPlaylist()) {
+					writeTargets();
+				}
+			} else {
+				if (processPlaylist()) {
+					writeVars();
+					writeTargets();
+				} else {
+					return false;
+				}
+			}
+		} catch (SAXException | IOException | ParserConfigurationException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
-
-		if (playlistXML != null) {
-			try {
-				processPlaylist();
-				writeTargets();
-			} catch (SAXException | IOException | ParserConfigurationException e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-		}
+		return true;
 	}
 
 	private void writeVars() throws IOException {
+		System.out.println();
+		System.out.println("Generating make file " + makeFile);
 		FileWriter f = new FileWriter(makeFile);
 		String realtiveRoot = "";
 		int subdirlevel = currentdirs.size();
@@ -96,7 +101,9 @@ public class MkGen {
 		f.close();
 	}
 
-	private void processPlaylist() throws SAXException, IOException, ParserConfigurationException {
+	private boolean processPlaylist() throws SAXException, IOException, ParserConfigurationException {
+		if (playlistXML == null) return false;
+
 		Document xml = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(playlistXML);
 		NodeList childNodes = xml.getDocumentElement().getChildNodes();
 
@@ -115,6 +122,8 @@ public class MkGen {
 				}
 			}
 		}
+		
+		return testInfoArr.size() != 0;
 	}
 
 	private void writeSingleTest(TestInfo testInfo, FileWriter f) throws IOException {
@@ -238,7 +247,10 @@ public class MkGen {
 						+ " Finish Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q)\n");
 				f.write("\n.PHONY: " + echoName + "\n\n");
 			}
-			updateGroupTargets(testInfo, name);
+			updateTestMap(testInfo, name);
+			if (!Options.isDisabledTarget() || testInfo.getDisabledReasons() != null) {
+				 Utils.count();
+			}
 		}
 
 		String testCaseName = testInfo.getTestCaseName();
@@ -249,28 +261,19 @@ public class MkGen {
 		f.write("\n\n.PHONY: " + testCaseName + "\n\n");
 	}
 
-	private void updateGroupTargets(TestInfo testInfo, String name) {
-		for (int i = 0; i < testInfo.getGroups().size(); i++) {
-			String eachGroup = testInfo.getGroups().get(i);
-			for (int j = 0; j < testInfo.getLevels().size(); j++) {
-				String eachLevel = testInfo.getLevels().get(j);
-				for (int k = 0; k < testInfo.getTypes().size(); k++) {
-					String eachType = testInfo.getTypes().get(k);
-					String lgtKey = eachLevel + "." + eachGroup + "." + eachType;
-					if (testInfo.getDisabledReasons() == null) {
-						groupTargets.putIfAbsent(lgtKey, new ArrayList<String>());
-						groupTargets.get(lgtKey).add(name);
-					} else {
-						String dlgtKey = "disabled." + lgtKey;
-						String echodlgtKey = "echo." + dlgtKey;
-						String echoName = "echo.disabled." + name;
-						groupTargets.putIfAbsent(dlgtKey, new ArrayList<String>());
-						groupTargets.get(dlgtKey).add(name);
-						groupTargets.putIfAbsent(echodlgtKey, new ArrayList<String>());
-						groupTargets.get(echodlgtKey).add(echoName);
-					}
-				}
-			}
+	private void updateTestMap(TestInfo testInfo, String name) {
+		String testTarget = Options.getTestTarget();
+		if (testInfo.getDisabledReasons() == null) {
+			testMap.putIfAbsent(testTarget, new ArrayList<String>());
+			testMap.get(testTarget).add(name);
+		} else {
+			String dlgtKey = "disabled." + testTarget;
+			String echodlgtKey = "echo." + dlgtKey;
+			String echoName = "echo.disabled." + name;
+			testMap.putIfAbsent(dlgtKey, new ArrayList<String>());
+			testMap.get(dlgtKey).add(name);
+			testMap.putIfAbsent(echodlgtKey, new ArrayList<String>());
+			testMap.get(echodlgtKey).add(echoName);
 		}
 	}
 
@@ -280,61 +283,28 @@ public class MkGen {
 			f.write("-include " + include + "\n\n");
 		}
 
-		f.write("include $(TEST_ROOT)$(D)TKG$(D)" + Constants.DEPENDMK + "\n\n");
-
 		for (TestInfo testInfo : testInfoArr) {
 			writeSingleTest(testInfo, f);
 		}
 
-		List<String> allDisHead = Arrays.asList("", "disabled.", "echo.disabled.");
+		// If a test group is specified in target, generate the group target
+		if (Options.getTestName() == null) {
+			String testTarget = Options.getTestTarget();
+			List<String> testTargets = Arrays.asList(testTarget, "disabled." + testTarget, "echo.disabled." + testTarget);
 
-		Constants.ALLLEVELS.sort(null);
-		Constants.ALLGROUPS.sort(null);
-		Constants.ALLTYPES.sort(null);
-
-		for (String eachDisHead : allDisHead) {
-			for (String eachLevel : Constants.ALLLEVELS) {
-				for (String eachGroup : Constants.ALLGROUPS) {
-					for (String eachType : Constants.ALLTYPES) {
-						String hlgtKey = eachDisHead + eachLevel + "." + eachGroup + "." + eachType;
-
-						groupTargets.putIfAbsent(hlgtKey, new ArrayList<String>());
-						List<String> groupTests = groupTargets.get(hlgtKey);
-						int size = groupTests.size();
-
-						f.write(hlgtKey + ":");
-						for (String groupTest : groupTests) {
-							f.write(" \\\n" + groupTest);
-						}
-
-						Counter.add(eachDisHead + eachLevel, size);
-						Counter.add(eachDisHead + eachGroup, size);
-						Counter.add(eachDisHead + eachType, size);
-						Counter.add(eachDisHead + eachLevel + "." + eachGroup, size);
-						Counter.add(eachDisHead + eachLevel + "." + eachType, size);
-						Counter.add(eachDisHead + eachGroup + "." + eachType, size);
-						Counter.add(hlgtKey, size);
-						// The all contain normal and echo.disabled.
-						if (eachDisHead.isEmpty()) {
-							f.write(" \\\necho.disabled." + hlgtKey);
-							Counter.add("all", size);
-						} else if (eachDisHead.equals("echo.disabled.")) {
-							// Normal target contains echo.disabled target
-							Counter.add(eachLevel, size);
-							Counter.add(eachGroup, size);
-							Counter.add(eachType, size);
-							Counter.add(eachLevel + "." + eachGroup, size);
-							Counter.add(eachLevel + "." + eachType, size);
-							Counter.add(eachGroup + "." + eachType, size);
-							Counter.add(eachLevel + "." + eachGroup + "." + eachType, size);
-							Counter.add("all", size);
-						}
-						f.write("\n\n.PHONY: " + hlgtKey + "\n\n");
+			for (String target : testTargets) {
+				f.write(target + ":");
+				if (testMap.containsKey(target)) {
+					for (String eachTest : testMap.get(target)) {
+						f.write(" \\\n" + eachTest);
 					}
 				}
+				if (target.equals(testTarget)) {
+					f.write(" \\\n" + testTargets.get(2));
+				}
+				f.write("\n\n.PHONY: " + target + "\n\n");
 			}
 		}
-
 		f.close();
 	}
 }

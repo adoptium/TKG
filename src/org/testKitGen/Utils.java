@@ -16,47 +16,38 @@ package org.testKitGen;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-public class Counter {
-	private static Map<String, Integer> count = new HashMap<String, Integer>();
-	private static String countmk = Options.getProjectRootDir() + "/TKG/" + Constants.COUNTMK;
+public class Utils {
+	private static String utilsmk = Options.getProjectRootDir() + "/TKG/" + Constants.UTILSMK;
+	private static int count = 0;
 
-	private Counter(Options op) {
+	private Utils() {
 	}
 
 	public static void generateFile() {
-		FileWriter f;
 		try {
-			f = new FileWriter(countmk);
+			FileWriter f = new FileWriter(utilsmk);
+
 			f.write(Constants.HEADERCOMMENTS);
-
-			List<String> targetCountKeys = new ArrayList<>(count.keySet());
-			Collections.sort(targetCountKeys);
-
-			f.write("_GROUPTARGET = $(firstword $(MAKECMDGOALS))\n\n");
-			f.write("GROUPTARGET = $(patsubst _%,%,$(_GROUPTARGET))\n\n");
-			for (String key : targetCountKeys) {
-				f.write("ifeq ($(GROUPTARGET)," + key + ")\n");
-				f.write("\tTOTALCOUNT := " + count.get(key) + "\n");
-				f.write("endif\n\n");
+			f.write("TOTALCOUNT := " + count + "\n");
+			f.write("PLATFORM=\n");
+			String plat = ModesDictionary.getPlat(Options.getSpec());
+			if (!plat.isEmpty()) {
+				f.write("ifeq" + " ($(SPEC)," + Options.getSpec() + ")\n\tPLATFORM=" + plat + "\nendif\n\n");
 			}
 
 			f.close();
-
 			System.out.println();
-			System.out.println("Generated " + countmk);
+			System.out.println("Generated " + utilsmk);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
 	}
 
-	public static void add(String key, int value) {
-		count.put(key, count.getOrDefault(key, 0) + value);
+	public static void count() {
+		count++;
 	}
 }

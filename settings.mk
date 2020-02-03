@@ -40,6 +40,7 @@ SQ='
 P=:
 AND_IF_SUCCESS=&&
 PROPS_DIR=props_unix
+TOTALCOUNT := 0
 
 -include $(TEST_ROOT)$(D)TKG$(D)autoGenEnv.mk
 include $(TEST_ROOT)$(D)TKG$(D)envSettings.mk
@@ -248,7 +249,7 @@ TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
 SUBDIRS_TESTTARGET = $(SUBDIRS:%=$(TESTTARGET)-%)
 
 $(SUBDIRS_TESTTARGET):
-	@if [ -d $(@:$(TESTTARGET)-%=%) ]; then \
+	@if [ -f $(@:$(TESTTARGET)-%=%)$(D)autoGen.mk ]; then \
 		$(MAKE) -C $(@:$(TESTTARGET)-%=%) -f autoGen.mk $(TESTTARGET); \
 	fi
 
@@ -260,8 +261,6 @@ _$(TESTTARGET): setup_$(TESTTARGET) rmResultFile $(TESTTARGET) resultsSummary te
 .PHONY: _$(TESTTARGET) $(TESTTARGET) $(SUBDIRS) $(SUBDIRS_TESTTARGET)
 
 .NOTPARALLEL: _$(TESTTARGET) $(TESTTARGET) $(SUBDIRS) $(SUBDIRS_TESTTARGET)
-
-TOTALCOUNT := 0
 
 setup_%: testEnvSetup
 	@$(ECHO)
@@ -279,7 +278,9 @@ setup_%: testEnvSetup
 	@$(MKTREE) $(Q)$(TESTOUTPUT)$(Q)
 	@$(ECHO) Running $(TESTTARGET) ...
 	@if [ $(TOTALCOUNT) -ne 0 ]; then \
-		$(ECHO) There are $(TOTALCOUNT) test targets in $(TESTTARGET).; \
+		$(ECHO) There are $(TOTALCOUNT) test targets in $(TESTTARGET); \
+	else \
+		$(ECHO) There is no test for target $(TESTTARGET); \
 	fi
 	$(JAVA_COMMAND) -version
 
