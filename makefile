@@ -20,6 +20,9 @@ ifndef TEST_JDK_HOME
 $(error Please provide TEST_JDK_HOME value.)
 else
 export TEST_JDK_HOME:=$(subst \,/,$(TEST_JDK_HOME))
+export OLD_JAVA_HOME := $(JAVA_HOME)
+export JAVA_HOME := $(TEST_JDK_HOME)
+$(info JAVA_HOME is set to $(JAVA_HOME))
 endif
 
 D = /
