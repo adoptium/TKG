@@ -145,6 +145,8 @@ sub resultReporter {
 						push (@disabled, $result);
 						$numOfDisabled++;
 						$numOfTotal++;
+						$tapString .= "ok " . $numOfTotal . " - " . $testName . " # skip (disabled)\n";
+						$tapString .= "  ---\n";
 					} elsif ($result eq ("Test is disabled due to:\n")) {
 						$runningDisabled = 1;
 					} elsif ($result =~ /(capabilities \(.*?\))\s*=>\s*${testName}_SKIPPED\n/) {
