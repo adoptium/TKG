@@ -60,9 +60,6 @@ else
 export TEST_JDK_HOME := $(subst \,/,$(TEST_JDK_HOME))
 endif
 
-OLD_JAVA_HOME := $(JAVA_HOME)
-export JAVA_HOME := $(TEST_JDK_HOME)
-
 ifndef SPEC
 $(error Please provide SPEC that matches the current platform (e.g. SPEC=linux_x86-64))
 else
