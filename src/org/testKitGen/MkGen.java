@@ -40,7 +40,7 @@ public class MkGen {
 	private String makeFile;
 	private List<TestInfo> testInfoArr;
 	private String include;
-	private Map<String, ArrayList<String>> testMap;
+	private List<String> testList;
 
 	public MkGen(File playlistXML, String absolutedir, ArrayList<String> currentdirs, List<String> subdirs) {
 		this.playlistXML = playlistXML;
@@ -48,7 +48,7 @@ public class MkGen {
 		this.subdirs = subdirs;
 		this.makeFile = absolutedir + "/" + Constants.TESTMK;
 		this.testInfoArr = new ArrayList<TestInfo>();
-		this.testMap = new HashMap<String, ArrayList<String>>();
+		this.testList = new ArrayList<String>();
 	}
 
 	public boolean start() {
@@ -130,100 +130,102 @@ public class MkGen {
 		for (Variation var : testInfo.getVars()) {
 			// Generate make target
 			String name = var.getSubTestName();
-
-			if (!testInfo.getCapabilities().isEmpty()) {
-				List<String> capabilityReqs_HashKeys = new ArrayList<>(testInfo.getCapabilities().keySet());
-				Collections.sort(capabilityReqs_HashKeys);
-				for (String capa_key : capabilityReqs_HashKeys) {
-					String condition_capsReqs = name + "_" + capa_key + "_CHECK";
-					f.write(condition_capsReqs + "=$(" + capa_key + ")\n");
-				}
-			}
-
-			String jvmtestroot = "$(JVM_TEST_ROOT)$(D)" + String.join("$(D)", currentdirs);
-			f.write(name + ": TEST_RESROOT=" + jvmtestroot + "\n");
-			f.write(name + ": JVM_OPTIONS?=" + testInfo.getAotOptions() + "$(RESERVED_OPTIONS) "
-					+ (var.getJvmOptions().isEmpty() ? "" : (var.getJvmOptions() + " ")) + "$(EXTRA_OPTIONS)\n");
-
-			f.write(name + ": TEST_GROUP=" + testInfo.getLevelStr() + "\n");
 			String indent = "\t";
-			f.write(name + ":\n");
-			f.write(indent + "@echo \"\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-			f.write(indent
-					+ "@echo \"===============================================\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-			f.write(indent + "@echo \"Running test $@ ...\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-			f.write(indent
-					+ "@echo \"===============================================\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-			f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + name
-					+ " Start Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 
-			if (testInfo.getDisabledReasons() != null) {
-				// This line is also the key words to match runningDisabled
-				f.write(indent
-						+ "@echo \"Test is disabled due to:\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-				for (String dReason : testInfo.getDisabledReasons()) {
-					f.write(indent + "@echo \"" + dReason + "\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+			if (testInfo.genCmd()) {
+				if (!testInfo.getCapabilities().isEmpty()) {
+					List<String> capabilityReqs_HashKeys = new ArrayList<>(testInfo.getCapabilities().keySet());
+					Collections.sort(capabilityReqs_HashKeys);
+					for (String capa_key : capabilityReqs_HashKeys) {
+						String condition_capsReqs = name + "_" + capa_key + "_CHECK";
+						f.write(condition_capsReqs + "=$(" + capa_key + ")\n");
+					}
 				}
-			}
 
-			if (var.isValid()) {
-				List<String> capKeys = new ArrayList<String>(testInfo.getCapabilities().keySet());
-				if (!capKeys.isEmpty()) {
-					Collections.sort(capKeys);
-					for (String cKey : capKeys) {
-						String condition_capsReqs = name + "_" + cKey + "_CHECK";
-						f.write("ifeq ($(" + condition_capsReqs + "), " + testInfo.getCapabilities().get(cKey) + ")\n");
-					}
-				}
-	
-				f.write(indent + "$(TEST_SETUP);\n");
-	
-				f.write(indent + "@echo \"variation: " + var.getVariation()
-						+ "\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+				String jvmtestroot = "$(JVM_TEST_ROOT)$(D)" + String.join("$(D)", currentdirs);
+				f.write(name + ": TEST_RESROOT=" + jvmtestroot + "\n");
+				f.write(name + ": JVM_OPTIONS?=" + testInfo.getAotOptions() + "$(RESERVED_OPTIONS) "
+						+ (var.getJvmOptions().isEmpty() ? "" : (var.getJvmOptions() + " ")) + "$(EXTRA_OPTIONS)\n");
+
+				f.write(name + ": TEST_GROUP=" + testInfo.getLevelStr() + "\n");
+				f.write(name + ":\n");
+				f.write(indent + "@echo \"\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				f.write(indent
-						+ "@echo \"JVM_OPTIONS: $(JVM_OPTIONS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-	
-				f.write(indent + "{ ");
-				for (int k = 1; k <= testInfo.getIterations(); k++) {
-					f.write("itercnt=" + k + "; \\\n" + indent + "$(MKTREE) $(REPORTDIR); \\\n" + indent
-							+ "$(CD) $(REPORTDIR); \\\n");
-					f.write(indent + testInfo.getCommand() + ";");
-					if (k != testInfo.getIterations()) {
-						f.write(" \\\n" + indent);
-					}
-				}
-				f.write(" } 2>&1 | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-	
-				f.write(indent + "$(TEST_TEARDOWN);\n");
-	
-				if (!capKeys.isEmpty()) {
-					Collections.sort(capKeys, Collections.reverseOrder());
-					for (String cKey : capKeys) {
-						f.write("else\n");
-						f.write(indent + "@echo \"Skipped due to capabilities (" + cKey + ":"
-								+ testInfo.getCapabilities().get(cKey)
-								+ ") => $(TEST_SKIP_STATUS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-						f.write("endif\n");
-					}
-				}
-			} else {
-				if (testInfo.getPlatformRequirements() != null) {
+						+ "@echo \"===============================================\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+				f.write(indent + "@echo \"Running test $@ ...\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+				f.write(indent
+						+ "@echo \"===============================================\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + name
+						+ " Start Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+
+				if (testInfo.isDisabled()) {
+					// This line is also the key words to match runningDisabled
 					f.write(indent
-							+ "@echo \"Skipped due to jvm options ($(JVM_OPTIONS)) and/or platform requirements ("
-							+ testInfo.getPlatformRequirements()
-							+ ") => $(TEST_SKIP_STATUS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+							+ "@echo \"Test is disabled due to:\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+					for (String dReason : testInfo.getDisabledReasons()) {
+						f.write(indent + "@echo \"" + dReason + "\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+					}
+				}
+
+				if (var.isValid()) {
+					List<String> capKeys = new ArrayList<String>(testInfo.getCapabilities().keySet());
+					if (!capKeys.isEmpty()) {
+						Collections.sort(capKeys);
+						for (String cKey : capKeys) {
+							String condition_capsReqs = name + "_" + cKey + "_CHECK";
+							f.write("ifeq ($(" + condition_capsReqs + "), " + testInfo.getCapabilities().get(cKey) + ")\n");
+						}
+					}
+		
+					f.write(indent + "$(TEST_SETUP);\n");
+		
+					f.write(indent + "@echo \"variation: " + var.getVariation()
+							+ "\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+					f.write(indent
+							+ "@echo \"JVM_OPTIONS: $(JVM_OPTIONS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+		
+					f.write(indent + "{ ");
+					for (int k = 1; k <= testInfo.getIterations(); k++) {
+						f.write("itercnt=" + k + "; \\\n" + indent + "$(MKTREE) $(REPORTDIR); \\\n" + indent
+								+ "$(CD) $(REPORTDIR); \\\n");
+						f.write(indent + testInfo.getCommand() + ";");
+						if (k != testInfo.getIterations()) {
+							f.write(" \\\n" + indent);
+						}
+					}
+					f.write(" } 2>&1 | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+		
+					f.write(indent + "$(TEST_TEARDOWN);\n");
+		
+					if (!capKeys.isEmpty()) {
+						Collections.sort(capKeys, Collections.reverseOrder());
+						for (String cKey : capKeys) {
+							f.write("else\n");
+							f.write(indent + "@echo \"Skipped due to capabilities (" + cKey + ":"
+									+ testInfo.getCapabilities().get(cKey)
+									+ ") => $(TEST_SKIP_STATUS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+							f.write("endif\n");
+						}
+					}
 				} else {
-					f.write(indent
-							+ "@echo \"Skipped due to jvm options ($(JVM_OPTIONS)) => $(TEST_SKIP_STATUS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+					if (testInfo.getPlatformRequirements() != null) {
+						f.write(indent
+								+ "@echo \"Skipped due to jvm options ($(JVM_OPTIONS)) and/or platform requirements ("
+								+ testInfo.getPlatformRequirements()
+								+ ") => $(TEST_SKIP_STATUS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+					} else {
+						f.write(indent
+								+ "@echo \"Skipped due to jvm options ($(JVM_OPTIONS)) => $(TEST_SKIP_STATUS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+					}
 				}
-			}
 
-			f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + name
-					+ " Finish Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q)\n");
+				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + name
+						+ " Finish Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q)\n");
 
-			f.write("\n.PHONY: " + name + "\n\n");
+				f.write("\n.PHONY: " + name + "\n\n");
 
-			if (testInfo.getDisabledReasons() != null) {
+				testList.add(name);
+			} else {
 				String echoName = "echo.disabled." + name;
 				f.write(echoName + ":\n");
 				f.write(indent + "@echo \"\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
@@ -246,34 +248,24 @@ public class MkGen {
 				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + name
 						+ " Finish Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q)\n");
 				f.write("\n.PHONY: " + echoName + "\n\n");
+				testList.add(echoName);
 			}
-			updateTestMap(testInfo, name);
-			if (!Options.isDisabledTarget() || testInfo.getDisabledReasons() != null) {
-				 Utils.count();
-			}
+			Utils.count();
 		}
 
 		String testCaseName = testInfo.getTestCaseName();
-		f.write(testCaseName + ":");
-		for (Variation var : testInfo.getVars()) {
-			f.write(" \\\n" + var.getSubTestName());
-		}
-		f.write("\n\n.PHONY: " + testCaseName + "\n\n");
-	}
-
-	private void updateTestMap(TestInfo testInfo, String name) {
-		String testTarget = Options.getTestTarget();
-		if (testInfo.getDisabledReasons() == null) {
-			testMap.putIfAbsent(testTarget, new ArrayList<String>());
-			testMap.get(testTarget).add(name);
+		if (testInfo.genCmd()) {
+			f.write(testCaseName + ":");
+			for (Variation var : testInfo.getVars()) {
+				f.write(" \\\n" + var.getSubTestName());
+			}
+			f.write("\n\n.PHONY: " + testCaseName + "\n\n");
 		} else {
-			String dlgtKey = "disabled." + testTarget;
-			String echodlgtKey = "echo." + dlgtKey;
-			String echoName = "echo.disabled." + name;
-			testMap.putIfAbsent(dlgtKey, new ArrayList<String>());
-			testMap.get(dlgtKey).add(name);
-			testMap.putIfAbsent(echodlgtKey, new ArrayList<String>());
-			testMap.get(echodlgtKey).add(echoName);
+			f.write("echo.disabled." + testCaseName + ":");
+			for (Variation var : testInfo.getVars()) {
+				f.write(" \\\necho.disabled." + var.getSubTestName());
+			}
+			f.write("\n\n.PHONY: " + testCaseName + "\n\n");
 		}
 	}
 
@@ -287,23 +279,12 @@ public class MkGen {
 			writeSingleTest(testInfo, f);
 		}
 
-		// If a test group is specified in target, generate the group target
-		if (Options.getTestName() == null) {
-			String testTarget = Options.getTestTarget();
-			List<String> testTargets = Arrays.asList(testTarget, "disabled." + testTarget, "echo.disabled." + testTarget);
-
-			for (String target : testTargets) {
-				f.write(target + ":");
-				if (testMap.containsKey(target)) {
-					for (String eachTest : testMap.get(target)) {
-						f.write(" \\\n" + eachTest);
-					}
-				}
-				if (target.equals(testTarget)) {
-					f.write(" \\\n" + testTargets.get(2));
-				}
-				f.write("\n\n.PHONY: " + target + "\n\n");
+		if (TestTarget.isCategory()) {
+			f.write(TestTarget.getTestTarget() + ":");
+			for (String eachTest : testList) {
+				f.write(" \\\n" + eachTest);
 			}
+			f.write("\n\n.PHONY: " + TestTarget.getTestTarget() + "\n\n");
 		}
 		f.close();
 	}
