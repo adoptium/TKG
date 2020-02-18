@@ -81,11 +81,6 @@ public class TestInfo {
 			}
 		}
 
-		NodeList disabledNodes = testEle.getElementsByTagName("disabled");
-		if (disabledNodes.getLength() > 0) {
-			disabledReasons = disabledNodes.item(0).getTextContent().split("[\t\n]");
-		}
-
 		return true;
 	}
 
@@ -181,16 +176,22 @@ public class TestInfo {
 			vars.add(new Variation(subTestName, "NoOptions", platformRequirements));
 		}
 
-		if (Options.getTestName() != null) {
+		if (TestTarget.isSingleTest()) {
 			// If a test name is specified in target, only generate the matching make target
-			if (!Options.getTestName().equals(testCaseName)) {
-				boolean isNameValid = false;
+			if (!TestTarget.getTestName().equals(testCaseName)) {
+				Variation temp = null;
 				for (Variation v : vars) {
-					if (v.getSubTestName().equals(Options.getTestName())) {
-						isNameValid = true;
+					if (v.getSubTestName().equals(TestTarget.getTestName())) {
+						temp = v;
+						break;
 					}
 				}
-				if (!isNameValid) return false;
+				if (temp != null) {
+					vars.clear();
+					vars.add(temp);
+				} else {
+					return false;
+				}
 			}
 		}
 
@@ -205,7 +206,6 @@ public class TestInfo {
 			}
 			levelStr = levelStr + "level." + levels.get(i);
 		}
-
 		if (!checkTestCategory(levels)) return false;
 
 		getElements(groups, "group", Constants.ALLGROUPS);
@@ -213,7 +213,6 @@ public class TestInfo {
 		if (groups.size() == 0) {
 			groups.add("functional");
 		}
-
 		if (!checkTestCategory(groups)) return false;
 
 		getElements(types, "type", Constants.ALLTYPES);
@@ -221,16 +220,23 @@ public class TestInfo {
 		if (types.size() == 0) {
 			types.add("regular");
 		}
-
 		if (!checkTestCategory(types)) return false;
+
+		NodeList disabledNodes = testEle.getElementsByTagName("disabled");
+		if (TestTarget.isEchoDisabled() && (disabledNodes.getLength() == 0)) return false;
+		if (TestTarget.isCategory() && TestTarget.isDisabled() && disabledNodes.getLength() == 0) return false;
+		if (disabledNodes.getLength() > 0) {
+			disabledReasons = disabledNodes.item(0).getTextContent().split("[\t\n]");
+		}
 
 		return true;
 	}
 
 	private boolean checkTestCategory(List<String> category) {
+		if (!TestTarget.isCategory()) return true;
 		// If category(level/group/type) is specificed in target, only generate matching make taget
 		for (String s : category) {
-			if (Options.getTestSet().contains(s)) {
+			if (TestTarget.getCategorySet().contains(s)) {
 				return true;
 			}
 		}
@@ -283,5 +289,15 @@ public class TestInfo {
 
 	public String[] getDisabledReasons() {
 		return this.disabledReasons;
+	}
+
+	public boolean isDisabled() {
+		return getDisabledReasons() != null;
+	}
+
+	public boolean genCmd() {
+		if (TestTarget.isEchoDisabled()) return false;
+		if (!TestTarget.isCategory()) return true;
+		return (TestTarget.isRegular() && !isDisabled()) || (TestTarget.isDisabled() && isDisabled());
 	}
 }
