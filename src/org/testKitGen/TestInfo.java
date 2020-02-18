@@ -176,22 +176,23 @@ public class TestInfo {
 			vars.add(new Variation(subTestName, "NoOptions", platformRequirements));
 		}
 
-		if (TestTarget.isSingleTest()) {
+		if (TestTarget.isSingleTest() || TestTarget.isList()) {
 			// If a test name is specified in target, only generate the matching make target
-			if (!TestTarget.getTestName().equals(testCaseName)) {
-				Variation temp = null;
+			if (!TestTarget.getTestSet().contains(testCaseName)) {
+				List<Variation> temp = new ArrayList<Variation>();
 				for (Variation v : vars) {
-					if (v.getSubTestName().equals(TestTarget.getTestName())) {
-						temp = v;
-						break;
+					if (TestTarget.getTestSet().contains(v.getSubTestName())) {
+						temp.add(v);
+						TestTarget.getTestSet().remove(v.getSubTestName());
 					}
 				}
-				if (temp != null) {
-					vars.clear();
-					vars.add(temp);
+				if (!temp.isEmpty()) {
+					vars = temp;
 				} else {
 					return false;
 				}
+			} else {
+				TestTarget.getTestSet().remove(testCaseName);
 			}
 		}
 
