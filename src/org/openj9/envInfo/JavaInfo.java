@@ -58,6 +58,8 @@ public class JavaInfo {
             spec += "_arm";
         } else if (osArch.contains("sparcv9")) {
             spec += "_sparcv9";
+        } else if (osArch.contains("riscv")) {
+            spec += "_riscv";
         } else {
             System.out.println("Cannot determine System.getProperty('os.arch')=" + osArch + "\n");
             return null;
