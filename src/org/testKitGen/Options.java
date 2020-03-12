@@ -76,6 +76,8 @@ public class Options {
 	}
 
 	public static void parse(String[] args) {
+		String testTarget = null;
+		String testList = null;
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
 			String arglc = arg.toLowerCase();
@@ -95,14 +97,18 @@ public class Options {
 				iterations = arglc.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--testflag=")) {
 				testFlag = arglc.substring(arg.indexOf("=") + 1);
+			} else if (arglc.startsWith("--testlist=")) {
+				// test list is case sensitive
+				testList = arg.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--testtarget=")) {
 				// test Target is case sensitive
-				TestTarget.parse(arg.substring(arg.indexOf("=") + 1));
+				testTarget = arg.substring(arg.indexOf("=") + 1);
 			} else {
 				System.err.println("Invalid option " + args[i]);
 				System.err.println(usage);
 				System.exit(1);
 			}
 		}
+		TestTarget.parse(testTarget, testList);
 	}
 }

@@ -29,5 +29,8 @@ public class MainRunner {
 		MkTreeGen.start();
 		Utils.generateFile();
 		System.out.println("\nMake files are generated successfully.\n");
+		if (!TestTarget.getTestSet().isEmpty()) {
+			System.out.println("Warning: cannot find the following tests " + TestTarget.getTestSet().toString().replaceAll("\\s+","") + " in TESTLIST\n");
+		}
 	}
 }

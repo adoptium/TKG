@@ -43,7 +43,7 @@ ifneq (clean, $(_TESTTARGET))
 ifneq (test, $(_TESTTARGET))
 ifneq (_failed, $(_TESTTARGET))
 $(_TESTTARGET):
-	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) TESTTARGET=$(TESTTARGET)
+	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) TESTTARGET=$(TESTTARGET) TESTLIST=$(TESTLIST)
 	$(MAKE) -f runtest.mk $(_TESTTARGET)
 endif
 endif

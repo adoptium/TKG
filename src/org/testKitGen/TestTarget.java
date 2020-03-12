@@ -17,31 +17,43 @@ package org.testKitGen;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TestTarget {
-	private static String testTarget = "";
-	private static boolean isCategory = false;
-	private static boolean isSingleTest = false;
-	private static String testName = null;
+	enum Type { 
+		SINGLE, CATEGORY, LIST; 
+	}
+	enum Header {
+		REGULAR, DISABLED, ECHODISABLED;
+	}
+	private static String testTarget = null;
+	private static Type type = Type.SINGLE;
 	private static Set<String> categorySet = new HashSet<String>();
-	private static boolean isDisabled = false;
-	private static boolean isEchoDisabled = false;
+	private static Header header = Header.REGULAR;
+	private static String testList = null;
+	private static Set<String> testSet = new HashSet<String>();
 
 	public static String getTestTarget() {
 		return testTarget;
 	}
 
+	public static Set<String> getTestSet() {
+		return testSet;
+	}
+
 	public static boolean isCategory() {
-		return isCategory;
+		return type == Type.CATEGORY;
 	}
 
 	public static boolean isSingleTest() {
-		return isSingleTest;
+		return type == Type.SINGLE;
 	}
 
-	public static String getTestName() {
-		return testName;
+	public static boolean isList() {
+		return type == Type.LIST;
 	}
 
 	public static Set<String> getCategorySet() {
@@ -49,25 +61,51 @@ public class TestTarget {
 	}
 
 	public static boolean isRegular() {
-		return !isDisabled && !isEchoDisabled;
+		return header == Header.REGULAR;
 	}
 
 	public static boolean isDisabled() {
-		return isDisabled;
+		return header == Header.DISABLED;
 	}
 
 	public static boolean isEchoDisabled() {
-		return isEchoDisabled;
+		return header == Header.ECHODISABLED;
 	}
 
-	public static void parse(String target) {
+	public static void parse(String target, String list) {
 		testTarget = target;
-		String strippedTarget = target;
+		testList = list;
+		if (testTarget.equals("testList") && testList != null) {
+			parseList();
+		} else {
+			parseTarget();
+		}
+	}
+
+	private static void parseList() {
+		header = Header.REGULAR;
+		type = Type.LIST;
+		String[] testListArr = testList.split(",");
+		Arrays.sort(testListArr);
+		for (String test : testListArr) {
+			Pattern p = Pattern.compile("^(.*)_\\d+$");
+			Matcher n = p.matcher(test);
+			if (n.find()) {
+				if (testSet.contains(n.group(1))) {
+					continue;
+				}
+			}
+			testSet.add(test);
+		}
+	}
+
+	private static void parseTarget() {
+		String strippedTarget = testTarget;
 		if (testTarget.startsWith("echo.disabled.")) {
-			isEchoDisabled = true;
+			header = Header.ECHODISABLED;
 			strippedTarget = testTarget.substring(new String("echo.disabled.").length());
 		} else if (testTarget.startsWith("disabled.")) {
-			isDisabled = true;
+			header = Header.DISABLED;
 			strippedTarget = testTarget.substring(new String("disabled.").length());
 		}
 
@@ -80,8 +118,7 @@ public class TestTarget {
 			for (Set<String> set : sets) {
 				categorySet.addAll(set);
 			}
-			isSingleTest = false;
-			isCategory = true;
+			type = Type.CATEGORY;
 		} else {
 			String[] targets = strippedTarget.split("\\.");
 			int j = 0;
@@ -94,12 +131,10 @@ public class TestTarget {
 				}
 			}
 			if (j != targets.length) {
-				testName = strippedTarget;
-				isSingleTest = true;
-				isCategory = false;
+				testSet.add(strippedTarget);
+				type = Type.SINGLE;
 			} else {
-				isSingleTest = false;
-				isCategory = true;
+				type = Type.CATEGORY;
 			}
 		}
 	}

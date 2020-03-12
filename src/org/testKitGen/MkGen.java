@@ -279,7 +279,7 @@ public class MkGen {
 			writeSingleTest(testInfo, f);
 		}
 
-		if (TestTarget.isCategory()) {
+		if (TestTarget.isCategory() || TestTarget.isList()) {
 			f.write(TestTarget.getTestTarget() + ":");
 			for (String eachTest : testList) {
 				f.write(" \\\n" + eachTest);
