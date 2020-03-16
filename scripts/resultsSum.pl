@@ -233,11 +233,15 @@ sub resultReporter {
 		if ($customTarget ne '') {
 			$customTargetParam = "&CUSTOM_TARGET=" . $customTarget;
 		}
+		my $hudsonUrl = $ENV{'HUDSON_URL'};
+		if ($hudsonUrl eq '') {
+			$hudsonUrl = "https://ci.adoptopenjdk.net/";
+		}
 		print "To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:\n";
 		print "<Jenkins URL>/parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$platformParam$customTargetParam&TARGET=<FAILED test target>\n\n";
-		print "For example, to rebuild the failed tests in <Jenkins URL>=https://ci.adoptopenjdk.net/job/Grinder, use the following links:\n";
+		print "For example, to rebuild the failed tests in <Jenkins URL>=${hudsonUrl}job/Grinder, use the following links:\n";
 		foreach my $failedTarget (@failed) {
-			print "https://ci.adoptopenjdk.net/job/Grinder/parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$platformParam$customTargetParam&TARGET=$failedTarget\n";
+			print "${hudsonUrl}job/Grinder/parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$platformParam$customTargetParam&TARGET=$failedTarget\n";
 		}
 		print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 	}
