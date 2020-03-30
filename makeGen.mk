@@ -36,7 +36,7 @@ autoconfig:
 	perl scripts$(D)configure.pl
 
 autogen: autoconfig
-	${TEST_JDK_HOME}/bin/java -cp ./bin/TestKitGen.jar org.testKitGen.MainRunner --spec=$(SPEC) --jdkVersion=$(JDK_VERSION) --impl=$(JDK_IMPL) --buildList=${BUILD_LIST} --iterations=$(TEST_ITERATIONS) --testFlag=$(TEST_FLAG) --testTarget=$(TESTTARGET) --testList=$(TESTLIST) $(OPTS)
+	${TEST_JDK_HOME}/bin/java -cp ./bin/TestKitGen.jar org.testKitGen.MainRunner --mode=$(MODE) --spec=$(SPEC) --jdkVersion=$(JDK_VERSION) --impl=$(JDK_IMPL) --buildList=${BUILD_LIST} --iterations=$(TEST_ITERATIONS) --testFlag=$(TEST_FLAG) --testTarget=$(TESTTARGET) --testList=$(TESTLIST) --numOfMachine=$(NUM_MACHINE) --testTime=$(TEST_TIME) $(OPTS)
 
 AUTOGEN_FILES = $(wildcard $(CURRENT_DIR)$(D)jvmTest.mk)
 AUTOGEN_FILES += $(wildcard $(CURRENT_DIR)$(D)machineConfigure.mk)
