@@ -133,19 +133,16 @@ sub moveTDUMPS {
 	}
 	logMsg("Attempting to move the TDUMPS to '$moveLocation', using the log to identify the TDUMP name to be moved");
 	if ($file) {
-		if ($file =~ /IEATDUMP success for DSN='.*'/) {
-			my ($tdump) = $file =~ /IEATDUMP success for DSN='(.*)'/;
-			$parsedNames{$tdump} = 1;
+		while ($file =~ /IEATDUMP success for DSN='(.*)'/g) {
+			$parsedNames{$1} = 1;
 		}
 		# A partial dump has been created, even though it is a failure, dump still occurred and needs moving
-		if ($file =~ /IEATDUMP failure for DSN='.*' RC=0x00000004 RSN=0x00000000/) {
-			my ($tdump) = $file =~ /IEATDUMP failure for DSN='(.*)'/;
-			$parsedNames{$tdump} = 1;
+		while ($file =~ /IEATDUMP failure for DSN='(.*)' RC=0x00000004 RSN=0x00000000/g) {
+			$parsedNames{$1} = 1;
 		}
 		# Dump failed due to no space left on the machine, so print out warning message
-		if ($file =~ /IEATDUMP failure for DSN='.*' RC=0x00000008 RSN=0x00000026/) {
-			my ($tdump) = $file =~ /IEATDUMP failure for DSN='(.*)'/;
-			logMsg("ERROR: TDUMP failed due to no space left on machine. $tdump cannot be found.");
+		while ($file =~ /IEATDUMP failure for DSN='(.*)' RC=0x00000008 RSN=0x00000026/g) {
+			logMsg("ERROR: TDUMP failed due to no space left on machine. $1 cannot be found.");
 		}
 	}
 	push(@dumplist, keys(%parsedNames));
