@@ -16,6 +16,7 @@ use strict;
 use File::Spec::Functions;
 use Time::Local;
 use File::Basename;
+use Cwd;
 
 our $TRUE = 1;
 our $FALSE = 0;
@@ -35,6 +36,10 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 
 if ($path && $testRoot) {
 	my $location = dirname($path);
+	if($^O =~ /cygwin/) {
+		my $cygPath = qx(cygpath -u '$path');
+		$location = dirname($cygPath);
+	}
 	open my $Log, '<', "$path";
 	my $compileLog = do { local $/; <$Log> };
 	moveTDUMPS($compileLog, $location);
@@ -124,8 +129,38 @@ sub moveTDUMPS {
 	# Use a hash to ensure that each dump is only dealt with once
 	my %parsedNames = ();
 	if ($^O ne 'os390') {
-		my $moveCMD = "find ".${testRoot}." -name 'core.*.dmp' -exec mv -t ".${moveLocation}." '{}' +";
-		qx($moveCMD);
+		if($file) {
+			while ($file =~ /System dump written to (.*)/g) {
+				my $curCorePath = $1;
+				$curCorePath =~ s/\r//g;
+				my $curCoreAbsPath = "";
+				my $moveLocationAbs = "";
+				if($^O =~ /cygwin/) {
+					$curCoreAbsPath = qx(cygpath -u '$curCorePath');
+					$moveLocationAbs = $moveLocation;
+					$moveLocation = qx(cygpath -w '$moveLocation');
+				} else {
+					$curCoreAbsPath = Cwd::abs_path( $curCorePath );
+					$moveLocationAbs = Cwd::abs_path( $moveLocation );
+				}
+				my $curCoreName = basename($curCoreAbsPath);
+				if(!exists $parsedNames{$curCoreName}) {
+					# handle each core only once
+					$parsedNames{$curCoreName} = 1;
+					# If the core is not in the preferred location, move it to $moveLocation
+					if($curCoreAbsPath !~  $moveLocationAbs) {
+						qx(mv '${curCorePath}' ${moveLocationAbs});
+						my $moveResult = $?;
+						$moveResult = $moveResult >> 8 unless ($moveResult == -1);
+						if($moveResult == 0) {
+							logMsg("Successfully moved core file $curCoreName to $moveLocation");
+						} else {
+							logMsg("Failed to move core file from $curCorePath to $moveLocation");
+						}
+					}
+				}
+			}
+		}
 		return;
 	}
 	
