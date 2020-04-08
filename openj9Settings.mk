@@ -95,6 +95,7 @@ else
 		else
 			VM_SUBDIR_PATH=$(TEST_JRE_LIB_DIR)$(D)$(ARCH_DIR)$(D)$(VM_SUBDIR)
 			J9VM_PATH=$(TEST_JRE_LIB_DIR)$(D)$(ARCH_DIR)$(D)j9vm
+			LIB_PATH=$(TEST_JRE_LIB_DIR)$(D)$(ARCH_DIR)
 		endif
 	else
 		ifneq (,$(findstring win,$(SPEC))) 
@@ -103,6 +104,7 @@ else
 		else
 			VM_SUBDIR_PATH=$(TEST_JDK_LIB_DIR)$(D)$(VM_SUBDIR)
 			J9VM_PATH=$(TEST_JDK_LIB_DIR)$(D)j9vm
+			LIB_PATH=$(TEST_JDK_LIB_DIR)
 		endif
 	endif
 
@@ -124,7 +126,7 @@ else
 	else ifneq (,$(findstring aix,$(SPEC)))
 		TEST_LIB_PATH:=LIBPATH=$(Q)$(TEST_LIB_PATH_VALUE)$(PS)$(LIBPATH)$(Q)
 	else ifneq (,$(findstring zos,$(SPEC)))
-		TEST_LIB_PATH:=LIBPATH=$(Q)$(TEST_LIB_PATH_VALUE)$(PS)$(LIBPATH)$(Q)
+		TEST_LIB_PATH:=LIBPATH=$(Q)$(TEST_LIB_PATH_VALUE)$(PS)$(LIB_PATH)$(PS)$(LIBPATH)$(Q)
 	else ifneq (,$(findstring osx,$(SPEC)))
 		TEST_LIB_PATH:=DYLD_LIBRARY_PATH=$(Q)$(TEST_LIB_PATH_VALUE)$(PS)$(DYLD_LIBRARY_PATH)$(Q)
 	else
