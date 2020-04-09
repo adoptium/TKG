@@ -131,7 +131,7 @@ sub moveTDUMPS {
 		qx($moveCMD);
 		return;
 	}
-	logMsg("Attempting to move the TDUMPS to '$moveLocation', using the log to identify the TDUMP name to be moved");
+	
 	if ($file) {
 		while ($file =~ /IEATDUMP success for DSN='(.*)'/g) {
 			$parsedNames{$1} = 1;
@@ -147,11 +147,10 @@ sub moveTDUMPS {
 	}
 	push(@dumplist, keys(%parsedNames));
 	if (!@dumplist) {
-		logMsg("No dumps names found in logs/supplied");
 		# Nothing to do
 		return;
 	}
-	logMsg("Attempting to retrieve dumps with names: '" . join("', '", @dumplist), "'");
+	logMsg("Attempting to retrieve dumps with names: '" . join("', '", @dumplist), "' and move to '$moveLocation'");
 	my %movedDumps = ();
 	foreach my $dump (@dumplist) {
 		my $cmdSucceed;
