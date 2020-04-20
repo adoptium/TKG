@@ -18,9 +18,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MkTreeGen {
+public class DirectoryWalker {
 
-	private MkTreeGen() {
+	private DirectoryWalker() {
 	}
 
 	public static void start() {
@@ -55,26 +55,42 @@ public class MkTreeGen {
 		}
 
 		File playlistXML = null;
-		List<String> subdirs = new ArrayList<String>();
 
 		File directory = new File(absolutedir);
 		File[] dir = directory.listFiles();
 
-		for (File entry : dir) {
-			File file = new File(absolutedir + '/' + entry.getName());
-			if (file.isFile() && entry.getName().equals(Constants.PLAYLIST)) {
-				playlistXML = file;
-			} else if (file.isDirectory()) {
-				currentdirs.add(entry.getName());
-				if (traverse(currentdirs)) {
-					subdirs.add(entry.getName());
+		if (Options.getMode() == Options.Mode.GEN_TESTS) {
+			List<String> subdirs = new ArrayList<String>();
+			for (File entry : dir) {
+				File file = new File(absolutedir + '/' + entry.getName());
+				if (file.isFile() && entry.getName().equals(Constants.PLAYLIST)) {
+					playlistXML = file;
+				} else if (file.isDirectory()) {
+					currentdirs.add(entry.getName());
+					if (traverse(currentdirs)) {
+						subdirs.add(entry.getName());
+					}
+					currentdirs.remove(currentdirs.size() - 1);
 				}
-				currentdirs.remove(currentdirs.size() - 1);
 			}
-		}
 
-		MkGen mg = new MkGen(playlistXML, absolutedir, currentdirs, subdirs);
-		boolean rt = mg.start();
-		return rt;
+			MkGen mg = new MkGen(playlistXML, absolutedir, currentdirs, subdirs);
+			boolean rt = mg.start();
+			return rt;
+		} else if (Options.getMode() == Options.Mode.GEN_PARALLEL_LIST) {
+			for (File entry : dir) {
+				File file = new File(absolutedir + '/' + entry.getName());
+				if (file.isFile() && entry.getName().equals(Constants.PLAYLIST)) {
+					playlistXML = file;
+				} else if (file.isDirectory()) {
+					currentdirs.add(entry.getName());
+					traverse(currentdirs);
+					currentdirs.remove(currentdirs.size() - 1);
+				}
+			}
+			TestDivider.addTests(playlistXML);
+			return true;
+		}
+		return false;
 	}
 }

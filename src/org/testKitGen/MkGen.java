@@ -18,36 +18,21 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class MkGen {
-	private File playlistXML;
 	private List<String> currentdirs;
 	private List<String> subdirs;
 	private String makeFile;
-	private List<TestInfo> testInfoArr;
-	private String include;
+	private PlaylistInfo pli;
 	private List<String> testList;
 
 	public MkGen(File playlistXML, String absolutedir, ArrayList<String> currentdirs, List<String> subdirs) {
-		this.playlistXML = playlistXML;
 		this.currentdirs = currentdirs;
 		this.subdirs = subdirs;
 		this.makeFile = absolutedir + "/" + Constants.TESTMK;
-		this.testInfoArr = new ArrayList<TestInfo>();
+		this.pli = new PlaylistInfo(playlistXML);
 		this.testList = new ArrayList<String>();
 	}
 
@@ -58,18 +43,18 @@ public class MkGen {
 		try {
 			if (!subdirs.isEmpty()) {
 				writeVars();
-				if (processPlaylist()) {
+				if (pli.parseInfo()) {
 					writeTargets();
 				}
 			} else {
-				if (processPlaylist()) {
+				if (pli.parseInfo()) {
 					writeVars();
 					writeTargets();
 				} else {
 					return false;
 				}
 			}
-		} catch (SAXException | IOException | ParserConfigurationException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -99,31 +84,6 @@ public class MkGen {
 		f.write("SUBDIRS = " + String.join(" ", subdirs) + "\n\n");
 		f.write("include $(TEST_ROOT)$(D)TKG$(D)" + Constants.SETTINGSMK + "\n\n");
 		f.close();
-	}
-
-	private boolean processPlaylist() throws SAXException, IOException, ParserConfigurationException {
-		if (playlistXML == null) return false;
-
-		Document xml = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(playlistXML);
-		NodeList childNodes = xml.getDocumentElement().getChildNodes();
-
-		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node currentNode = childNodes.item(i);
-
-			if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-				Element currentElement = ((Element) currentNode);
-				if (currentElement.getNodeName().equals("include")) {
-					include = currentElement.getTextContent();
-				} else if (currentElement.getNodeName().equals("test")) {
-					TestInfo testInfo = new TestInfo(currentElement);
-					if (testInfo.parseInfo()) {
-						testInfoArr.add(testInfo);
-					}
-				}
-			}
-		}
-		
-		return testInfoArr.size() != 0;
 	}
 
 	private void writeSingleTest(TestInfo testInfo, FileWriter f) throws IOException {
@@ -271,11 +231,11 @@ public class MkGen {
 
 	private void writeTargets() throws IOException {
 		FileWriter f = new FileWriter(makeFile, true);
-		if (include != null) {
-			f.write("-include " + include + "\n\n");
+		if (pli.getInclude() != null) {
+			f.write("-include " + pli.getInclude() + "\n\n");
 		}
 
-		for (TestInfo testInfo : testInfoArr) {
+		for (TestInfo testInfo : pli.getTestInfoList()) {
 			writeSingleTest(testInfo, f);
 		}
 

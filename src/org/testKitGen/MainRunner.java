@@ -20,17 +20,29 @@ public class MainRunner {
 
 	public static void main(String[] args) {
 		Options.parse(args);
-		MainRunner.start();
+		if (Options.getMode() == Options.Mode.GEN_TESTS) {
+			MainRunner.genTests();
+		} else if (Options.getMode() == Options.Mode.GEN_PARALLEL_LIST) {
+			MainRunner.genParallelList();
+		}
 	}
 
-	public static void start() {
+	public static void genTests() {
 		System.out.println("\nStarting to generate test make files.\n");
 		ModesDictionary.parse();
-		MkTreeGen.start();
+		DirectoryWalker.start();
 		Utils.generateFile();
 		System.out.println("\nMake files are generated successfully.\n");
 		if (!TestTarget.getTestSet().isEmpty()) {
 			System.out.println("Warning: cannot find the following tests " + TestTarget.getTestSet().toString().replaceAll("\\s+","") + " in TESTLIST\n");
 		}
+	}
+
+	public static void genParallelList() {
+		System.out.println("\nStarting to generate parallel test lists.\n");
+		ModesDictionary.parse();
+		DirectoryWalker.start();
+		TestDivider.generateLists();
+		System.out.println("\nParallel test lists are generated successfully.\n");
 	}
 }

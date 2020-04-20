@@ -41,10 +41,12 @@ TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
 ifneq (compile, $(_TESTTARGET))
 ifneq (clean, $(_TESTTARGET))
 ifneq (test, $(_TESTTARGET))
+ifneq (genParallelList, $(_TESTTARGET))
 ifneq (_failed, $(_TESTTARGET))
 $(_TESTTARGET):
-	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) TESTTARGET=$(TESTTARGET) TESTLIST=$(TESTLIST)
+	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=tests TESTTARGET=$(TESTTARGET) TESTLIST=$(TESTLIST)
 	$(MAKE) -f runtest.mk $(_TESTTARGET)
+endif
 endif
 endif
 endif
@@ -84,6 +86,11 @@ _failed:
 
 .NOTPARALLEL: _failed
 
+#######################################
+# generate parallel list
+#######################################
+genParallelList:
+	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINE=$(NUM_MACHINE) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST)
 
 #######################################
 # clean

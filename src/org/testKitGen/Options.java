@@ -14,12 +14,11 @@
 
 package org.testKitGen;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
-
 public class Options {
+	enum Mode { 
+		GEN_TESTS, GEN_PARALLEL_LIST;
+	}
+	private static Mode mode = Mode.GEN_TESTS;
 	private static String spec = "";
 	private static String jdkVersion = "";
 	private static String impl = "";
@@ -27,10 +26,16 @@ public class Options {
 	private static String buildList = "";
 	private static String iterations = "";
 	private static String testFlag = "";
+	private static Integer numOfMachine = null;
+	private static Integer testTime = null;
 
 	private static final String usage = "Usage:\n"
-			+ "    java TestKitGen --spec=[linux_x86-64] --jdkVersion=[8|9|...] --impl=[openj9|ibm|hotspot|sap] [options]\n\n"
+			+ "    java TestKitGen --mode=[tests|parallelList] --spec=[linux_x86-64] --jdkVersion=[8|9|...] --impl=[openj9|ibm|hotspot|sap] [options]\n\n"
 			+ "Options:\n" + "    --spec=<spec>           Spec that the build will run on\n"
+			+ "    --mode=<string>           Specify running mode, available modes are tests or parallelList\n"
+			+ "                              tests is to generate test make files\n"
+			+ "                              parallelList is generate parallel list file\n"
+			+ "                              Defaults to tests\n"
 			+ "    --jdkVersion=<version>    JDK version that the build will run on, e.g. 8, 9, 10, etc.\n"
 			+ "    --impl=<implementation>   Java implementation, e.g. openj9, ibm, hotspot, sap\n"
 			+ "    --projectRootDir=<path>   Root path for searching playlist.xml\n"
@@ -42,9 +47,18 @@ public class Options {
 			+ "    --testFlag=<string>       Comma separated string to specify different test flags\n"
 			+ "                              Defaults to \"\"\n"
 			+ "    --testTarget=<string>     Test target to execute\n"
-			+ "                              Defaults to all\n";
+			+ "                              Defaults to all\n"
+			+ "    --numOfMachine=<number>   Specify number of machines for mode parallelList \n"
+			+ "                              Defaults to 1\n"
+			+ "    --testTime=<number>       Specify expected length of test running time (minutes) on each machines for mode parallelList, this option will be suppressed if numOfMachine is given\n"
+			+ "                              If testTime and numOfMachine are not provided, default numOfMachine will be used\n";
+			
 
 	private Options() {
+	}
+
+	public static Mode getMode() {
+		return mode;
 	}
 
 	public static String getSpec() {
@@ -75,13 +89,32 @@ public class Options {
 		return testFlag;
 	}
 
+	public static Integer getNumOfMachine() {
+		return numOfMachine;
+	}
+
+	public static Integer getTestTime() {
+		return testTime;
+	}
+
 	public static void parse(String[] args) {
 		String testTarget = null;
 		String testList = null;
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
 			String arglc = arg.toLowerCase();
-			if (arglc.startsWith("--spec=")) {
+			if (arglc.startsWith("--mode=")) {
+				String modeStr = arglc.substring(arg.indexOf("=") + 1);
+				if (modeStr.equals("tests") || modeStr.isEmpty()) {
+					mode = Mode.GEN_TESTS;
+				} else if (modeStr.equals("parallellist")) {
+					mode = Mode.GEN_PARALLEL_LIST;
+				} else {
+					System.err.println("Invalid mode: " + modeStr);
+					System.err.println(usage);
+					System.exit(1);
+				}
+			} else if (arglc.startsWith("--spec=")) {
 				spec = arglc.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--jdkversion=")) {
 				jdkVersion = arglc.substring(arg.indexOf("=") + 1);
@@ -103,8 +136,28 @@ public class Options {
 			} else if (arglc.startsWith("--testtarget=")) {
 				// test Target is case sensitive
 				testTarget = arg.substring(arg.indexOf("=") + 1);
+			} else if (arglc.startsWith("--numofmachine")) {
+				String numOfMachineStr = arg.substring(arg.indexOf("=") + 1);
+				if (!numOfMachineStr.isEmpty()) {
+					numOfMachine = Integer.valueOf(numOfMachineStr);
+					if (numOfMachine <= 0) {
+						System.err.println("Invalid option: " + arg);
+						System.err.println("Num of machine needs to be bigger than 0");
+						System.exit(1);
+					}
+				}
+			} else if (arglc.startsWith("--testtime")) {
+				String testTimeStr = arg.substring(arg.indexOf("=") + 1);
+				if (!testTimeStr.isEmpty()) {
+					testTime = Integer.valueOf(testTimeStr);
+					if (testTime <= 0) {
+						System.err.println("Invalid option: " + arg);
+						System.err.println("Test time needs to be bigger than 0");
+						System.exit(1);
+					}
+				}
 			} else {
-				System.err.println("Invalid option " + args[i]);
+				System.err.println("Invalid option: " + arg);
 				System.err.println(usage);
 				System.exit(1);
 			}
