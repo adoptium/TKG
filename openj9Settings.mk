@@ -17,19 +17,6 @@
 #
 
 #######################################
-# For 64 bits, if SPEC contains _cmprssptrs, add -Xcompressedrefs.
-# If not, add -Xnocompressedrefs.
-#######################################
-ifneq (,$(findstring bits.64,$(BITS)))
-	ifneq (,$(findstring _cmprssptrs,$(SPEC)))
-		RESERVED_OPTIONS+= -Xcompressedrefs
-	else
-		RESERVED_OPTIONS+= -Xnocompressedrefs
-	endif
-endif
-
-
-#######################################
 # Set JAVA_SHARED_LIBRARIES_DIR  and VM_SUBDIR for tests which need native library.
 # Set ADD_JVM_LIB_DIR_TO_LIBPATH as tests on some platforms need LIBPATH containing VM directory
 #######################################
@@ -98,7 +85,7 @@ else
 			LIB_PATH=$(TEST_JRE_LIB_DIR)$(D)$(ARCH_DIR)
 		endif
 	else
-		ifneq (,$(findstring win,$(SPEC))) 
+		ifneq (,$(findstring win,$(SPEC)))
 			VM_SUBDIR_PATH=$(TEST_JDK_BIN)$(D)$(VM_SUBDIR)
 			J9VM_PATH=$(TEST_JDK_BIN)$(D)j9vm
 		else
@@ -118,9 +105,9 @@ else
 			PS=;
 		endif
 	endif
-	
+
 	TEST_LIB_PATH_VALUE:=$(NATIVE_TEST_LIBS)$(PS)$(VM_SUBDIR_PATH)$(PS)$(J9VM_PATH)
-		
+
 	ifneq (,$(findstring win,$(SPEC)))
 		TEST_LIB_PATH:=PATH=$(Q)$(TEST_LIB_PATH_VALUE)$(PS)$(PATH)$(Q)
 	else ifneq (,$(findstring aix,$(SPEC)))
@@ -132,7 +119,7 @@ else
 	else
 		TEST_LIB_PATH:=LD_LIBRARY_PATH=$(Q)$(TEST_LIB_PATH_VALUE)$(PS)$(LD_LIBRARY_PATH)$(Q)
 	endif
-	
+
 	JAVA_SHARED_LIBRARIES_DIR:=$(NATIVE_TEST_LIBS)
 	ADD_JVM_LIB_DIR_TO_LIBPATH:=export $(TEST_LIB_PATH);
 endif
