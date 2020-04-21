@@ -43,7 +43,6 @@
 	<target name="clean" description="clean up">
 		<delete file="../autoGenEnv.mk" />
 		<delete file="../utils.mk" />
-		<delete file="../parallelList.mk" />
 		<delete dir="${build}" />
 	</target>
 
