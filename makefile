@@ -53,10 +53,16 @@ endif
 endif
 
 #######################################
-# compile
+# compile tools and test materials
+#######################################
+compile: compileTools
+	$(MAKE) -f compile.mk compile
+
+#######################################
+# compile tools
 # If AUTO_DETECT is turned on, compile and execute envDetector in build_envInfo.xml.
 #######################################
-compile:
+compileTools:
 	ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME)
 ifneq ($(AUTO_DETECT), false)
 	@echo "AUTO_DETECT is set to true"
@@ -64,7 +70,6 @@ ifneq ($(AUTO_DETECT), false)
 else
 	@echo "AUTO_DETECT is set to false"
 endif
-	$(MAKE) -f compile.mk compile
 
 #######################################
 # compile and run all tests
@@ -89,7 +94,7 @@ _failed:
 #######################################
 # generate parallel list
 #######################################
-genParallelList:
+genParallelList: compileTools
 	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINE=$(NUM_MACHINE) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST)
 
 #######################################
