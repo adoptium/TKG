@@ -23,6 +23,7 @@ public final class Constants {
 	public static final String PLAYLIST = "playlist.xml";
 	public static final String MODESXML = "resources/modes.xml";
 	public static final String OTTAWACSV = "resources/ottawa.csv";
+	public static final String BUILDPLAT_JSON = "resources/buildPlatformMap.properties";
 	public static final String TESTMK = "autoGen.mk";
 	public static final String UTILSMK = "utils.mk";
 	public static final String SETTINGSMK = "settings.mk";
@@ -39,7 +40,7 @@ public final class Constants {
 			.asList("linux_x86-32_hrt", "linux_x86-64_cmprssptrs_gcnext", "linux_ppc_purec", "linux_ppc-64_purec",
 					"linux_ppc-64_cmprssptrs_purec", "linux_x86-64_cmprssptrs_cloud")
 			.stream().collect(Collectors.toSet());
-
+	public static final String TRSS_URL = "https://trss.adoptopenjdk.net";
 	private Constants() {
 	}
 }

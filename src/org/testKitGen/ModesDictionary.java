@@ -44,7 +44,6 @@ public class ModesDictionary {
 	}
 
 	public static void parse() {
-		System.out.println("Getting modes data from " + Constants.MODESXML + " and " + Constants.OTTAWACSV + "...");
 		try {
 			Element modes = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(modesXml)
 					.getDocumentElement();
@@ -54,6 +53,7 @@ public class ModesDictionary {
 			e.printStackTrace();
 			System.exit(1);
 		}
+		System.out.println("Modes data parsed from " + Constants.MODESXML + " and " + Constants.OTTAWACSV + ".\n");
 	}
 
 	public static void parseMode(Element modes) {

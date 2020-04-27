@@ -43,6 +43,5 @@ public class MainRunner {
 		ModesDictionary.parse();
 		DirectoryWalker.start();
 		TestDivider.generateLists();
-		System.out.println("\nParallel test lists are generated successfully.\n");
 	}
 }

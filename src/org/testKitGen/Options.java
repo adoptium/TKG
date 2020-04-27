@@ -26,8 +26,9 @@ public class Options {
 	private static String buildList = "";
 	private static String iterations = "";
 	private static String testFlag = "";
-	private static Integer numOfMachine = null;
+	private static Integer numOfMachines = null;
 	private static Integer testTime = null;
+	private static String TRSSURL = "";
 
 	private static final String usage = "Usage:\n"
 			+ "    java TestKitGen --mode=[tests|parallelList] --spec=[linux_x86-64] --jdkVersion=[8|9|...] --impl=[openj9|ibm|hotspot|sap] [options]\n\n"
@@ -48,10 +49,12 @@ public class Options {
 			+ "                              Defaults to \"\"\n"
 			+ "    --testTarget=<string>     Test target to execute\n"
 			+ "                              Defaults to all\n"
-			+ "    --numOfMachine=<number>   Specify number of machines for mode parallelList \n"
+			+ "    --numOfMachines=<number>   Specify number of machines for mode parallelList \n"
 			+ "                              Defaults to 1\n"
-			+ "    --testTime=<number>       Specify expected length of test running time (minutes) on each machines for mode parallelList, this option will be suppressed if numOfMachine is given\n"
-			+ "                              If testTime and numOfMachine are not provided, default numOfMachine will be used\n";
+			+ "    --testTime=<number>       Specify expected length of test running time (minutes) on each machines for mode parallelList, this option will be suppressed if numOfMachines is given\n"
+			+ "                              If testTime and numOfMachines are not provided, default numOfMachines will be used\n"
+			+ "    --TRSSURL=<serverURL>  Specify the TRSS server URL for mode parallelList\n"
+			+ "                              Defaults to " + Constants.TRSS_URL + "\n";
 			
 
 	private Options() {
@@ -89,12 +92,16 @@ public class Options {
 		return testFlag;
 	}
 
-	public static Integer getNumOfMachine() {
-		return numOfMachine;
+	public static Integer getNumOfMachines() {
+		return numOfMachines;
 	}
 
 	public static Integer getTestTime() {
 		return testTime;
+	}
+
+	public static String getTRSSURL() {
+		return TRSSURL;
 	}
 
 	public static void parse(String[] args) {
@@ -136,13 +143,16 @@ public class Options {
 			} else if (arglc.startsWith("--testtarget=")) {
 				// test Target is case sensitive
 				testTarget = arg.substring(arg.indexOf("=") + 1);
-			} else if (arglc.startsWith("--numofmachine")) {
-				String numOfMachineStr = arg.substring(arg.indexOf("=") + 1);
-				if (!numOfMachineStr.isEmpty()) {
-					numOfMachine = Integer.valueOf(numOfMachineStr);
-					if (numOfMachine <= 0) {
+			} else if (arglc.startsWith("--trssurl=")) {
+				// TRSSURL is case sensitive
+				TRSSURL = arg.substring(arg.indexOf("=") + 1);
+			} else if (arglc.startsWith("--numofmachines")) {
+				String numOfMachinesStr = arg.substring(arg.indexOf("=") + 1);
+				if (!numOfMachinesStr.isEmpty()) {
+					numOfMachines = Integer.valueOf(numOfMachinesStr);
+					if (numOfMachines <= 0) {
 						System.err.println("Invalid option: " + arg);
-						System.err.println("Num of machine needs to be bigger than 0");
+						System.err.println("Num of machines need to be bigger than 0");
 						System.exit(1);
 					}
 				}

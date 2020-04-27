@@ -34,6 +34,14 @@ ifndef TEST_ROOT
 endif
 
 #######################################
+# download all dependent jars
+#######################################
+getdependency:
+	perl scripts$(D)getDependencies.pl -path '$(TEST_ROOT)$(D)TKG$(D)lib' -task default
+
+.PHONY: getdependency
+
+#######################################
 # run test
 #######################################
 _TESTTARGET = $(firstword $(MAKECMDGOALS))
@@ -62,7 +70,7 @@ compile: compileTools
 # compile tools
 # If AUTO_DETECT is turned on, compile and execute envDetector in build_envInfo.xml.
 #######################################
-compileTools:
+compileTools: getdependency
 	ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME)
 ifneq ($(AUTO_DETECT), false)
 	@echo "AUTO_DETECT is set to true"
@@ -95,7 +103,7 @@ _failed:
 # generate parallel list
 #######################################
 genParallelList: compileTools
-	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINES=$(NUM_MACHINES) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST)
+	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINES=$(NUM_MACHINES) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST) TRSS_URL=$(TRSS_URL)
 
 #######################################
 # clean
