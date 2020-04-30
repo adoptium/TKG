@@ -95,7 +95,7 @@ _failed:
 # generate parallel list
 #######################################
 genParallelList: compileTools
-	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINE=$(NUM_MACHINE) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST)
+	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINES=$(NUM_MACHINES) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST)
 
 #######################################
 # clean
