@@ -234,7 +234,7 @@ sub resultReporter {
 			$customTargetParam = "&CUSTOM_TARGET=" . $customTarget;
 		}
 		my $hudsonUrl = $ENV{'HUDSON_URL'};
-		if (length $hudsonUrl == 0) {
+		if ((!defined $hudsonUrl) || ($hudsonUrl eq '')) {
 			$hudsonUrl = "https://ci.adoptopenjdk.net/";
 		}
 		print "To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:\n";

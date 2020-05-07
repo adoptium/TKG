@@ -26,12 +26,9 @@ use File::Path qw(make_path);
 my $path;
 # define task
 my $task = "default";
-# define os
-my $os;
 
 GetOptions ("path=s" => \$path,
-			"task=s" => \$task,
-			"os=s"   => \$os)
+			"task=s" => \$task)
 	or die("Error in command line arguments\n");
 
 if (not defined $path) {
@@ -43,17 +40,12 @@ if (! -d $path) {
 	my $isCreated = make_path($path, {chmod => 0777, verbose => 1,});
 }
 
-if (not defined $os) {
-	die "ERROR: os not defined!\n"
-}
-
 # define directory path separator
 my $sep = File::Spec->catfile('', '');
 
 print "--------------------------------------------\n";
 print "path is set to $path\n";
 print "task is set to $task\n";
-print "os   is set to $os\n";
 
 # Define a a hash for each dependent jar
 # Contents in the hash should be: 
@@ -118,6 +110,13 @@ my %jaxb_api = (
 	sha1 => '99f802e0cb3e953ba3d6e698795c4aeb98d37c48'
 );
 
+my %json_simple = (
+	url => 'https://repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar',
+	fname => 'json-simple.jar',
+	sha1 => 'c9ad4a0850ab676c5c64461a05ca524cdfff59f1'
+);
+
+
 # Put all dependent jars hash to array to prepare downloading
 my @jars_info = (
 	\%asm_all,
@@ -129,7 +128,8 @@ my @jars_info = (
 	\%testng,
 	\%jcommander,
 	\%asmtools,
-	\%jaxb_api
+	\%jaxb_api,
+	\%json_simple
 );
 
 print "--------------------------------------------\n";
@@ -231,15 +231,15 @@ sub downloadFile {
 	print "downloading $url\n";
 	my $output;
 	# ToDo: should use curl only
-	if ($os eq 'os.zos') {
-                # Delete existing file in case it is tagged incorrectly which curl would then honour..
-                qx(rm $filename);
-                # .txt SHA files are in ISO8859-1
-                if ('.txt' eq substr $filename, -length('.txt')) {
-                    $output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl -k -o $filename $url 2>&1};
-                } else {
-                    $output = qx{_ENCODE_FILE_NEW=UNTAGGED curl -k -o $filename $url 2>&1};
-                }
+	if ($^O eq 'os390') {
+		# Delete existing file in case it is tagged incorrectly which curl would then honour..
+		qx(rm $filename);
+		# .txt SHA files are in ISO8859-1
+		if ('.txt' eq substr $filename, -length('.txt')) {
+			$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl -k -o $filename $url 2>&1};
+		} else {
+			$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl -k -o $filename $url 2>&1};
+		}
 	} else {
 		$output = qx{wget --no-check-certificate --quiet --output-document=$filename $url 2>&1};
 	}
@@ -247,8 +247,12 @@ sub downloadFile {
 	if ($returnCode == 0) {
 		print "--> file downloaded to $filename\n";
 	} else {
-		print $output;
-		unlink $filename or die "Can't delete '$filename': $!\n";
+		if ($output) {
+			print $output;
+		}
+		if (-e $filename) {
+			unlink $filename or die "Can't delete '$filename': $!\n";
+		}
 		die "ERROR: downloading $url failed, return code: $returnCode\n";
 	}
 }
