@@ -4517,7 +4517,11 @@ Removed verbose:stackwalk from anywhere it appeared.
 				<clArg>-Xjit:enableOSR,enableOSROnGuardFailure,count=1,disableAsyncCompilation</clArg>
 				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xjit:enableOSR,enableOSROnGuardFailure,count=1,disableAsyncCompilation"/>
 			</setting>
-		</settings>
+			<setting type="either">
+				<clArg>-Xnocompressedrefs</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xnocompressedrefs"/>
+			</setting>
+		</settings>	
 	</mode>
 	<mode number="110-OSRG">
 		<description>JIT on, with OSROnGuardFailure gencon gc (J9)</description>
@@ -4529,6 +4533,10 @@ Removed verbose:stackwalk from anywhere it appeared.
 			<setting type="either">
 				<clArg>-Xgcpolicy:gencon</clArg>
 				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xgcpolicy:gencon"/>
+			</setting>
+			<setting type="either">
+				<clArg>-Xnocompressedrefs</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xnocompressedrefs"/>
 			</setting>
 		</settings>
 	</mode>
