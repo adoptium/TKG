@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.File;
 import java.util.*;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -36,8 +35,7 @@ public class TestDivider {
 	private static Queue<Map.Entry<String, Integer>> testTimeQueue = new PriorityQueue<>(
 		(a, b) -> a.getValue() == b.getValue() ? b.getKey().compareTo(a.getKey()) : b.getValue().compareTo(a.getValue())
 	);
-	private static Map<Integer, Integer> testListTime = new HashMap<>();
-	
+	private static List<Integer> testListTime = new ArrayList<>();
 	private static String parallelmk = Options.getProjectRootDir() + "/TKG/" + Constants.PARALLELMK;
 	private static List<List<String>> parallelLists = new ArrayList<>();
 	private static int defaultAvgTestTime = 40000; // in milliseconds
@@ -73,19 +71,54 @@ public class TestDivider {
 	}
 
 	private static void divideOnTestTime(int testTime) {
-		int testsInEachList = testTime / defaultAvgTestTime;
-		/* If a single test time is bigger than allowed time on each machine, run 1 test per machine. */
-		if (testsInEachList == 0) {
-			testsInEachList = 1;
-		}
-		/* Populate regular tests first and append the effortless along to the regular test lists. */
-		populateParallelLists(regularTests, testsInEachList, 0);
+		if (dataFromTRSS) {
+			Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
+				(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
+			);
+			int limitFactor = testTime;
+			int index = 0;
+			while (!testTimeQueue.isEmpty()) {
+				Map.Entry<String, Integer> testEntry = testTimeQueue.poll();
+				String testName = testEntry.getKey();
+				int testDuration = testEntry.getValue();
+				if (!machineQueue.isEmpty() && (machineQueue.peek().getValue() + testDuration < limitFactor)) {
+					Map.Entry<Integer, Integer> machineEntry = machineQueue.poll();
+					parallelLists.get(machineEntry.getKey()).add(testName);
+					int newTime = machineEntry.getValue() + testDuration;
+					testListTime.set(machineEntry.getKey(), newTime);
+					machineEntry.setValue(newTime);
+					machineQueue.offer(machineEntry);
+				} else {
+					parallelLists.add(new ArrayList<String>());
+					parallelLists.get(index).add(testName);
+					testListTime.add(testDuration);
+					if (testDuration < limitFactor) {
+						Map.Entry<Integer,Integer> entry = new AbstractMap.SimpleEntry<>(index, testDuration);
+						machineQueue.offer(entry);
+					} else { 
+						/* If the test time is greater than the limiting factor, set it as the new limiting factor. */
+						limitFactor = testDuration;
+						System.out.println("Warning: Test " + testName + " has duration " + formatTime(testDuration) + ", which is greater than the specified test list execution time " + testTime + "m. So this value is used to limit the overall execution time.");
+					}
+					index++;
+					
+				}
+			}
+		} else {
+			int testsInEachList = testTime / defaultAvgTestTime;
+			/* If a single test time is greater than allowed time on each machine, run 1 test per machine. */
+			if (testsInEachList == 0) {
+				testsInEachList = 1;
+			}
+			/* Populate regular tests first and append the effortless along to the regular test lists. */
+			populateParallelLists(regularTests, testsInEachList, 0);
 
-		/* If no regular test, no need to divide the effortless tests. */
-		int numOfMachines = parallelLists.size() != 0 ? parallelLists.size() : 1;
-		testsInEachList = effortlessTests.size() / numOfMachines;
-		int remainder = effortlessTests.size() % numOfMachines;
-		populateParallelLists(effortlessTests, testsInEachList, remainder);
+			/* If no regular test, no need to divide the effortless tests. */
+			int numOfMachines = parallelLists.size() != 0 ? parallelLists.size() : 1;
+			testsInEachList = effortlessTests.size() / numOfMachines;
+			int remainder = effortlessTests.size() % numOfMachines;
+			populateParallelLists(effortlessTests, testsInEachList, remainder);
+		}
 	}
 
 	private static void divideOnMachineNum(int numOfMachines) {
@@ -93,15 +126,11 @@ public class TestDivider {
 			Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
 				(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
 			);
-
-			for (int i = 0; i < numOfMachines; i++) {
-				testListTime.put(i, 0);
-			}
-			for (Map.Entry<Integer, Integer> entry : testListTime.entrySet()) {
-				machineQueue.offer(entry);
-			}
 			for (int i = 0; i < numOfMachines; i++) {
 				parallelLists.add(new ArrayList<String>());
+				testListTime.add(0);
+				Map.Entry<Integer,Integer> entry = new AbstractMap.SimpleEntry<>(i, 0);
+				machineQueue.offer(entry);
 			}
 			while (!testTimeQueue.isEmpty()) {
 				Map.Entry<String, Integer> testEntry = testTimeQueue.poll();
@@ -109,8 +138,8 @@ public class TestDivider {
 
 				parallelLists.get(machineEntry.getKey()).add(testEntry.getKey());
 				int newTime = machineEntry.getValue() + testEntry.getValue();
+				testListTime.set(machineEntry.getKey(), newTime);
 				machineEntry.setValue(newTime);
-
 				machineQueue.offer(machineEntry);
 			}
 		} else {
@@ -317,7 +346,7 @@ public class TestDivider {
 			if (Options.getTestTime() == null) {
 				divideOnMachineNum(1);
 			} else {
-				divideOnTestTime(Options.getTestTime());
+				divideOnTestTime(Options.getTestTime() * 60 * 1000);
 			}
 		} else {
 			divideOnMachineNum(Math.max(1, Math.min(Options.getNumOfMachines(), regularTests.size())));
@@ -349,7 +378,7 @@ public class TestDivider {
 		if (dataFromTRSS) {
 			int maxListTime = 0;
 			int totalTime = 0;
-			for (int listTime : testListTime.values()) {
+			for (int listTime : testListTime) {
 				maxListTime = maxListTime > listTime ? maxListTime : listTime;
 				totalTime += listTime;
 			}
@@ -392,7 +421,7 @@ public class TestDivider {
 			if (listIndex >= parallelLists.size()) {
 				parallelLists.add(new ArrayList<String>());
 			}
-			/* when divideOnTestTime(), the end might be bigger than test.size() */
+			/* when divideOnTestTime(), the end might be greater than test.size() */
 			if (end > tests.size()) {
 				end = tests.size();
 			}
