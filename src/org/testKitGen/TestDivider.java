@@ -220,11 +220,18 @@ public class TestDivider {
 		Map<String, Integer> TRSSMap = getMapFromTRSS();
 		Map<String, Integer> actualTestMap = new HashMap<>();
 		List<String> testsNotFound = new ArrayList<>();
+		Map<String, Integer> testsInvalid = new HashMap<>();
 		if (TRSSMap.size() != 0) {
 			for (String test : regularTests) {
 				if (TRSSMap.containsKey(test)) {
-					actualTestMap.put(test, TRSSMap.get(test));
-					dataFromTRSS = true;
+					int duration = TRSSMap.get(test);
+					if (duration > 0) {
+						actualTestMap.put(test, duration);
+						dataFromTRSS = true;
+					} else {
+						actualTestMap.put(test, defaultAvgTestTime);
+						testsInvalid.put(test, duration);
+					}
 				} else {
 					actualTestMap.put(test, defaultAvgTestTime);
 					testsNotFound.add(test);
@@ -232,8 +239,14 @@ public class TestDivider {
 			}
 			for (String test : effortlessTests) {
 				if (TRSSMap.containsKey(test)) {
-					actualTestMap.put(test, TRSSMap.get(test));
-					dataFromTRSS = true;
+					int duration = TRSSMap.get(test);
+					if (duration > 0) {
+						actualTestMap.put(test, duration);
+						dataFromTRSS = true;
+					} else {
+						actualTestMap.put(test, defaultAvgTestTime);
+						testsInvalid.put(test, duration);
+					}
 				} else {
 					actualTestMap.put(test, 0);
 					testsNotFound.add(test);
@@ -248,7 +261,7 @@ public class TestDivider {
 		int totalNum = regularTests.size() + effortlessTests.size();
 		System.out.println("Total number of tests searched: " + totalNum);
 		if (dataFromTRSS) {
-			int foundNum = testTimeQueue.size() - testsNotFound.size();
+			int foundNum = testTimeQueue.size() - testsNotFound.size() - testsInvalid.size();
 			System.out.println("Number of test durations found: " + foundNum);
 			System.out.println("Top slowest tests: ");
 			List<Map.Entry<String, Integer>> lastTests = new ArrayList<>();
@@ -261,12 +274,19 @@ public class TestDivider {
 			}
 			if (!testsNotFound.isEmpty()) {
 				System.out.println("Following test duration data cannot be found: ");
-				System.out.println("(Default duration assigned, running tests: " + defaultAvgTestTime / 1000 + "s; skipped/disabled tests: 0s.)");
-				System.out.println(testsNotFound.toString());
+				System.out.println("(Default duration assigned, executed tests: " + defaultAvgTestTime / 1000 + "s; skipped/disabled tests: 0s.)");
+				System.out.println("\t" + testsNotFound.toString());
+			}
+			if (!testsInvalid.isEmpty()) {
+				System.out.println("Following test duration data is not valid: ");
+				System.out.println("(Default duration assigned, executed tests: " + defaultAvgTestTime / 1000 + "s; skipped/disabled tests: 0s.)");
+				for (Map.Entry<String, Integer> entry : testsInvalid.entrySet()) {
+					System.out.println("\t" + entry.getKey() + " : " + entry.getValue() + "ms");
+				}
 			}
 		} else {
 			System.out.println("No test duration data found.");
-			System.out.println("(Default duration assigned, running tests: " + defaultAvgTestTime / 1000 + "s; skipped/disabled tests: 0s.)");
+			System.out.println("(Default duration assigned, executed tests: " + defaultAvgTestTime / 1000 + "s; skipped/disabled tests: 0s.)");
 
 		}
 		System.out.println("====================================================================================");
