@@ -49,11 +49,11 @@ public class Options {
 			+ "                              Defaults to \"\"\n"
 			+ "    --testTarget=<string>     Test target to execute\n"
 			+ "                              Defaults to all\n"
-			+ "    --numOfMachines=<number>   Specify number of machines for mode parallelList \n"
+			+ "    --numOfMachines=<number>  Specify number of machines for mode parallelList \n"
 			+ "                              Defaults to 1\n"
 			+ "    --testTime=<number>       Specify expected length of test running time (minutes) on each machines for mode parallelList, this option will be suppressed if numOfMachines is given\n"
 			+ "                              If testTime and numOfMachines are not provided, default numOfMachines will be used\n"
-			+ "    --TRSSURL=<serverURL>  Specify the TRSS server URL for mode parallelList\n"
+			+ "    --TRSSURL=<serverURL>     Specify the TRSS server URL for mode parallelList\n"
 			+ "                              Defaults to " + Constants.TRSS_URL + "\n";
 			
 
@@ -152,7 +152,7 @@ public class Options {
 					numOfMachines = Integer.valueOf(numOfMachinesStr);
 					if (numOfMachines <= 0) {
 						System.err.println("Invalid option: " + arg);
-						System.err.println("Num of machines need to be bigger than 0");
+						System.err.println("Num of machines need to be greater than 0");
 						System.exit(1);
 					}
 				}
@@ -162,7 +162,7 @@ public class Options {
 					testTime = Integer.valueOf(testTimeStr);
 					if (testTime <= 0) {
 						System.err.println("Invalid option: " + arg);
-						System.err.println("Test time needs to be bigger than 0");
+						System.err.println("Test time needs to be greater than 0");
 						System.exit(1);
 					}
 				}
