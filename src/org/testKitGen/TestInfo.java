@@ -297,8 +297,16 @@ public class TestInfo {
 	}
 
 	public boolean genCmd() {
-		if (TestTarget.isEchoDisabled()) return false;
-		if (!TestTarget.isCategory()) return true;
-		return (TestTarget.isRegular() && !isDisabled()) || (TestTarget.isDisabled() && isDisabled());
+		boolean rt = false;
+		if (TestTarget.isEchoDisabled()) {
+			rt = false;
+		} else if (TestTarget.isSingleTest()) {
+			rt = true;
+		} else if (TestTarget.isList()) {
+			rt = !isDisabled();
+		} else if (TestTarget.isCategory()) {
+			rt = (TestTarget.isRegular() && !isDisabled()) || (TestTarget.isDisabled() && isDisabled());
+		}
+		return rt;
 	}
 }
