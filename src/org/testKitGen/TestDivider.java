@@ -210,7 +210,6 @@ public class TestDivider {
 		return URL;
 	}
 
-
 	private static Map<String, Integer> getMapFromTRSS() {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		String URL = constructURL();
@@ -223,12 +222,12 @@ public class TestDivider {
 			BufferedReader responseReader = new BufferedReader(new InputStreamReader(responseStream));
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObject = (JSONObject) parser.parse(responseReader);
-			JSONArray buckets = (JSONArray) jsonObject.get("buckets");
-			if (buckets != null && buckets.size() != 0) {
-				JSONArray bucket = (JSONArray) buckets.get(0);
-				if (bucket != null) {
-					for (int i = 0; i < bucket.size(); i++) {
-						JSONObject testData = (JSONObject) bucket.get(i);
+			JSONArray testLists = (JSONArray) jsonObject.get("testLists");
+			if (testLists != null && testLists.size() != 0) {
+				JSONArray testList = (JSONArray) testLists.get(0);
+				if (testList != null) {
+					for (int i = 0; i < testList.size(); i++) {
+						JSONObject testData = (JSONObject) testList.get(i);
 						String testName = (String) testData.get("_id");
 						Number testDurationNum = (Number) testData.get("avgDuration");
 						if (testName != null && testDurationNum != null) {
@@ -241,7 +240,6 @@ public class TestDivider {
 		} catch (IOException | ParseException e) {
 			System.out.println("Warning: cannot get data from TRSS.");
 		}
-
 		return map;
 	}
 
