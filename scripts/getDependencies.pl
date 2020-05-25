@@ -230,18 +230,18 @@ sub downloadFile {
 	my ( $url, $filename ) = @_;
 	print "downloading $url\n";
 	my $output;
-	# ToDo: should use curl only
-	if ($^O eq 'os390') {
-		# Delete existing file in case it is tagged incorrectly which curl would then honour..
+	
+	# Delete existing file in case it is tagged incorrectly which curl would then honour..
+	if (-e $filename) {
 		qx(rm $filename);
-		# .txt SHA files are in ISO8859-1
-		if ('.txt' eq substr $filename, -length('.txt')) {
-			$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl -k -o $filename $url 2>&1};
-		} else {
-			$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl -k -o $filename $url 2>&1};
-		}
+	} 
+
+	# .txt SHA files are in ISO8859-1
+	# note _ENCODE_FILE_NEW flag is set for zos
+	if ('.txt' eq substr $filename, -length('.txt')) {
+		$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl -k -o $filename $url 2>&1};
 	} else {
-		$output = qx{wget --no-check-certificate --quiet --output-document=$filename $url 2>&1};
+		$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl -k -o $filename $url 2>&1};
 	}
 	my $returnCode = $?;
 	if ($returnCode == 0) {
