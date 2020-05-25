@@ -24,23 +24,20 @@ our $FAILURE = 0;
 
 my $path;
 my $testRoot;
-my $spec;
 for (my $i = 0; $i < scalar(@ARGV); $i++) {
 	my $arg = $ARGV[$i];
 	if ($arg =~ /^\-\-compileLogPath=/) {
 		($path) = $arg =~ /^\-\-compileLogPath=(.*)/;
 	} elsif ($arg =~ /^\-\-testRoot=/) {
 		($testRoot) = $arg =~ /^\-\-testRoot=(.*)/;
-	} elsif ($arg =~ /^\-\-spec=/) {
-		($spec) = $arg =~ /^\-\-spec=(.*)/;
 	}
 }
 
-if ($path && $testRoot && $spec) {
+if ($path && $testRoot) {
 	my $location = dirname($path);
 	open my $Log, '<', "$path";
 	my $compileLog = do { local $/; <$Log> };
-	moveTDUMPS($compileLog, $location, $spec);
+	moveTDUMPS($compileLog, $location);
 }
 
 sub logMsg {
@@ -122,11 +119,11 @@ sub checkLog {
 }
 
 sub moveTDUMPS {
-	my ($file, $moveLocation, $spec) = @_;
+	my ($file, $moveLocation) = @_;
 	my @dumplist = ();
 	# Use a hash to ensure that each dump is only dealt with once
 	my %parsedNames = ();
-	if ($spec !~ /zos/) {
+	if ($^O ne 'os390') {
 		my $moveCMD = "find ".${testRoot}." -name 'core.*.dmp' -exec mv -t ".${moveLocation}." '{}' +";
 		qx($moveCMD);
 		return;

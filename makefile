@@ -26,7 +26,7 @@ $(info JAVA_HOME is set to $(JAVA_HOME))
 endif
 
 D = /
-
+MKTREE = mkdir -p
 SUBDIRS = ..
 
 ifndef TEST_ROOT
@@ -61,23 +61,33 @@ endif
 endif
 
 #######################################
-# compile tools and test materials
+# compile test materials
 #######################################
-compile: compileTools
+compile: envDetect
 	$(MAKE) -f compile.mk compile
 
 #######################################
-# compile tools
 # If AUTO_DETECT is turned on, compile and execute envDetector in build_envInfo.xml.
 #######################################
-compileTools: getdependency
-	ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME)
+envDetect: compileTools
 ifneq ($(AUTO_DETECT), false)
 	@echo "AUTO_DETECT is set to true"
 	${TEST_JDK_HOME}$(D)bin$(D)java -cp .$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector JavaInfo
 else
 	@echo "AUTO_DETECT is set to false"
 endif
+
+#######################################
+# compile tools
+#######################################
+include moveDmp.mk
+COMPILE_TOOLS_CMD=ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME)
+
+compileTools: getdependency
+	$(RM) -r $(COMPILATION_OUTPUT); \
+	$(MKTREE) $(COMPILATION_OUTPUT); \
+	($(COMPILE_TOOLS_CMD) 2>&1; echo $$? ) | tee $(Q)$(COMPILATION_LOG)$(Q); \
+	$(MOVE_TDUMP)
 
 #######################################
 # compile and run all tests
@@ -102,7 +112,7 @@ _failed:
 #######################################
 # generate parallel list
 #######################################
-genParallelList: compileTools
+genParallelList: envDetect
 	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINES=$(NUM_MACHINES) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST) TRSS_URL=$(TRSS_URL)
 
 #######################################
