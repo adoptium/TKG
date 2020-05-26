@@ -32,11 +32,11 @@ public class DirectoryWalker {
 		if (Options.getBuildList().isEmpty()) {
 			return true;
 		}
-		// Only generate make files for projects that are specificed in the build list.
+		// Only generate make files for projects that are specified in the build list.
 		String[] buildListArr = Options.getBuildList().split(",");
 		for (String buildPath : buildListArr) {
 			buildPath = buildPath.replaceAll("\\+", "/");
-			if (currentdir.contains(buildPath) || buildPath.contains(currentdir)) {
+			if (currentdir.equals(buildPath) || currentdir.contains(buildPath + "/") || buildPath.contains(currentdir + "/")) {
 				return true;
 			}
 		}
