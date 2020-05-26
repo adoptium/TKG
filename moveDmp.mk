@@ -12,26 +12,14 @@
 # limitations under the License.
 ##############################################################################
 
-.DEFAULT_GOAL := compile
-
 D = /
 
 ifndef TEST_ROOT
 	TEST_ROOT := $(shell pwd)$(D)..
 endif
 
-include settings.mk
-include moveDmp.mk
+COMPILATION_OUTPUT=$(TEST_ROOT)$(D)TKG$(D)test_output_compilation
+COMPILATION_LOG=$(COMPILATION_OUTPUT)$(D)compilation.log
+MOVE_TDUMP_PERL=perl scripts$(D)moveDmp.pl --compileLogPath=$(Q)$(COMPILATION_LOG)$(Q) --testRoot=$(Q)$(TEST_ROOT)$(Q)
+MOVE_TDUMP=if [ -z $$(tail -n 1 $(COMPILATION_LOG) | grep 0) ]; then $(MOVE_TDUMP_PERL); false; else $(RM) -r $(Q)$(COMPILATION_OUTPUT)$(Q); fi
 
-#######################################
-# compile all tests under $(TEST_ROOT)
-#######################################
-COMPILE_CMD=ant -f scripts$(D)build_test.xml -DTEST_ROOT=$(TEST_ROOT) -DBUILD_ROOT=$(BUILD_ROOT) -DJDK_VERSION=$(JDK_VERSION) -DJDK_IMPL=$(JDK_IMPL) -DJCL_VERSION=$(JCL_VERSION) -DBUILD_LIST=${BUILD_LIST} -DRESOURCES_DIR=${RESOURCES_DIR} -DSPEC=${SPEC} -DTEST_JDK_HOME=${TEST_JDK_HOME} -DJVM_VERSION=$(JVM_VERSION) -DLIB_DIR=$(LIB_DIR)
-
-compile:
-	$(RM) -r $(COMPILATION_OUTPUT); \
-	$(MKTREE) $(COMPILATION_OUTPUT); \
-	($(COMPILE_CMD) 2>&1; echo $$? ) | tee $(Q)$(COMPILATION_LOG)$(Q); \
-	$(MOVE_TDUMP)
-
-.PHONY: compile
