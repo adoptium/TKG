@@ -306,6 +306,7 @@ FAILEDTARGETS = $(TEST_ROOT)$(D)TKG$(D)failedtargets.mk
 #######################################
 TEMPRESULTFILE=$(TESTOUTPUT)$(D)TestTargetResult
 TAPRESULTFILE=$(TESTOUTPUT)$(D)TestTargetResult.tap
+PLATFROMFILE=$(TEST_ROOT)$(D)TKG$(D)resources$(D)buildPlatformMap.properties
 
 ifndef DIAGNOSTICLEVEL
 export DIAGNOSTICLEVEL:=failure
@@ -316,4 +317,4 @@ rmResultFile:
 
 resultsSummary:
 	$(CD) $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(Q); \
-	perl $(Q)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --tapFile=$(Q)$(TAPRESULTFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(CUSTOM_TARGET)
+	perl $(Q)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --tapFile=$(Q)$(TAPRESULTFILE)$(Q) --platFile=$(Q)$(PLATFROMFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(CUSTOM_TARGET)
