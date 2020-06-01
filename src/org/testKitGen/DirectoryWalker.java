@@ -36,7 +36,7 @@ public class DirectoryWalker {
 		String[] buildListArr = Options.getBuildList().split(",");
 		for (String buildPath : buildListArr) {
 			buildPath = buildPath.replaceAll("\\+", "/");
-			if (currentdir.equals(buildPath) || currentdir.contains(buildPath + "/") || buildPath.contains(currentdir + "/")) {
+			if (currentdir.equals(buildPath) || currentdir.equals("") || currentdir.contains(buildPath + "/") || buildPath.contains(currentdir + "/")) {
 				return true;
 			}
 		}
