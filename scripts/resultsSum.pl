@@ -23,31 +23,13 @@ require "moveDmp.pl";
 my $resultFile;
 my $failuremkarg;
 my $tapFile;
+my $platFile;
 my $diagnostic = 'failure';
 my $jdkVersion = "";
 my $jdkImpl = "";
 my $buildList = "";
 my $spec = "";
 my $customTarget = "";
-my %spec2platform = (
-	'linux_x86-64_cmprssptrs'      => 'x86-64_linux',
-	'linux_x86-64'                 => 'x86-64_linux_xl',
-	'linux_arm'                    => 'aarch32_linux',
-	'linux_aarch64_cmprssptrs'     => 'aarch64_linux',
-	'linux_aarch64'                => 'aarch64_linux_xl',
-	'linux_ppc-64_cmprssptrs_le'   => 'ppc64le_linux',
-	'linux_ppc-64_le'              => 'ppc64le_linux_xl',
-	'linux_390-64_cmprssptrs'      => 's390x_linux',
-	'linux_390-64'                 => 's390x_linux_xl',
-	'aix_ppc-64_cmprssptrs'        => 'ppc64_aix',
-	'zos_390-64_cmprssptrs'        => 's390x_zos',
-	'osx_x86-64_cmprssptrs'        => 'x86-64_mac',
-	'osx_x86-64'                   => 'x86-64_mac_xl',
-	'win_x86-64_cmprssptrs'        => 'x86-64_windows',
-	'win_x86-64'                   => 'x86-64_windows_xl',
-	'win_x86'                      => 'x86-32_windows',
-	'sunos_sparcv9-64_cmprssptrs'  => 'sparcv9_solaris',
-);
 
 for (my $i = 0; $i < scalar(@ARGV); $i++) {
 	my $arg = $ARGV[$i];
@@ -57,6 +39,8 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 		($resultFile) = $arg =~ /^\-\-resultFile=(.*)/;
 	} elsif ($arg =~ /^\-\-tapFile=/) {
 		($tapFile) = $arg =~ /^\-\-tapFile=(.*)/;
+	} elsif ($arg =~ /^\-\-platFile=/) {
+		($platFile) = $arg =~ /^\-\-platFile=(.*)/;
 	} elsif ($arg =~ /^\-\-diagnostic=/) {
 		($diagnostic) = $arg =~ /^\-\-diagnostic=(.*)/;
 	} elsif ($arg =~ /^\-\-jdkVersion=/) {
@@ -76,10 +60,26 @@ if (!$failuremkarg) {
 	die "Please specify a valid file path using --failuremk= option!";
 }
 
-my $failures = resultReporter();
+my $spec2platform = readPlatform();
+my $failures = resultReporter($spec2platform);
 failureMkGen($failuremkarg, $failures);
 
+sub readPlatform {
+	my %map;
+	my $fhIn;
+	if (open($fhIn, '<', $platFile)) {
+		while ( my $line = <$fhIn> ) {
+			$line =~ s/#.*//;
+			if ($line =~ /(.*)=(.*)/) {
+				$map{$1} = $2;
+			}
+		}
+	}
+	return \%map;
+}
+
 sub resultReporter {
+	my ($spec2platform) = @_;
 	my $numOfExecuted = 0;
 	my $numOfFailed = 0;
 	my $numOfPassed = 0;
@@ -226,8 +226,8 @@ sub resultReporter {
 			$buildParam = "&BUILD_LIST=" . $buildList;
 		}
 		my $platformParam = "";
-		if (exists $spec2platform{$spec}) {
-			$platformParam = "&PLATFORM=" . $spec2platform{$spec};
+		if (exists $spec2platform->{$spec}) {
+			$platformParam = "&PLATFORM=" . $spec2platform->{$spec};
 		}
 		my $customTargetParam = "";
 		if ($customTarget ne '') {
