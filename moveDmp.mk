@@ -21,5 +21,4 @@ endif
 COMPILATION_OUTPUT=$(TEST_ROOT)$(D)TKG$(D)test_output_compilation
 COMPILATION_LOG=$(COMPILATION_OUTPUT)$(D)compilation.log
 MOVE_TDUMP_PERL=perl scripts$(D)moveDmp.pl --compileLogPath=$(Q)$(COMPILATION_LOG)$(Q) --testRoot=$(Q)$(TEST_ROOT)$(Q)
-MOVE_TDUMP=if [ -z $$(tail -n 1 $(COMPILATION_LOG) | grep 0) ]; then $(MOVE_TDUMP_PERL); false; else $(RM) -r $(Q)$(COMPILATION_OUTPUT)$(Q); fi
-
+MOVE_TDUMP=if [ -z $(Q)$$(tail -n 1 $(COMPILATION_LOG) | grep 0)$(Q) ]; then $(MOVE_TDUMP_PERL); false; else $(RM) -r $(Q)$(COMPILATION_OUTPUT)$(Q); fi
