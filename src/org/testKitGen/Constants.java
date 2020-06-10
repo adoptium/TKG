@@ -21,9 +21,10 @@ import java.util.Arrays;
 
 public final class Constants {
 	public static final String PLAYLIST = "playlist.xml";
-	public static final String MODESXML = "resources/modes.xml";
-	public static final String OTTAWACSV = "resources/ottawa.csv";
-	public static final String BUILDPLAT_JSON = "resources/buildPlatformMap.properties";
+	public static final String RESOURCE = "resources";
+	public static final String MODESXML = Constants.RESOURCE + "/modes.xml";
+	public static final String OTTAWACSV = Constants.RESOURCE + "/ottawa.csv";
+	public static final String BUILDPLAT_JSON = Constants.RESOURCE + "/buildPlatformMap.properties";
 	public static final String TESTMK = "autoGen.mk";
 	public static final String UTILSMK = "utils.mk";
 	public static final String SETTINGSMK = "settings.mk";
