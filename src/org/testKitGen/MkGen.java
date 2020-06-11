@@ -14,7 +14,6 @@
 
 package org.testKitGen;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,74 +21,58 @@ import java.util.Collections;
 import java.util.List;
 
 public class MkGen {
-	private List<String> currentdirs;
+	private Arguments arg;
+	private List<String> dirList;
 	private List<String> subdirs;
 	private String makeFile;
 	private PlaylistInfo pli;
-	private List<String> testList;
 
-	public MkGen(File playlistXML, String absolutedir, ArrayList<String> currentdirs, List<String> subdirs) {
-		this.currentdirs = currentdirs;
+	public MkGen(Arguments arg, PlaylistInfo pli, String makeFile, List<String> dirList, List<String> subdirs) {
+		this. arg = arg;
+		this.dirList = dirList;
 		this.subdirs = subdirs;
-		this.makeFile = absolutedir + "/" + Constants.TESTMK;
-		this.pli = new PlaylistInfo(playlistXML);
-		this.testList = new ArrayList<String>();
+		this.makeFile = makeFile;
+		this.pli = pli;
 	}
 
-	public boolean start() {
-		File file = new File(makeFile); 
-		file.delete();
+	public void start() {
+		writeVars();
+		if (pli.getParseResult()) {
+			writeTargets();
+		}
+		System.out.println("Generated " + makeFile + "\n");
+	}
 
-		try {
-			if (!subdirs.isEmpty()) {
-				writeVars();
-				if (pli.parseInfo()) {
-					writeTargets();
-				}
+	private void writeVars() {
+		try (FileWriter f = new FileWriter(makeFile)) {
+			String realtiveRoot = "";
+			int subdirlevel = dirList.size();
+			if (subdirlevel == 0) {
+				realtiveRoot = ".";
 			} else {
-				if (pli.parseInfo()) {
-					writeVars();
-					writeTargets();
-				} else {
-					return false;
+				for (int i = 1; i <= subdirlevel; i++) {
+					realtiveRoot = realtiveRoot + ((i == subdirlevel) ? ".." : "..$(D)");
 				}
 			}
+
+			f.write(Constants.HEADERCOMMENTS + "\n");
+			f.write("D=/\n\n");
+			f.write("ifndef TEST_ROOT\n");
+			f.write("\tTEST_ROOT := " + arg.getProjectRootDir() + "\n");
+
+			f.write("endif\n\n");
+			f.write("SUBDIRS = " + String.join(" ", subdirs) + "\n\n");
+			f.write("include $(TEST_ROOT)$(D)TKG$(D)" + Constants.SETTINGSMK + "\n\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		return true;
 	}
 
-	private void writeVars() throws IOException {
-		System.out.println();
-		System.out.println("Generating make file " + makeFile);
-		FileWriter f = new FileWriter(makeFile);
-		String realtiveRoot = "";
-		int subdirlevel = currentdirs.size();
-		if (subdirlevel == 0) {
-			realtiveRoot = ".";
-		} else {
-			for (int i = 1; i <= subdirlevel; i++) {
-				realtiveRoot = realtiveRoot + ((i == subdirlevel) ? ".." : "..$(D)");
-			}
-		}
-
-		f.write(Constants.HEADERCOMMENTS + "\n");
-		f.write("D=/\n\n");
-		f.write("ifndef TEST_ROOT\n");
-		f.write("\tTEST_ROOT := " + Options.getProjectRootDir() + "\n");
-
-		f.write("endif\n\n");
-		f.write("SUBDIRS = " + String.join(" ", subdirs) + "\n\n");
-		f.write("include $(TEST_ROOT)$(D)TKG$(D)" + Constants.SETTINGSMK + "\n\n");
-		f.close();
-	}
-
-	private void writeSingleTest(TestInfo testInfo, FileWriter f) throws IOException {
+	private void writeSingleTest(List<String> testsInPlaylist, TestInfo testInfo, FileWriter f) throws IOException {
 		for (Variation var : testInfo.getVars()) {
 			// Generate make target
-			String name = var.getSubTestName();
+			String testTargetName = var.getSubTestName();
 			String indent = "\t";
 
 			if (testInfo.genCmd()) {
@@ -97,25 +80,25 @@ public class MkGen {
 					List<String> capabilityReqs_HashKeys = new ArrayList<>(testInfo.getCapabilities().keySet());
 					Collections.sort(capabilityReqs_HashKeys);
 					for (String capa_key : capabilityReqs_HashKeys) {
-						String condition_capsReqs = name + "_" + capa_key + "_CHECK";
+						String condition_capsReqs = testTargetName + "_" + capa_key + "_CHECK";
 						f.write(condition_capsReqs + "=$(" + capa_key + ")\n");
 					}
 				}
 
-				String jvmtestroot = "$(JVM_TEST_ROOT)$(D)" + String.join("$(D)", currentdirs);
-				f.write(name + ": TEST_RESROOT=" + jvmtestroot + "\n");
-				f.write(name + ": JVM_OPTIONS?=" + testInfo.getAotOptions() + "$(RESERVED_OPTIONS) "
+				String jvmtestroot = "$(JVM_TEST_ROOT)$(D)" + String.join("$(D)", dirList);
+				f.write(testTargetName + ": TEST_RESROOT=" + jvmtestroot + "\n");
+				f.write(testTargetName + ": JVM_OPTIONS?=" + testInfo.getAotOptions() + "$(RESERVED_OPTIONS) "
 						+ (var.getJvmOptions().isEmpty() ? "" : (var.getJvmOptions() + " ")) + "$(EXTRA_OPTIONS)\n");
 
-				f.write(name + ": TEST_GROUP=" + testInfo.getLevelStr() + "\n");
-				f.write(name + ":\n");
+				f.write(testTargetName + ": TEST_GROUP=" + testInfo.getLevelStr() + "\n");
+				f.write(testTargetName + ":\n");
 				f.write(indent + "@echo \"\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				f.write(indent
 						+ "@echo \"===============================================\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				f.write(indent + "@echo \"Running test $@ ...\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				f.write(indent
 						+ "@echo \"===============================================\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + name
+				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + testTargetName
 						+ " Start Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 
 				if (testInfo.isDisabled()) {
@@ -132,7 +115,7 @@ public class MkGen {
 					if (!capKeys.isEmpty()) {
 						Collections.sort(capKeys);
 						for (String cKey : capKeys) {
-							String condition_capsReqs = name + "_" + cKey + "_CHECK";
+							String condition_capsReqs = testTargetName + "_" + cKey + "_CHECK";
 							f.write("ifeq ($(" + condition_capsReqs + "), " + testInfo.getCapabilities().get(cKey) + ")\n");
 						}
 					}
@@ -179,25 +162,25 @@ public class MkGen {
 					}
 				}
 
-				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + name
+				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + testTargetName
 						+ " Finish Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q)\n");
 
-				f.write("\n.PHONY: " + name + "\n\n");
+				f.write("\n.PHONY: " + testTargetName + "\n\n");
 
-				testList.add(name);
 			} else {
-				String echoName = "echo.disabled." + name;
-				f.write(echoName + ":\n");
+				String printName = testTargetName;
+				testTargetName = "echo.disabled." + testTargetName;
+				f.write(testTargetName + ":\n");
 				f.write(indent + "@echo \"\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				f.write(indent
 						+ "@echo \"===============================================\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-				f.write(indent + "@echo \"Running test " + name
+				f.write(indent + "@echo \"Running test " + printName
 						+ " ...\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				f.write(indent
 						+ "@echo \"===============================================\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + name
+				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + printName
 						+ " Start Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-				f.write(indent + "@echo \"" + name
+				f.write(indent + "@echo \"" + printName
 						+ "_DISABLED\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				f.write(indent + "@echo \"Disabled Reason:\"\n");
 
@@ -205,12 +188,11 @@ public class MkGen {
 					f.write(indent + "@echo \"" + dReason + "\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				}
 
-				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + name
+				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + printName
 						+ " Finish Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q)\n");
-				f.write("\n.PHONY: " + echoName + "\n\n");
-				testList.add(echoName);
+				f.write("\n.PHONY: " + testTargetName + "\n\n");
 			}
-			Utils.count();
+			testsInPlaylist.add(testTargetName);
 		}
 
 		String testCaseName = testInfo.getTestCaseName();
@@ -229,23 +211,27 @@ public class MkGen {
 		}
 	}
 
-	private void writeTargets() throws IOException {
-		FileWriter f = new FileWriter(makeFile, true);
-		if (pli.getInclude() != null) {
-			f.write("-include " + pli.getInclude() + "\n\n");
-		}
-
-		for (TestInfo testInfo : pli.getTestInfoList()) {
-			writeSingleTest(testInfo, f);
-		}
-
-		if (TestTarget.isCategory() || TestTarget.isList()) {
-			f.write(TestTarget.getTestTarget() + ":");
-			for (String eachTest : testList) {
-				f.write(" \\\n" + eachTest);
+	private void writeTargets() {
+		try (FileWriter f = new FileWriter(makeFile, true)) {
+			if (pli.getInclude() != null) {
+				f.write("-include " + pli.getInclude() + "\n\n");
 			}
-			f.write("\n\n.PHONY: " + TestTarget.getTestTarget() + "\n\n");
-		}
-		f.close();
+	
+			List<String> testsInPlaylist = new ArrayList<String>();
+			for (TestInfo testInfo : pli.getTestInfoList()) {
+				writeSingleTest(testsInPlaylist, testInfo, f);
+			}
+	
+			if (TestTarget.isCategory() || TestTarget.isList()) {
+				f.write(TestTarget.getTestTarget() + ":");
+				for (String eachTest : testsInPlaylist) {
+					f.write(" \\\n" + eachTest);
+				}
+				f.write("\n\n.PHONY: " + TestTarget.getTestTarget() + "\n\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}	
 	}
 }

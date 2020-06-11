@@ -19,29 +19,34 @@ public class MainRunner {
 	}
 
 	public static void main(String[] args) {
-		Options.parse(args);
-		if (Options.getMode() == Options.Mode.GEN_TESTS) {
-			MainRunner.genTests();
-		} else if (Options.getMode() == Options.Mode.GEN_PARALLEL_LIST) {
-			MainRunner.genParallelList();
+		Arguments argInfo = Arguments.getInstance();
+		argInfo.parse(args);
+		ModesDictionary md = new ModesDictionary(argInfo);
+		md.parse();
+		if (argInfo.getMode() == Arguments.Mode.GEN_TESTS) {
+			genTests(argInfo, md);
+		} else if (argInfo.getMode() == Arguments.Mode.GEN_PARALLEL_LIST) {
+			genParallelList(argInfo, md);
 		}
 	}
 
-	public static void genTests() {
-		System.out.println("\nStarting to generate test make files.\n");
-		ModesDictionary.parse();
-		DirectoryWalker.start();
-		Utils.generateFile();
-		System.out.println("\nMake files are generated successfully.\n");
+	public static void genTests(Arguments argInfo, ModesDictionary md) {
+		System.out.println("Starting to generate test make files.\n");
+		DirectoryWalker dw = new DirectoryWalker(argInfo, new TestGenVisitor(argInfo, md));
+		dw.traverse();
+		UtilsGen ug = new UtilsGen(argInfo, md);
+		ug.generateFile();
+		System.out.println("Make files are generated successfully.\n");
 		if (!TestTarget.getTestSet().isEmpty()) {
 			System.out.println("Warning: cannot find the following tests " + TestTarget.getTestSet().toString().replaceAll("\\s+","") + " in TESTLIST\n");
 		}
 	}
 
-	public static void genParallelList() {
+	public static void genParallelList(Arguments argInfo, ModesDictionary md) {
 		System.out.println("\nStarting to generate parallel test lists.\n");
-		ModesDictionary.parse();
-		DirectoryWalker.start();
-		TestDivider.generateLists();
+		DirectoryWalker dw = new DirectoryWalker(argInfo, new ParallelGenVisitor(argInfo, md));
+		dw.traverse();
+		TestDivider td = new TestDivider(argInfo);
+		td.generateLists();
 	}
 }

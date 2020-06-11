@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Variation {
+	private ModesDictionary md;
 	private String variation;
 	private String spec;
 	private String platformRequirements;
@@ -27,9 +28,10 @@ public class Variation {
 	private String jvmOptions;
 	private boolean isValid;
 
-	public Variation(String subTestName, String variation, String platformRequirements) {
+	public Variation(Arguments arg, ModesDictionary md, String subTestName, String variation, String platformRequirements) {
+		this.md = md;
 		this.subTestName = subTestName;
-		this.spec = Options.getSpec();
+		this.spec = arg.getSpec();
 		this.variation = variation;
 		this.platformRequirements = platformRequirements;
 		this.isValid = true;
@@ -67,8 +69,8 @@ public class Variation {
 
 		if (matcher.matches()) {
 			mode = matcher.group(1).trim();
-			String clArgs = ModesDictionary.getClArgs(mode);
-			List<String> invalidSpecs = ModesDictionary.getInvalidSpecs(mode);
+			String clArgs = md.getClArgs(mode);
+			List<String> invalidSpecs = md.getInvalidSpecs(mode);
 			if (invalidSpecs.contains(spec)) {
 				isValid = false;
 			}

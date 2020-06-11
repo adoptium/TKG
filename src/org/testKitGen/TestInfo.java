@@ -25,6 +25,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class TestInfo {
+	private Arguments arg;
+	private ModesDictionary md;
 	private Element testEle;
 	private String testCaseName;
 	private String command;
@@ -38,15 +40,19 @@ public class TestInfo {
 	private List<String> groups;
 	private List<String> types;
 	private String[] disabledReasons;
+	private static List<String> testsToExecute = new ArrayList<>();
+	private static List<String> testsToDisplay = new ArrayList<>();
 
-	public TestInfo(Element testEle) {
+	public TestInfo(Arguments arg, ModesDictionary md, Element testEle) {
+		this.arg = arg;
+		this.md = md;
 		this.testEle = testEle;
 		this.testCaseName = null;
 		this.command = null;
 		this.platformRequirements = null;
 		this.vars = new ArrayList<Variation>();
 		this.aotOptions = "";
-		this.iterations = Integer.parseInt(Options.getIterations());
+		this.iterations = Integer.parseInt(arg.getIterations());
 		this.capabilities = new HashMap<String, String>();
 		this.levelStr = "";
 		this.levels = new ArrayList<String>();
@@ -70,7 +76,7 @@ public class TestInfo {
 		}
 
 		NodeList aotNodes = testEle.getElementsByTagName("aot");
-		if (Options.getTestFlag().contains("aot")) {
+		if (arg.getTestFlag().contains("aot")) {
 			// aot defaults to "applicable" when testFlag contains AOT
 			if (aotNodes.getLength() == 0 || aotNodes.item(0).getTextContent().trim().equals("applicable")) {
 				aotOptions = "$(AOT_OPTIONS) ";
@@ -81,6 +87,7 @@ public class TestInfo {
 			}
 		}
 
+		countTests();
 		return true;
 	}
 
@@ -118,7 +125,7 @@ public class TestInfo {
 		if (!isValidImpl) {
 			List<String> impls = new ArrayList<String>();
 			getElements(impls, "impl", Constants.ALLIMPLS);
-			isValidImpl = impls.contains(Options.getImpl());
+			isValidImpl = impls.contains(arg.getImpl());
 		}
 		if (!isValidImpl) return false;
 
@@ -130,7 +137,7 @@ public class TestInfo {
 		for (int j = 0; j < subsets.getLength(); j++) {
 			String subset = subsets.item(j).getTextContent().trim();
 
-			if (subset.equalsIgnoreCase(Options.getJdkVersion())) {
+			if (subset.equalsIgnoreCase(arg.getJdkVersion())) {
 				isValidSubset = true;
 				break;
 			} else {
@@ -138,7 +145,7 @@ public class TestInfo {
 					Pattern pattern = Pattern.compile("^(.*)\\+$");
 					Matcher matcher = pattern.matcher(subset);
 					if (matcher.matches()) {
-						if (Integer.parseInt(matcher.group(1)) <= Integer.parseInt(Options.getJdkVersion())) {
+						if (Integer.parseInt(matcher.group(1)) <= Integer.parseInt(arg.getJdkVersion())) {
 							isValidSubset = true;
 							break;
 						}
@@ -156,7 +163,7 @@ public class TestInfo {
 
 		boolean isValidAot = true;
 
-		if (aot.getLength() > 0 && Options.getTestFlag().contains("aot")) {
+		if (aot.getLength() > 0 && arg.getTestFlag().contains("aot")) {
 			isValidAot = !aot.item(0).getTextContent().trim().equals("nonapplicable");
 		}
 		if (!isValidAot) return false;
@@ -169,11 +176,11 @@ public class TestInfo {
 		NodeList variationsNodes = testEle.getElementsByTagName("variation");
 		for (int i = 0; i < variationsNodes.getLength(); i++) {
 			String subTestName = testCaseName + "_" + i;
-			vars.add(new Variation(subTestName, variationsNodes.item(i).getTextContent(), platformRequirements));
+			vars.add(new Variation(arg, md, subTestName, variationsNodes.item(i).getTextContent(), platformRequirements));
 		}
 		if (vars.size() == 0) {
 			String subTestName = testCaseName + "_0";
-			vars.add(new Variation(subTestName, "NoOptions", platformRequirements));
+			vars.add(new Variation(arg, md, subTestName, "NoOptions", platformRequirements));
 		}
 
 		if (TestTarget.isSingleTest() || TestTarget.isList()) {
@@ -308,5 +315,28 @@ public class TestInfo {
 			rt = (TestTarget.isRegular() && !isDisabled()) || (TestTarget.isDisabled() && isDisabled());
 		}
 		return rt;
+	}
+
+	public void countTests() {
+		for (Variation var : vars) {
+			String testName = var.getSubTestName();
+			if (var.isValid() && genCmd()) {
+				testsToExecute.add(testName);
+			} else {
+				testsToDisplay.add(testName);
+			}
+		}
+	}
+
+	public static List<String> getTestsToExecute() {
+		return testsToExecute;
+	}
+
+	public static List<String> getTestsToDisplay() {
+		return testsToDisplay;
+	}
+
+	public static int numOfTests() {
+		return testsToExecute.size() + testsToDisplay.size();
 	}
 }

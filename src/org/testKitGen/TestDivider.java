@@ -31,43 +31,26 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class TestDivider {
-	private static List<String> regularTests = new ArrayList<>();
-	private static List<String> effortlessTests = new ArrayList<>();	// tests almost take no time
-	private static boolean durationFound = false;
-	private static String parallelmk = Options.getProjectRootDir() + "/TKG/" + Constants.PARALLELMK;
-	private static int defaultAvgTestTime = 40000; // in milliseconds
-	private TestDivider() {
+	private Arguments arg;
+	private boolean durationFound;
+	private List<String> testsToExecute;
+	private List<String> testsToDisplay;
+	private int numOfTests;
+	private String parallelmk;
+	private int defaultAvgTestTime;
+
+	public TestDivider(Arguments arg) {
+		this.arg = arg;
+		durationFound = false;
+		testsToExecute = TestInfo.getTestsToExecute();
+		testsToDisplay = TestInfo.getTestsToDisplay();
+		numOfTests = TestInfo.numOfTests();
+		parallelmk = arg.getProjectRootDir() + "/TKG/" + Constants.PARALLELMK;
+		defaultAvgTestTime = 40000; // in milliseconds
 	}
 
-	public static void addTests(File playlistXML) {
-		PlaylistInfo pli = new PlaylistInfo(playlistXML);
-		if (pli.parseInfo()) {
-			for (TestInfo testInfo : pli.getTestInfoList()) {
-				for (Variation var : testInfo.getVars()) {
-					String testName = var.getSubTestName();
-					if (TestTarget.isSingleTest() || TestTarget.isList()) {
-						if (var.isValid()) {
-							regularTests.add(testName);
-						} else {
-							effortlessTests.add(testName);
-						}
-					} else if (TestTarget.isCategory()) {
-						if (!var.isValid()) {
-							effortlessTests.add(testName);
-						} else {
-							if (TestTarget.isDisabled() == testInfo.isDisabled()) {
-								regularTests.add(testName);
-							} else {
-								effortlessTests.add(testName);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 
-	private static void divideOnTestTime(List<List<String>> parallelLists, List<Integer> testListTime, int testTime, Queue<Map.Entry<String, Integer>> durationQueue) {
+	private void divideOnTestTime(List<List<String>> parallelLists, List<Integer> testListTime, int testTime, Queue<Map.Entry<String, Integer>> durationQueue) {
 		if (durationFound) {
 			Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
 				(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
@@ -108,17 +91,17 @@ public class TestDivider {
 				testsInEachList = 1;
 			}
 			/* Populate regular tests first and append the effortless along to the regular test lists. */
-			populateParallelLists(parallelLists, regularTests, testsInEachList, 0);
+			populateParallelLists(parallelLists, testsToExecute, testsInEachList, 0);
 
 			/* If no regular test, no need to divide the effortless tests. */
 			int numOfMachines = parallelLists.size() != 0 ? parallelLists.size() : 1;
-			testsInEachList = effortlessTests.size() / numOfMachines;
-			int remainder = effortlessTests.size() % numOfMachines;
-			populateParallelLists(parallelLists, effortlessTests, testsInEachList, remainder);
+			testsInEachList = testsToDisplay.size() / numOfMachines;
+			int remainder = testsToDisplay.size() % numOfMachines;
+			populateParallelLists(parallelLists, testsToDisplay, testsInEachList, remainder);
 		}
 	}
 
-	private static void divideOnMachineNum(List<List<String>> parallelLists, List<Integer> testListTime, int numOfMachines, Queue<Map.Entry<String, Integer>> durationQueue) {
+	private void divideOnMachineNum(List<List<String>> parallelLists, List<Integer> testListTime, int numOfMachines, Queue<Map.Entry<String, Integer>> durationQueue) {
 		if (durationFound) {
 			Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
 				(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
@@ -140,19 +123,19 @@ public class TestDivider {
 				machineQueue.offer(machineEntry);
 			}
 		} else {
-			int testsInEachList = regularTests.size() / numOfMachines;
-			int remainder = regularTests.size() % numOfMachines;
-			populateParallelLists(parallelLists, regularTests, testsInEachList, remainder);
+			int testsInEachList = testsToExecute.size() / numOfMachines;
+			int remainder = testsToExecute.size() % numOfMachines;
+			populateParallelLists(parallelLists, testsToExecute, testsInEachList, remainder);
 
-			testsInEachList = effortlessTests.size() / numOfMachines;
-			remainder = effortlessTests.size() % numOfMachines;
-			populateParallelLists(parallelLists, effortlessTests, testsInEachList, remainder);
+			testsInEachList = testsToDisplay.size() / numOfMachines;
+			remainder = testsToDisplay.size() % numOfMachines;
+			populateParallelLists(parallelLists, testsToDisplay, testsInEachList, remainder);
 		}
 	}
 
-	private static String constructURL(String impl, String plat, String group, String level) {
+	private String constructURL(String impl, String plat, String group, String level) {
 		int limit = 10; // limit the number of builds used to calculate the average duration 
-		String URL = (Options.getTRSSURL().isEmpty() ? Constants.TRSS_URL : Options.getTRSSURL()) + "/api/getTestAvgDuration?limit=" + limit + "&jdkVersion=" + Options.getJdkVersion() + "&impl=" + impl + "&platform=" + plat;
+		String URL = (arg.getTRSSURL().isEmpty() ? Constants.TRSS_URL : arg.getTRSSURL()) + "/api/getTestAvgDuration?limit=" + limit + "&jdkVersion=" + arg.getJdkVersion() + "&impl=" + impl + "&platform=" + plat;
 
 		if (TestTarget.isSingleTest()) {
 			URL += "&testName=" + TestTarget.getTestTarget();
@@ -167,28 +150,28 @@ public class TestDivider {
 		return URL;
 	}
 
-	private static String getImpl() {
+	private String getImpl() {
 		String impl = "";
-		if (Options.getImpl().equals("openj9")) {
+		if (arg.getImpl().equals("openj9")) {
 			impl = "j9";
-		} else if (Options.getImpl().equals("hotspot")) {
+		} else if (arg.getImpl().equals("hotspot")) {
 			impl = "hs";
 		}
 		return impl;
 	}
 
-	private static String getPlat() {
+	private String getPlat() {
 		String plat = "";
 		try (FileReader platReader = new FileReader(Constants.BUILDPLAT_JSON)) {
 			Properties platProp = new Properties();
 			platProp.load(platReader);
-			plat = platProp.getProperty(Options.getSpec());
+			plat = platProp.getProperty(arg.getSpec());
 		} catch (IOException e) {
 		}
 		return plat;
 	}
 
-	private static String getGroup() {
+	private String getGroup() {
 		String group = "";
 		if (TestTarget.isCategory()) {
 			for (String g : Constants.ALLGROUPS) {
@@ -205,7 +188,7 @@ public class TestDivider {
 		return group;
 	}
 
-	private static String getLevel() {
+	private String getLevel() {
 		String level = "";
 		if (TestTarget.isCategory()) {
 			for (String l : Constants.ALLLEVELS) {
@@ -222,7 +205,7 @@ public class TestDivider {
 		return level;
 	}
 
-	private static void parseDuration(Reader reader, Map map) throws IOException,ParseException {
+	private void parseDuration(Reader reader, Map<String, Integer> map) throws IOException,ParseException {
 		JSONParser parser = new JSONParser();
 		JSONObject jsonObject = (JSONObject) parser.parse(reader);
 		JSONArray testLists = (JSONArray) jsonObject.get("testLists");
@@ -242,24 +225,23 @@ public class TestDivider {
 		}
 	}
 
-	private static Map<String, Integer> getDataFromFile() {
+	private Map<String, Integer> getDataFromFile() {
 		String impl = getImpl();
 		String plat = getPlat();
 		if (impl.equals("") || plat.equals("")) {
 			return null;
 		}
 		String group = getGroup();
-		String level = getLevel();
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		System.out.println("Attempting to get test duration data from cached files.");
 		String fileName = "";
 		if (group.equals("")) {
-			fileName = "Test_openjdk" + Options.getJdkVersion() + "_" + impl + "_(" + String.join("|", Constants.ALLGROUPS) + ")_" + plat + ".json";
+			fileName = "Test_openjdk" + arg.getJdkVersion() + "_" + impl + "_(" + String.join("|", Constants.ALLGROUPS) + ")_" + plat + ".json";
 		} else {
-			fileName = "Test_openjdk" + Options.getJdkVersion() + "_" + impl + "_" + group + "_" + plat + ".json";
+			fileName = "Test_openjdk" + arg.getJdkVersion() + "_" + impl + "_" + group + "_" + plat + ".json";
 		}
 
-		File directory = new File(Options.getProjectRootDir() + "/TKG/" + Constants.RESOURCE);
+		File directory = new File(arg.getProjectRootDir() + "/TKG/" + Constants.RESOURCE);
 		Pattern p = Pattern.compile(fileName);
 		File[] files = directory.listFiles(new FileFilter() {
 			public boolean accept(File f) {
@@ -281,7 +263,7 @@ public class TestDivider {
 		return map;
 	}
 
-	private static Map<String, Integer> getDataFromTRSS()  {
+	private Map<String, Integer> getDataFromTRSS()  {
 		String impl = getImpl();
 		String plat = getPlat();
 		if (impl.equals("") || plat.equals("")) {
@@ -310,18 +292,18 @@ public class TestDivider {
 		return map;
 	}
 
-	private static void printDefaultTime() {
+	private void printDefaultTime() {
 		System.out.println("(Default duration assigned, executed tests: " + defaultAvgTestTime / 1000 + "s; not executed tests: 0s.)");
 	}
 
-	private static Set<String> matchCollections(List<String> list, Map<String, Integer> map) {
+	private Set<String> matchCollections(List<String> list, Map<String, Integer> map) {
 		if (list == null || map == null) return new HashSet<String>();
-		Set<String> set = new HashSet(map.keySet());
+		Set<String> set = new HashSet<>(map.keySet());
 		set.retainAll(list);
 		return set;
 	}
 
-	private static Queue<Map.Entry<String, Integer>> createDurationQueue() {
+	private Queue<Map.Entry<String, Integer>> createDurationQueue() {
 		Queue<Map.Entry<String, Integer>> durationQueue = new PriorityQueue<>(
 			(a, b) -> a.getValue() == b.getValue() ? b.getKey().compareTo(a.getKey()) : b.getValue().compareTo(a.getValue())
 		);
@@ -334,8 +316,10 @@ public class TestDivider {
 		}
 
 		List<String> allTests = new ArrayList<String>();
-		allTests.addAll(regularTests);
-		allTests.addAll(effortlessTests);
+		allTests.addAll(testsToExecute);
+		allTests.addAll(testsToDisplay);
+		Set<String> executeSet = new HashSet<String>(testsToExecute);
+		Set<String> displaySet = new HashSet<String>(testsToDisplay);
 		Map<String, Integer> TRSSMap = getDataFromTRSS();
 		Set<String> matchTRSS = matchCollections(allTests, TRSSMap);
 		Map<String, Integer> cacheMap = getDataFromFile();
@@ -354,17 +338,22 @@ public class TestDivider {
 					testsInvalid.put(test, duration);
 				}
 			} else {
-				durationQueue.offer(new AbstractMap.SimpleEntry<>(test, defaultAvgTestTime));
+				int defaultTime = 0;
+				if (executeSet.contains(test)) {
+					defaultTime = defaultAvgTestTime;
+				} else if (displaySet.contains(test)) {
+					defaultTime = 0;
+				}
+				durationQueue.offer(new AbstractMap.SimpleEntry<>(test, defaultTime));
 				testsNotFound.add(test);
 			}
 		}
 
 		System.out.println("\nTEST DURATION");
 		System.out.println("====================================================================================");
-		int totalNum = regularTests.size() + effortlessTests.size();
-		System.out.println("Total number of tests searched: " + totalNum);
+		System.out.println("Total number of tests searched: " + numOfTests);
 		if (durationFound) {
-			int foundNum = totalNum - testsNotFound.size() - testsInvalid.size();
+			int foundNum = numOfTests - testsNotFound.size() - testsInvalid.size();
 			System.out.println("Number of test durations found: " + foundNum);
 			System.out.println("Top slowest tests: ");
 			List<Map.Entry<String, Integer>> lastTests = new ArrayList<>();
@@ -395,13 +384,13 @@ public class TestDivider {
 		return durationQueue;
 	}
 
-	private static String formatTime(int milliSec) {
+	private String formatTime(int milliSec) {
 		int sec = milliSec / 1000;
 		String duration = String.format("%02dm%02ds", sec / 60, sec % 60);
 		return duration;
 	}
 
-	private static void writeParallelmk(List<List<String>> parallelLists) {
+	private void writeParallelmk(List<List<String>> parallelLists) {
 		try {
 			FileWriter f = new FileWriter(parallelmk);
 			f.write(Constants.HEADERCOMMENTS);
@@ -425,7 +414,7 @@ public class TestDivider {
 		System.out.println("\nTest target is split into " + parallelLists.size() + " lists.");
 	}
 
-	private static void printParallelStatus(List<List<String>> parallelLists, List<Integer> testListTime) {
+	private void printParallelStatus(List<List<String>> parallelLists, List<Integer> testListTime) {
 		if (durationFound) {
 			int maxListTime = 0;
 			int totalTime = 0;
@@ -458,20 +447,20 @@ public class TestDivider {
 		}
 	}
 
-	private static void divideTests(List<List<String>> parallelLists, List<Integer> testListTime) {
+	private void divideTests(List<List<String>> parallelLists, List<Integer> testListTime) {
 		Queue<Map.Entry<String, Integer>> durationQueue = createDurationQueue();
-		if (Options.getNumOfMachines() == null) {
-			if (Options.getTestTime() == null) {
+		if (arg.getNumOfMachines() == null) {
+			if (arg.getTestTime() == null) {
 				divideOnMachineNum(parallelLists, testListTime, 1, durationQueue);
 			} else {
-				divideOnTestTime(parallelLists, testListTime, Options.getTestTime() * 60 * 1000, durationQueue);
+				divideOnTestTime(parallelLists, testListTime, arg.getTestTime() * 60 * 1000, durationQueue);
 			}
 		} else {
-			divideOnMachineNum(parallelLists, testListTime, Math.max(1, Math.min(Options.getNumOfMachines(), regularTests.size())), durationQueue);
+			divideOnMachineNum(parallelLists, testListTime, Math.max(1, Math.min(arg.getNumOfMachines(), testsToExecute.size())), durationQueue);
 		}
 	}
-	public static void generateLists() {
-		if (regularTests.size() == 0 && effortlessTests.size() == 0) {
+	public void generateLists() {
+		if (numOfTests == 0) {
 			System.out.println("No tests found for target: " + TestTarget.getTestTarget());
 			System.out.println("No parallel test lists generated.");
 			return;
@@ -485,7 +474,7 @@ public class TestDivider {
 		System.out.println("Parallel test lists file (" + parallelmk + ") is generated successfully.");
 	}
 
-	private static void populateParallelLists(List<List<String>> parallelLists, List<String> tests, int testInList, int remainder) {
+	private void populateParallelLists(List<List<String>> parallelLists, List<String> tests, int testInList, int remainder) {
 		/* it's better to have adjacent tests stay archived together */
 		int listIndex = 0;
 		int start = 0;
