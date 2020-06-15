@@ -14,10 +14,12 @@
 
 package org.testKitGen;
 
+import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
 import java.util.*;
+import java.util.regex.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,13 +33,8 @@ import org.json.simple.parser.ParseException;
 public class TestDivider {
 	private static List<String> regularTests = new ArrayList<>();
 	private static List<String> effortlessTests = new ArrayList<>();	// tests almost take no time
-	private static boolean dataFromTRSS = false;
-	private static Queue<Map.Entry<String, Integer>> testTimeQueue = new PriorityQueue<>(
-		(a, b) -> a.getValue() == b.getValue() ? b.getKey().compareTo(a.getKey()) : b.getValue().compareTo(a.getValue())
-	);
-	private static List<Integer> testListTime = new ArrayList<>();
+	private static boolean durationFound = false;
 	private static String parallelmk = Options.getProjectRootDir() + "/TKG/" + Constants.PARALLELMK;
-	private static List<List<String>> parallelLists = new ArrayList<>();
 	private static int defaultAvgTestTime = 40000; // in milliseconds
 	private TestDivider() {
 	}
@@ -70,15 +67,15 @@ public class TestDivider {
 		}
 	}
 
-	private static void divideOnTestTime(int testTime) {
-		if (dataFromTRSS) {
+	private static void divideOnTestTime(List<List<String>> parallelLists, List<Integer> testListTime, int testTime, Queue<Map.Entry<String, Integer>> durationQueue) {
+		if (durationFound) {
 			Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
 				(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
 			);
 			int limitFactor = testTime;
 			int index = 0;
-			while (!testTimeQueue.isEmpty()) {
-				Map.Entry<String, Integer> testEntry = testTimeQueue.poll();
+			while (!durationQueue.isEmpty()) {
+				Map.Entry<String, Integer> testEntry = durationQueue.poll();
 				String testName = testEntry.getKey();
 				int testDuration = testEntry.getValue();
 				if (!machineQueue.isEmpty() && (machineQueue.peek().getValue() + testDuration < limitFactor)) {
@@ -111,18 +108,18 @@ public class TestDivider {
 				testsInEachList = 1;
 			}
 			/* Populate regular tests first and append the effortless along to the regular test lists. */
-			populateParallelLists(regularTests, testsInEachList, 0);
+			populateParallelLists(parallelLists, regularTests, testsInEachList, 0);
 
 			/* If no regular test, no need to divide the effortless tests. */
 			int numOfMachines = parallelLists.size() != 0 ? parallelLists.size() : 1;
 			testsInEachList = effortlessTests.size() / numOfMachines;
 			int remainder = effortlessTests.size() % numOfMachines;
-			populateParallelLists(effortlessTests, testsInEachList, remainder);
+			populateParallelLists(parallelLists, effortlessTests, testsInEachList, remainder);
 		}
 	}
 
-	private static void divideOnMachineNum(int numOfMachines) {
-		if (dataFromTRSS) {
+	private static void divideOnMachineNum(List<List<String>> parallelLists, List<Integer> testListTime, int numOfMachines, Queue<Map.Entry<String, Integer>> durationQueue) {
+		if (durationFound) {
 			Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
 				(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
 			);
@@ -132,8 +129,8 @@ public class TestDivider {
 				Map.Entry<Integer,Integer> entry = new AbstractMap.SimpleEntry<>(i, 0);
 				machineQueue.offer(entry);
 			}
-			while (!testTimeQueue.isEmpty()) {
-				Map.Entry<String, Integer> testEntry = testTimeQueue.poll();
+			while (!durationQueue.isEmpty()) {
+				Map.Entry<String, Integer> testEntry = durationQueue.poll();
 				Map.Entry<Integer, Integer> machineEntry = machineQueue.poll();
 
 				parallelLists.get(machineEntry.getKey()).add(testEntry.getKey());
@@ -145,40 +142,55 @@ public class TestDivider {
 		} else {
 			int testsInEachList = regularTests.size() / numOfMachines;
 			int remainder = regularTests.size() % numOfMachines;
-			populateParallelLists(regularTests, testsInEachList, remainder);
+			populateParallelLists(parallelLists, regularTests, testsInEachList, remainder);
 
 			testsInEachList = effortlessTests.size() / numOfMachines;
 			remainder = effortlessTests.size() % numOfMachines;
-			populateParallelLists(effortlessTests, testsInEachList, remainder);
+			populateParallelLists(parallelLists, effortlessTests, testsInEachList, remainder);
 		}
 	}
 
-	private static String constructURL() {
+	private static String constructURL(String impl, String plat, String group, String level) {
 		int limit = 10; // limit the number of builds used to calculate the average duration 
-		String URL = (Options.getTRSSURL().isEmpty() ? Constants.TRSS_URL : Options.getTRSSURL()) + "/api/getTestAvgDuration?limit=" + limit + "&jdkVersion=" + Options.getJdkVersion();
+		String URL = (Options.getTRSSURL().isEmpty() ? Constants.TRSS_URL : Options.getTRSSURL()) + "/api/getTestAvgDuration?limit=" + limit + "&jdkVersion=" + Options.getJdkVersion() + "&impl=" + impl + "&platform=" + plat;
 
-		String impl = Options.getImpl();
-		if (impl.equals("openj9")) {
+		if (TestTarget.isSingleTest()) {
+			URL += "&testName=" + TestTarget.getTestTarget();
+		} else if (TestTarget.isCategory()) {
+			if (!group.equals("")) {
+				URL += "&group=" + group; 
+			}
+			if (!level.equals("")) {
+				URL += "&level=" + level; 
+			}
+		} 
+		return URL;
+	}
+
+	private static String getImpl() {
+		String impl = "";
+		if (Options.getImpl().equals("openj9")) {
 			impl = "j9";
-		} else if (impl.equals("hotspot")) {
+		} else if (Options.getImpl().equals("hotspot")) {
 			impl = "hs";
 		}
-		URL += "&impl=" + impl;
+		return impl;
+	}
 
-		String plat = Options.getSpec();
+	private static String getPlat() {
+		String plat = "";
 		try (FileReader platReader = new FileReader(Constants.BUILDPLAT_JSON)) {
 			Properties platProp = new Properties();
 			platProp.load(platReader);
 			plat = platProp.getProperty(Options.getSpec());
 		} catch (IOException e) {
-			// nothing to do
 		}
-		URL += "&platform=" + plat;
+		return plat;
+	}
 
-		if (TestTarget.isSingleTest()) {
-			URL += "&testName=" + TestTarget.getTestTarget();
-		} else if (TestTarget.isCategory()) {
-			String group = "";
+	private static String getGroup() {
+		String group = "";
+		if (TestTarget.isCategory()) {
 			for (String g : Constants.ALLGROUPS) {
 				if (TestTarget.getCategorySet().contains(g)) {
 					if (group.equals("")) {
@@ -189,10 +201,13 @@ public class TestDivider {
 					}
 				}
 			}
-			if (!group.equals("")) {
-				URL += "&group=" + group; 
-			}
-			String level = "";
+		}
+		return group;
+	}
+
+	private static String getLevel() {
+		String level = "";
+		if (TestTarget.isCategory()) {
 			for (String l : Constants.ALLLEVELS) {
 				if (TestTarget.getCategorySet().contains(l)) {
 					if (level.equals("")) {
@@ -203,120 +218,181 @@ public class TestDivider {
 					}
 				}
 			}
-			if (!level.equals("")) {
-				URL += "&level=" + level; 
-			}
-		} 
-		return URL;
+		}
+		return level;
 	}
 
-	private static Map<String, Integer> getMapFromTRSS() {
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		String URL = constructURL();
-		String command = "curl --silent --max-time 120 " + URL;
-		System.out.println("Attempting to get test duration data from TRSS:");
-		System.out.println(command);
-		try {
-			Process process = Runtime.getRuntime().exec(command);
-			InputStream responseStream = process.getInputStream();
-			BufferedReader responseReader = new BufferedReader(new InputStreamReader(responseStream));
-			JSONParser parser = new JSONParser();
-			JSONObject jsonObject = (JSONObject) parser.parse(responseReader);
-			JSONArray testLists = (JSONArray) jsonObject.get("testLists");
-			if (testLists != null && testLists.size() != 0) {
-				JSONArray testList = (JSONArray) testLists.get(0);
-				if (testList != null) {
-					for (int i = 0; i < testList.size(); i++) {
-						JSONObject testData = (JSONObject) testList.get(i);
-						String testName = (String) testData.get("_id");
-						Number testDurationNum = (Number) testData.get("avgDuration");
-						if (testName != null && testDurationNum != null) {
-							Double testDuration = ((Number) testData.get("avgDuration")).doubleValue();
-							map.put(testName, testDuration.intValue());
-						}
+	private static void parseDuration(Reader reader, Map map) throws IOException,ParseException {
+		JSONParser parser = new JSONParser();
+		JSONObject jsonObject = (JSONObject) parser.parse(reader);
+		JSONArray testLists = (JSONArray) jsonObject.get("testLists");
+		if (testLists != null && testLists.size() != 0) {
+			JSONArray testList = (JSONArray) testLists.get(0);
+			if (testList != null) {
+				for (int i = 0; i < testList.size(); i++) {
+					JSONObject testData = (JSONObject) testList.get(i);
+					String testName = (String) testData.get("_id");
+					Number testDurationNum = (Number) testData.get("avgDuration");
+					if (testName != null && testDurationNum != null) {
+						Double testDuration = ((Number) testData.get("avgDuration")).doubleValue();
+						map.put(testName, testDuration.intValue());
 					}
 				}
 			}
-		} catch (IOException | ParseException e) {
-			System.out.println("Warning: cannot get data from TRSS.");
+		}
+	}
+
+	private static Map<String, Integer> getDataFromFile() {
+		String impl = getImpl();
+		String plat = getPlat();
+		if (impl.equals("") || plat.equals("")) {
+			return null;
+		}
+		String group = getGroup();
+		String level = getLevel();
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		System.out.println("Attempting to get test duration data from cached files.");
+		String fileName = "";
+		if (group.equals("")) {
+			fileName = "Test_openjdk" + Options.getJdkVersion() + "_" + impl + "_(" + String.join("|", Constants.ALLGROUPS) + ")_" + plat + ".json";
+		} else {
+			fileName = "Test_openjdk" + Options.getJdkVersion() + "_" + impl + "_" + group + "_" + plat + ".json";
+		}
+
+		File directory = new File(Options.getProjectRootDir() + "/TKG/" + Constants.RESOURCE);
+		Pattern p = Pattern.compile(fileName);
+		File[] files = directory.listFiles(new FileFilter() {
+			public boolean accept(File f) {
+				return p.matcher(f.getName()).matches();
+			}
+		});
+
+		for (File f : files) {
+			System.out.println("Reading file: " + f.getName().toString());
+			try (Reader reader = new FileReader(f)) {
+				parseDuration(reader, map);
+			} catch (IOException|ParseException e) {
+				System.out.println("Warning: cannot get data from cached files.");
+				// when there's exception, clear the map object and try to get data from TRSS
+				map.clear();
+				break;
+			}
 		}
 		return map;
 	}
 
-	private static void buildTestTimeQueue() {
-		Map<String, Integer> TRSSMap = getMapFromTRSS();
-		Map<String, Integer> actualTestMap = new HashMap<>();
+	private static Map<String, Integer> getDataFromTRSS()  {
+		String impl = getImpl();
+		String plat = getPlat();
+		if (impl.equals("") || plat.equals("")) {
+			return null;
+		}
+		String group = getGroup();
+		String level = getLevel();
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		String URL = constructURL(impl, plat, group, level);
+		String command = "curl --silent --max-time 120 " + URL;
+		System.out.println("Attempting to get test duration data from TRSS.");
+		System.out.println(command);
+		Process process;
+		try {
+			process = Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			System.out.println("Warning: cannot get data from TRSS.");
+			return map;
+		}
+		try	(InputStream responseStream = process.getInputStream();
+			Reader responseReader = new BufferedReader(new InputStreamReader(responseStream))) {
+			parseDuration(responseReader, map);
+		} catch (IOException | ParseException e) {
+			System.out.println("Warning: cannot parse data from TRSS.");
+		}
+		return map;
+	}
+
+	private static void printDefaultTime() {
+		System.out.println("(Default duration assigned, executed tests: " + defaultAvgTestTime / 1000 + "s; not executed tests: 0s.)");
+	}
+
+	private static Set<String> matchCollections(List<String> list, Map<String, Integer> map) {
+		if (list == null || map == null) return new HashSet<String>();
+		Set<String> set = new HashSet(map.keySet());
+		set.retainAll(list);
+		return set;
+	}
+
+	private static Queue<Map.Entry<String, Integer>> createDurationQueue() {
+		Queue<Map.Entry<String, Integer>> durationQueue = new PriorityQueue<>(
+			(a, b) -> a.getValue() == b.getValue() ? b.getKey().compareTo(a.getKey()) : b.getValue().compareTo(a.getValue())
+		);
+
+		if (TestTarget.isDisabled()) {
+			// TRSS does not contain test duration for running disabled test at this moment
+			System.out.println("Warning: Test duration data cannot be found for executing disabled target.");
+			printDefaultTime();
+			return durationQueue;
+		}
+
+		List<String> allTests = new ArrayList<String>();
+		allTests.addAll(regularTests);
+		allTests.addAll(effortlessTests);
+		Map<String, Integer> TRSSMap = getDataFromTRSS();
+		Set<String> matchTRSS = matchCollections(allTests, TRSSMap);
+		Map<String, Integer> cacheMap = getDataFromFile();
+		Set<String> matchCache = matchCollections(allTests, cacheMap);
+
 		List<String> testsNotFound = new ArrayList<>();
 		Map<String, Integer> testsInvalid = new HashMap<>();
-		if (TRSSMap.size() != 0) {
-			for (String test : regularTests) {
-				if (TRSSMap.containsKey(test)) {
-					int duration = TRSSMap.get(test);
-					if (duration > 0) {
-						actualTestMap.put(test, duration);
-						dataFromTRSS = true;
-					} else {
-						actualTestMap.put(test, defaultAvgTestTime);
-						testsInvalid.put(test, duration);
-					}
+		for (String test : allTests) {
+			if (matchTRSS.contains(test) || matchCache.contains(test)) {
+				int duration = TRSSMap.containsKey(test) ? TRSSMap.get(test) : cacheMap.get(test);
+				if (duration > 0) {
+					durationQueue.offer(new AbstractMap.SimpleEntry<>(test, duration));
+					durationFound = true;
 				} else {
-					actualTestMap.put(test, defaultAvgTestTime);
-					testsNotFound.add(test);
+					durationQueue.offer(new AbstractMap.SimpleEntry<>(test, defaultAvgTestTime));
+					testsInvalid.put(test, duration);
 				}
-			}
-			for (String test : effortlessTests) {
-				if (TRSSMap.containsKey(test)) {
-					int duration = TRSSMap.get(test);
-					if (duration > 0) {
-						actualTestMap.put(test, duration);
-						dataFromTRSS = true;
-					} else {
-						actualTestMap.put(test, defaultAvgTestTime);
-						testsInvalid.put(test, duration);
-					}
-				} else {
-					actualTestMap.put(test, 0);
-					testsNotFound.add(test);
-				}
-			}
-			for (Map.Entry<String, Integer> entry : actualTestMap.entrySet()) {
-				testTimeQueue.offer(entry);
+			} else {
+				durationQueue.offer(new AbstractMap.SimpleEntry<>(test, defaultAvgTestTime));
+				testsNotFound.add(test);
 			}
 		}
+
 		System.out.println("\nTEST DURATION");
 		System.out.println("====================================================================================");
 		int totalNum = regularTests.size() + effortlessTests.size();
 		System.out.println("Total number of tests searched: " + totalNum);
-		if (dataFromTRSS) {
-			int foundNum = testTimeQueue.size() - testsNotFound.size() - testsInvalid.size();
+		if (durationFound) {
+			int foundNum = totalNum - testsNotFound.size() - testsInvalid.size();
 			System.out.println("Number of test durations found: " + foundNum);
 			System.out.println("Top slowest tests: ");
 			List<Map.Entry<String, Integer>> lastTests = new ArrayList<>();
 			for (int i = 0; i < Math.min(foundNum, 3); i++) {
-				lastTests.add(testTimeQueue.poll());
+				lastTests.add(durationQueue.poll());
 			}
 			for (int i = 0; i < lastTests.size(); i++) {
 				System.out.println("\t" + formatTime(lastTests.get(i).getValue()) + " " + lastTests.get(i).getKey());
-				testTimeQueue.offer(lastTests.get(i));
+				durationQueue.offer(lastTests.get(i));
 			}
 			if (!testsNotFound.isEmpty()) {
 				System.out.println("Following test duration data cannot be found: ");
-				System.out.println("(Default duration assigned, executed tests: " + defaultAvgTestTime / 1000 + "s; skipped/disabled tests: 0s.)");
+				printDefaultTime();
 				System.out.println("\t" + testsNotFound.toString());
 			}
 			if (!testsInvalid.isEmpty()) {
 				System.out.println("Following test duration data is not valid: ");
-				System.out.println("(Default duration assigned, executed tests: " + defaultAvgTestTime / 1000 + "s; skipped/disabled tests: 0s.)");
+				printDefaultTime();
 				for (Map.Entry<String, Integer> entry : testsInvalid.entrySet()) {
 					System.out.println("\t" + entry.getKey() + " : " + entry.getValue() + "ms");
 				}
 			}
 		} else {
 			System.out.println("No test duration data found.");
-			System.out.println("(Default duration assigned, executed tests: " + defaultAvgTestTime / 1000 + "s; skipped/disabled tests: 0s.)");
-
+			printDefaultTime();
 		}
 		System.out.println("====================================================================================");
+		return durationQueue;
 	}
 
 	private static String formatTime(int milliSec) {
@@ -325,31 +401,7 @@ public class TestDivider {
 		return duration;
 	}
 
-	public static void generateLists() {
-		if (regularTests.size() == 0 && effortlessTests.size() == 0) {
-			System.out.println("No tests found for target: " + TestTarget.getTestTarget());
-			System.out.println("No parallel test lists generated.");
-			return;
-		}
-
-		if (TestTarget.isDisabled()) {
-			// TRSS does not contain test duration for running disabled test at this moment
-			System.out.println("Warning: Test duration data cannot be found for executing disabled target.");
-			System.out.println("(Default duration assigned, running tests: " + defaultAvgTestTime / 1000 + "s; skipped tests: 0s.)");
-		} else {
-			buildTestTimeQueue();
-		}
-	
-		if (Options.getNumOfMachines() == null) {
-			if (Options.getTestTime() == null) {
-				divideOnMachineNum(1);
-			} else {
-				divideOnTestTime(Options.getTestTime() * 60 * 1000);
-			}
-		} else {
-			divideOnMachineNum(Math.max(1, Math.min(Options.getNumOfMachines(), regularTests.size())));
-		}
-
+	private static void writeParallelmk(List<List<String>> parallelLists) {
 		try {
 			FileWriter f = new FileWriter(parallelmk);
 			f.write(Constants.HEADERCOMMENTS);
@@ -370,10 +422,11 @@ public class TestDivider {
 			e.printStackTrace();
 			System.exit(1);
 		}
-
 		System.out.println("\nTest target is split into " + parallelLists.size() + " lists.");
+	}
 
-		if (dataFromTRSS) {
+	private static void printParallelStatus(List<List<String>> parallelLists, List<Integer> testListTime) {
+		if (durationFound) {
 			int maxListTime = 0;
 			int totalTime = 0;
 			for (int listTime : testListTime) {
@@ -387,7 +440,7 @@ public class TestDivider {
 			
 			System.out.println("-------------------------------------testList_" + i + "-------------------------------------");
 			System.out.println("Number of tests: " + parallelLists.get(i).size());
-			if (dataFromTRSS) {
+			if (durationFound) {
 				System.out.println("Estimated running time: " + formatTime(testListTime.get(i)));
 			}
 			System.out.print("TESTLIST=");
@@ -403,10 +456,36 @@ public class TestDivider {
 			}
 			System.out.println("\n");
 		}
+	}
+
+	private static void divideTests(List<List<String>> parallelLists, List<Integer> testListTime) {
+		Queue<Map.Entry<String, Integer>> durationQueue = createDurationQueue();
+		if (Options.getNumOfMachines() == null) {
+			if (Options.getTestTime() == null) {
+				divideOnMachineNum(parallelLists, testListTime, 1, durationQueue);
+			} else {
+				divideOnTestTime(parallelLists, testListTime, Options.getTestTime() * 60 * 1000, durationQueue);
+			}
+		} else {
+			divideOnMachineNum(parallelLists, testListTime, Math.max(1, Math.min(Options.getNumOfMachines(), regularTests.size())), durationQueue);
+		}
+	}
+	public static void generateLists() {
+		if (regularTests.size() == 0 && effortlessTests.size() == 0) {
+			System.out.println("No tests found for target: " + TestTarget.getTestTarget());
+			System.out.println("No parallel test lists generated.");
+			return;
+		}
+
+		List<List<String>> parallelLists = new ArrayList<>();
+		List<Integer> testListTime = new ArrayList<>();
+		divideTests(parallelLists, testListTime);
+		writeParallelmk(parallelLists);
+		printParallelStatus(parallelLists, testListTime);
 		System.out.println("Parallel test lists file (" + parallelmk + ") is generated successfully.");
 	}
 
-	private static void populateParallelLists(List<String> tests, int testInList, int remainder) {
+	private static void populateParallelLists(List<List<String>> parallelLists, List<String> tests, int testInList, int remainder) {
 		/* it's better to have adjacent tests stay archived together */
 		int listIndex = 0;
 		int start = 0;
