@@ -116,6 +116,14 @@ my %json_simple = (
 	sha1 => 'c9ad4a0850ab676c5c64461a05ca524cdfff59f1'
 );
 
+my %tohandler_simple = (
+	url => 'https://ci.eclipse.org/openj9/view/Infrastructure/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar',
+	fname => 'openj9jtregtimeouthandler.jar',
+	shaurl => 'https://ci.eclipse.org/openj9/view/Infrastructure/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar.sha256sum.txt',
+	shafn => 'openj9jtregtimeouthandler.jar.sha256sum.txt',
+	shaalg => '256'
+);
+
 
 # Put all dependent jars hash to array to prepare downloading
 my @jars_info = (
@@ -129,7 +137,8 @@ my @jars_info = (
 	\%jcommander,
 	\%asmtools,
 	\%jaxb_api,
-	\%json_simple
+	\%json_simple,
+	\%tohandler_simple
 );
 
 print "--------------------------------------------\n";
