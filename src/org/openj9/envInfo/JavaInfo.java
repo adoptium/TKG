@@ -70,6 +70,7 @@ public class JavaInfo {
         if (Integer.parseInt(model.trim())==64) {
             spec += "-64";
             spec = spec.replace("arm-64", "aarch64");
+            spec = spec.replace("riscv-64", "riscv64");
         }
 
         if (cmprssptrs != null && cmprssptrs.contains("Compressed References")) {
