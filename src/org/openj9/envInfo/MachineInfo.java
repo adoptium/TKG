@@ -16,280 +16,110 @@ package org.openj9.envInfo;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.lang.management.ManagementFactory;
 
 public class MachineInfo {
-	private static final int _1 = 1;
-	public static String UNAME_CMD = "uname -a";
-	public static String SYS_ARCH_CMD = "uname -m";
-	public static String PROC_ARCH_CMD = "uname -p";
-	public static final String ULIMIT_CMD = "ulimit -a";
+	public static final String[] UNAME_CMD = new String[] {"uname", "-a"};
+	public static final String[] SYS_ARCH_CMD = new String[] {"uname", "-m"};
+	public static final String[] PROC_ARCH_CMD = new String[] {"uname", "-p"};
+	public static final String[] ULIMIT_CMD = new String[] {"bash", "-c", "ulimit -a"};
 
-	public static String INSTALLED_MEM_CMD = "grep MemTotal /proc/meminfo | awk '{print $2}";
-	public static String FREE_MEM_CMD = "grep MemFree /proc/meminfo | awk '{print $2}";
-	public static String CPU_CORES_CMD = "cat /proc/cpuinfo | grep processor | wc -l";
+	public static final String[] INSTALLED_MEM_CMD = new String[] {"bash", "-c", "grep MemTotal /proc/meminfo | awk '{print $2}"};
+	public static final String[] FREE_MEM_CMD = new String[] {"bash", "-c", "grep MemFree /proc/meminfo | awk '{print $2}"};
+	public static final String[] CPU_CORES_CMD = new String[] {"bash", "-c", "cat /proc/cpuinfo | grep processor | wc -l"};
 
-	public static String NUMA_CMD = "numactl --show | grep 'No NUMA support available on this system";
-	public static String SYS_VIRT_CMD = "";
+	public static final String[] NUMA_CMD = new String[] {"bash", "-c", "numactl --show | grep 'No NUMA support available on this system"};
+	public static final String[] SYS_VIRT_CMD = new String[] {""};
 
 	// Software
-	public static String SYS_OS_CMD = "uname -s";
-	public static String KERNEL_VERSION_CMD = "uname -r";
-	public static String GCC_VERSION_CMD = "gcc -dumpversion";
+	public static final String[] SYS_OS_CMD = new String[] {"uname", "-s"};
+	public static final String[] KERNEL_VERSION_CMD = new String[] {"uname", "-r"};
+	public static final String[] GCC_VERSION_CMD = new String[] {"gcc", "-dumpversion"};
 
-	public static final String XLC_VERSION_CMD = "xlC -qversion | grep 'Version' ";
-	public static final String GDB_VERSION_CMD = "gdb --version | head -1"; // debugger on Linux
-	public static String LLDB_VERSION_CMD = "lldb --version"; // debugger on Darwin/Mac
-	public static final String GCLIBC_VERSION_CMD = "ldd --version | head -1";
+	public static final String[] XLC_VERSION_CMD = new String[] {"bash", "-c", "xlC -qversion | grep 'Version' "};
+	public static final String[] GDB_VERSION_CMD = new String[] {"bash", "-c", "gdb --version | head -1"}; // debugger on Linux
+	public static final String[] LLDB_VERSION_CMD = new String[] {"lldb", "--version"}; // debugger on Darwin/Mac
+	public static final String[] GCLIBC_VERSION_CMD = new String[] {"bash", "-c", "ldd --version | head -1"};
 
 	// Console
-	public static final String NUM_JAVA_PROCESSES_CMD = "ps -ef | grep -i [j]ava | wc -l";
-	public static final String ACTIVE_JAVA_PROCESSES_CMD = "ps -ef | grep -i [j]ava";
+	public static final String[] NUM_JAVA_PROCESSES_CMD = new String[] {"bash", "-c", "ps -ef | grep -i [j]ava | wc -l"};
+	public static final String[] ACTIVE_JAVA_PROCESSES_CMD = new String[] {"bash", "-c", "ps -ef | grep -i [j]ava"};
 
-	String uname = "";
-	String ulimit = "";
-	String installedMem = "";
-	String freeMem = "";
-	String cpuCores = "";
-	String cpuModel = "";
-	String cpuSpeed = "";
-	String sysArch = "";
-	String sysOS = "";
-	String procArch = "";
-	String numa = "Unknown";
-	String sysVirt = "Unknown";
-	long totalMemory = -1;
-	long freeMemory = -1;
+	private Map<String, String> infoMap;
+	
+	public MachineInfo() {
+		this.infoMap = new LinkedHashMap<>();
+	}
 
-	String vmVendor = "";
-	String vmVersion = "";
-	String specVendor = "";
-	String specVersion = "";
-	String javaVersion = "";
+	public void getInfo() {
+		getSysInfo();
+		getRuntimeInfo();
+		getSpaceInfo("");
+	}
 
 	public String toString() {
-		return "\nuname: " + uname + "\ncpuCores: " + cpuCores + "\nsysArch: " + sysArch + "\nprocArch: " + procArch
-				+ "\nsysOS: " + sysOS + "\nulimit: " + ulimit + "\n" + "\nvmVendor: " + vmVendor + "\nvmVersion: "
-				+ vmVersion + "\nspecVendor: " + specVendor + "\nspecVersion: " + specVersion + "\njavaVersion: "
-				+ javaVersion + "\n" + "\nTotal memory (bytes): " + totalMemory + "\nFree memory (bytes): " + freeMemory
-				+ "\n";
+		StringBuilder sb = new StringBuilder();
+		String newline = "";
+		for (Map.Entry<String, String> entry : infoMap.entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue() != null ? entry.getValue() : "";
+			if (value.contains("\n")) {
+				value = "\n" + value;
+				value = value.replaceAll("(?m)\\n", "\n\t");
+			}
+			sb.append(newline).append(key).append(" : ").append(value);
+			newline = "\n";
+		}
+		return sb.toString();
 	}
 
-	public long getFreeMemory() {
-		return freeMemory;
-	}
-
-	public void setFreeMemory(long freeMemory) {
-		this.freeMemory = freeMemory;
-	}
-
-	public long getTotalMemory() {
-		return totalMemory;
-	}
-
-	public void setTotalMemory(long totalMemory) {
-		this.totalMemory = totalMemory;
-	}
-
-	public String getUname() {
-		return uname;
-	}
-
-	public String getUlimit() {
-		return ulimit;
-	}
-
-	public void setUname(String uname) {
-		this.uname = uname;
-	}
-
-	public void setUlimit(String ulimit) {
-		this.ulimit = ulimit;
-	}
-
-	public String getVmVendor() {
-		return vmVendor;
-	}
-
-	public void setVmVendor(String vmVendor) {
-		this.vmVendor = vmVendor;
-	}
-
-	public String getVmVersion() {
-		return vmVersion;
-	}
-
-	public void setVmVersion(String vmVersion) {
-		this.vmVersion = vmVersion;
-	}
-
-	public String getSpecVendor() {
-		return specVendor;
-	}
-
-	public void setSpecVendor(String specVendor) {
-		this.specVendor = specVendor;
-	}
-
-	public String getSpecVersion() {
-		return specVersion;
-	}
-
-	public void setSpecVersion(String specVersion) {
-		this.specVersion = specVersion;
-	}
-
-	public String getJavaVersion() {
-		return javaVersion;
-	}
-
-	public void setJavaVersion(String javaVersion) {
-		this.javaVersion = javaVersion;
-	}
-
-	public String getInstalledMem() {
-		return installedMem;
-	}
-
-	public void setInstalledMem(String installedMem) {
-		this.installedMem = installedMem;
-	}
-
-	public String getFreeMem() {
-		return freeMem;
-	}
-
-	public void setFreeMem(String freeMem) {
-		this.freeMem = freeMem;
-	}
-
-	public String getCpuCores() {
-		return cpuCores;
-	}
-
-	public void setCpuCores(String cpuCores) {
-		this.cpuCores = cpuCores;
-	}
-
-	public String getCpuModel() {
-		return cpuModel;
-	}
-
-	public void setCpuModel(String cpuModel) {
-		this.cpuModel = cpuModel;
-	}
-
-	public String getCpuSpeed() {
-		return cpuSpeed;
-	}
-
-	public void setCpuSpeed(String cpuSpeed) {
-		this.cpuSpeed = cpuSpeed;
-	}
-
-	public String getSysArch() {
-		return sysArch;
-	}
-
-	public void setSysArch(String sysArch) {
-		this.sysArch = sysArch;
-	}
-
-	public String getSysOS() {
-		return sysOS;
-	}
-
-	public void setSysOS(String sysOS) {
-		this.sysOS = sysOS;
-	}
-
-	public String getProcArch() {
-		return procArch;
-	}
-
-	public void setProcArch(String procArch) {
-		this.procArch = procArch;
-	}
-
-	public String getNuma() {
-		return numa;
-	}
-
-	public void setNuma(String numa) {
-		this.numa = numa;
-	}
-
-	public String getSysVirt() {
-		return sysVirt;
-	}
-
-	public void setSysVirt(String sysVirt) {
-		this.sysVirt = sysVirt;
-	}
-
-	public void getRuntimeInfo() {
-		setVmVendor(ManagementFactory.getRuntimeMXBean().getVmVendor());
-		setVmVersion(ManagementFactory.getRuntimeMXBean().getVmVersion());
-		setSpecVendor(ManagementFactory.getRuntimeMXBean().getSpecVendor());
-		setSpecVersion(ManagementFactory.getRuntimeMXBean().getSpecVersion());
-		setJavaVersion(System.getProperty("java.version"));
-
-		setFreeMemory(Runtime.getRuntime().freeMemory());
-		setTotalMemory(Runtime.getRuntime().totalMemory());
-	}
-
-	public void getMachineInfo(String command) {
+	private String execCommands(String[] commands) {
+		String rt = null;
 		try {
-			Process proc = null;
-			// ulimit needs to be invoked via shell with -c option for it to work on all
-			// platforms
-			if (command.equals(MachineInfo.ULIMIT_CMD)) {
-				proc = Runtime.getRuntime().exec(new String[] { "bash", "-c", MachineInfo.ULIMIT_CMD });
-			} else {
-				proc = Runtime.getRuntime().exec(command);
+			Process proc = Runtime.getRuntime().exec(commands);
+			BufferedReader stdOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			String newline = "";  
+			while ((line = stdOutput.readLine()) != null) {
+				sb.append(newline).append(line);
+				newline = "\n";
 			}
-
-			BufferedReader sout = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-			String line = sout.readLine();
-
-			if (command.equals(MachineInfo.UNAME_CMD)) {
-				setUname(line);
-			} else if (command.equals(MachineInfo.ULIMIT_CMD)) {
-				String rest = "";
-				while (true) {
-					rest = sout.readLine();
-					if (rest == null) {
-						break;
-					}
-					line = line + "\n" + rest;
-				}
-				setUlimit(line);
-			} else if (command.equals(MachineInfo.SYS_ARCH_CMD)) {
-				setSysArch(line);
-			} else if (command.equals(MachineInfo.PROC_ARCH_CMD)) {
-				setProcArch(line);
-			} else if (command.equals(MachineInfo.SYS_OS_CMD)) {
-				setSysOS(line);
-			} else if (command.equals(MachineInfo.CPU_CORES_CMD)) {
-				setCpuCores(line);
-				if (getCpuCores() == null) {
-					setCpuCores("" + Runtime.getRuntime().availableProcessors());
-				}
-			}
-		} catch (Exception e) {
+			rt = sb.toString();
+			proc.waitFor();
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
+		return rt;
 	}
 
-	public void getSpaceInfo(String path) {
+	private void getSysInfo() {
+		infoMap.put("uname", execCommands(UNAME_CMD));
+		infoMap.put("cpuCores", execCommands(CPU_CORES_CMD));
+		infoMap.put("sysArch", execCommands(SYS_ARCH_CMD));
+		infoMap.put("procArch", execCommands(PROC_ARCH_CMD));
+		infoMap.put("sysOS", execCommands(SYS_OS_CMD));
+		infoMap.put("ulimit", execCommands(ULIMIT_CMD));
+	}
+
+	private void getSpaceInfo(String path) {
 		Path userPath = Paths.get(path);
 		File file = userPath.toAbsolutePath().toFile();
+		infoMap.put("File path", file.getAbsolutePath());
+		infoMap.put("Total space (bytes)", String.valueOf(file.getTotalSpace()));
+		infoMap.put("Free space (bytes)", String.valueOf(file.getFreeSpace()));
+		infoMap.put("Usable space (bytes)", String.valueOf(file.getUsableSpace()));
+	}
 
-		System.out.println("File path: " + file.getAbsolutePath());
-		System.out.println("Total space (bytes): " + file.getTotalSpace());
-		System.out.println("Free space (bytes): " + file.getFreeSpace());
-		System.out.println("Usable space (bytes): " + file.getUsableSpace());
+	private void getRuntimeInfo() {
+		infoMap.put("vmVendor", ManagementFactory.getRuntimeMXBean().getSpecVendor());
+		infoMap.put("vmVersion", ManagementFactory.getRuntimeMXBean().getVmVersion());
+		infoMap.put("Total memory (bytes)", String.valueOf(Runtime.getRuntime().totalMemory()));
+		infoMap.put("Free memory (bytes)", String.valueOf(Runtime.getRuntime().freeMemory()));
 	}
 }

@@ -28,6 +28,10 @@ public class EnvDetector {
 	}
 
 	private static void parseArgs(String[] args) {
+		if (args.length == 0) {
+			getJavaInfo();
+			getMachineInfo();
+		}
 		for (int i = 0; i < args.length; i++) {
 			String option = args[i].toLowerCase();
 			if (option.equals("machineinfo")) {
@@ -69,21 +73,13 @@ public class EnvDetector {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private static void getMachineInfo() {
 		MachineInfo machineInfo = new MachineInfo();
-
-		machineInfo.getMachineInfo(MachineInfo.UNAME_CMD);
-		machineInfo.getMachineInfo(MachineInfo.SYS_ARCH_CMD);
-		machineInfo.getMachineInfo(MachineInfo.PROC_ARCH_CMD);
-		machineInfo.getMachineInfo(MachineInfo.SYS_OS_CMD);
-		machineInfo.getMachineInfo(MachineInfo.CPU_CORES_CMD);
-		machineInfo.getMachineInfo(MachineInfo.ULIMIT_CMD);
-
-		machineInfo.getRuntimeInfo();
-		machineInfo.getSpaceInfo("");
+		machineInfo.getInfo();
+		System.out.println("****************************** MACHINE INFO ******************************");
 		System.out.println(machineInfo);
+		System.out.println("**************************************************************************\n");
 	}
 }
