@@ -14,21 +14,22 @@
 
 package org.testKitGen;
 
-public class Options {
+public class Arguments {
 	enum Mode { 
 		GEN_TESTS, GEN_PARALLEL_LIST;
 	}
-	private static Mode mode = Mode.GEN_TESTS;
-	private static String spec = "";
-	private static String jdkVersion = "";
-	private static String impl = "";
-	private static String projectRootDir = System.getProperty("user.dir") + "/..";
-	private static String buildList = "";
-	private static String iterations = "";
-	private static String testFlag = "";
-	private static Integer numOfMachines = null;
-	private static Integer testTime = null;
-	private static String TRSSURL = "";
+	private static Arguments instance;
+	private Mode mode = Mode.GEN_TESTS;
+	private String spec = "";
+	private String jdkVersion = "";
+	private String impl = "";
+	private String projectRootDir = System.getProperty("user.dir") + "/..";
+	private String buildList = "";
+	private String iterations = "";
+	private String testFlag = "";
+	private Integer numOfMachines = null;
+	private Integer testTime = null;
+	private String TRSSURL = "";
 
 	private static final String usage = "Usage:\n"
 			+ "    java TestKitGen --mode=[tests|parallelList] --spec=[linux_x86-64] --jdkVersion=[8|9|...] --impl=[openj9|ibm|hotspot|sap] [options]\n\n"
@@ -57,54 +58,61 @@ public class Options {
 			+ "                              Defaults to " + Constants.TRSS_URL + "\n";
 			
 
-	private Options() {
+	private Arguments() {
 	}
 
-	public static Mode getMode() {
+	public static Arguments getInstance() {
+		if (instance == null) {
+			instance = new Arguments();
+		}
+		return instance;
+	}
+
+	public Mode getMode() {
 		return mode;
 	}
 
-	public static String getSpec() {
+	public String getSpec() {
 		return spec;
 	}
 
-	public static String getJdkVersion() {
+	public String getJdkVersion() {
 		return jdkVersion;
 	}
 
-	public static String getImpl() {
+	public String getImpl() {
 		return impl;
 	}
 
-	public static String getProjectRootDir() {
+	public String getProjectRootDir() {
 		return projectRootDir;
 	}
 
-	public static String getBuildList() {
+	public String getBuildList() {
 		return buildList;
 	}
 
-	public static String getIterations() {
+	public String getIterations() {
 		return iterations;
 	}
 
-	public static String getTestFlag() {
+	public String getTestFlag() {
 		return testFlag;
 	}
 
-	public static Integer getNumOfMachines() {
+	public Integer getNumOfMachines() {
 		return numOfMachines;
 	}
 
-	public static Integer getTestTime() {
+	public Integer getTestTime() {
 		return testTime;
 	}
 
-	public static String getTRSSURL() {
+	public String getTRSSURL() {
 		return TRSSURL;
 	}
 
-	public static void parse(String[] args) {
+	public void parse(String[] args) {
 		String testTarget = null;
 		String testList = null;
 		for (int i = 0; i < args.length; i++) {

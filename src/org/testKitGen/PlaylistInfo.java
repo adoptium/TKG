@@ -29,11 +29,15 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class PlaylistInfo {
-	private File playlistXML = null;
+	private Arguments arg;
+	private ModesDictionary md;
+	private File playlistXML;
 	private List<TestInfo> testInfoList;
 	private String include = null;
 
-	public PlaylistInfo(File playlistXML) {
+	public PlaylistInfo(Arguments arg, ModesDictionary md, File playlistXML) {
+		this.arg = arg;
+		this.md = md;
 		this.playlistXML = playlistXML;
 		this.testInfoList = new ArrayList<TestInfo>();
 	}
@@ -46,8 +50,12 @@ public class PlaylistInfo {
 		return testInfoList;
 	}
 
-	public boolean parseInfo() {
-		if (playlistXML == null) return false;
+	public boolean getParseResult() {
+		return testInfoList.size() > 0;
+	}
+
+	public void parseInfo() {
+		if (playlistXML == null) return;
 		try {
 			Document xml = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(playlistXML);
 			NodeList childNodes = xml.getDocumentElement().getChildNodes();
@@ -60,7 +68,7 @@ public class PlaylistInfo {
 					if (currentElement.getNodeName().equals("include")) {
 						include = currentElement.getTextContent();
 					} else if (currentElement.getNodeName().equals("test")) {
-						TestInfo testInfo = new TestInfo(currentElement);
+						TestInfo testInfo = new TestInfo(arg, md, currentElement);
 						if (testInfo.parseInfo()) {
 							testInfoList.add(testInfo);
 						}
@@ -71,6 +79,5 @@ public class PlaylistInfo {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		return testInfoList.size() != 0;
 	}
 }

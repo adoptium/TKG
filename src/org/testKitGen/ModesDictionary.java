@@ -34,16 +34,23 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ModesDictionary {
-	private static String modesXml = Options.getProjectRootDir() + "/TKG/" + Constants.MODESXML;
-	private static String ottawaCsv = Options.getProjectRootDir() + "/TKG/" + Constants.OTTAWACSV;
-	private static Map<String, String> spec2platMap = new HashMap<String, String>();
-	private static Map<String, List<String>> invalidSpecsMap = new HashMap<String, List<String>>();
-	private static Map<String, String> clArgsMap = new HashMap<String, String>();
+	private Arguments arg;
+	private String modesXml;
+	private String ottawaCsv;
+	private Map<String, String> spec2platMap;
+	private Map<String, List<String>> invalidSpecsMap;
+	private Map<String, String> clArgsMap;
 
-	private ModesDictionary() {
+	public ModesDictionary(Arguments arg) {
+		this.arg = arg;
+		modesXml= arg.getProjectRootDir() + "/TKG/" + Constants.MODESXML;
+		ottawaCsv = arg.getProjectRootDir() + "/TKG/" + Constants.OTTAWACSV;
+		spec2platMap = new HashMap<String, String>();
+		invalidSpecsMap = new HashMap<String, List<String>>();
+		clArgsMap = new HashMap<String, String>();
 	}
 
-	public static void parse() {
+	public void parse() {
 		try {
 			Element modes = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(modesXml)
 					.getDocumentElement();
@@ -56,7 +63,7 @@ public class ModesDictionary {
 		System.out.println("Modes data parsed from " + Constants.MODESXML + " and " + Constants.OTTAWACSV + ".\n");
 	}
 
-	public static void parseMode(Element modes) {
+	private void parseMode(Element modes) {
 		NodeList modesNodes = modes.getElementsByTagName("mode");
 		for (int i = 0; i < modesNodes.getLength(); i++) {
 			Element mode = (Element) modesNodes.item(i);
@@ -69,11 +76,11 @@ public class ModesDictionary {
 		}
 	}
 
-	public static void parseInvalidSpec(Element modes) throws IOException {
+	private void parseInvalidSpec(Element modes) throws IOException {
 		ArrayList<String> specs = new ArrayList<String>();
 		int lineNum = 0;
 		BufferedReader reader = null;
-		if (Options.getSpec().toLowerCase().contains("zos")) {
+		if (arg.getSpec().toLowerCase().contains("zos")) {
 			reader = Files.newBufferedReader(Paths.get(ottawaCsv), Charset.forName("IBM-1047"));
 		} else {
 			reader = Files.newBufferedReader(Paths.get(ottawaCsv));
@@ -123,7 +130,7 @@ public class ModesDictionary {
 
 	}
 
-	public static String getClArgs(String mode) {
+	public String getClArgs(String mode) {
 		String rt = "";
 		if (clArgsMap.containsKey(mode)) {
 			rt = clArgsMap.get(mode);
@@ -133,7 +140,7 @@ public class ModesDictionary {
 		return rt;
 	}
 
-	public static List<String> getInvalidSpecs(String mode) {
+	public List<String> getInvalidSpecs(String mode) {
 		List<String> rt = new ArrayList<String>();
 		// It is normal that certain mode cannot be found in ottawa.csv, in which case
 		// it means no invalid specs
@@ -143,7 +150,7 @@ public class ModesDictionary {
 		return rt;
 	}
 
-	public static String getPlat(String spec) {
+	public String getPlat(String spec) {
 		String rt = "";
 		if (spec2platMap.containsKey(spec)) {
 			rt = spec2platMap.get(spec);
