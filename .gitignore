@@ -17,6 +17,7 @@
 lib
 bin
 test_output_*
+resources/TRSS
 
 # misc auto generated files
 autoGen.mk

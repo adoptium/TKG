@@ -241,23 +241,24 @@ public class TestDivider {
 			fileName = "Test_openjdk" + arg.getJdkVersion() + "_" + impl + "_" + group + "_" + plat + ".json";
 		}
 
-		File directory = new File(arg.getProjectRootDir() + "/TKG/" + Constants.RESOURCE);
+		File directory = new File(arg.getProjectRootDir() + "/TKG/" + Constants.TRSSCACHE_DIR);
 		Pattern p = Pattern.compile(fileName);
 		File[] files = directory.listFiles(new FileFilter() {
 			public boolean accept(File f) {
 				return p.matcher(f.getName()).matches();
 			}
 		});
-
-		for (File f : files) {
-			System.out.println("Reading file: " + f.getName().toString());
-			try (Reader reader = new FileReader(f)) {
-				parseDuration(reader, map);
-			} catch (IOException|ParseException e) {
-				System.out.println("Warning: cannot get data from cached files.");
-				// when there's exception, clear the map object and try to get data from TRSS
-				map.clear();
-				break;
+		if (files != null) {
+			for (File f : files) {
+				System.out.println("Reading file: " + f.getName().toString());
+				try (Reader reader = new FileReader(f)) {
+					parseDuration(reader, map);
+				} catch (IOException|ParseException e) {
+					System.out.println("Warning: cannot get data from cached files.");
+					// when there's exception, clear the map object and try to get data from TRSS
+					map.clear();
+					break;
+				}
 			}
 		}
 		return map;
