@@ -72,7 +72,7 @@ compile: envDetect
 envDetect: compileTools
 ifneq ($(AUTO_DETECT), false)
 	@echo "AUTO_DETECT is set to true"
-	${TEST_JDK_HOME}$(D)bin$(D)java -cp .$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector JavaInfo
+	${TEST_JDK_HOME}$(D)bin$(D)java -cp .$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector
 else
 	@echo "AUTO_DETECT is set to false"
 endif
