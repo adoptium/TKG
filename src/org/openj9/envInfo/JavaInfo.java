@@ -54,7 +54,7 @@ public class JavaInfo {
             spec += "_ppc";
         } else if (osArch.contains("s390x")) {
             spec += "_390";
-        } else if (osArch.contains("aarch") || (osArch.contains("arm")) {
+        } else if (osArch.contains("aarch") || osArch.contains("arm")) {
             spec += "_arm";
         } else if (osArch.contains("sparcv9")) {
             spec += "_sparcv9";
