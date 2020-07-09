@@ -61,9 +61,9 @@ my %asm_all = (
 	fname => 'asm-all.jar',
 	sha1 => '535f141f6c8fc65986a3469839a852a3266d1025'
 );
-my %asm_8_0_1 = (
+my %asm = (
 	url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/8.0.1/asm-8.0.1.jar',
-	fname => 'asm-8.0.1.jar',
+	fname => 'asm.jar',
 	sha1 => '3f5199523fb95304b44563f5d56d9f5a07270669'
 );
 my %commons_cli = (
@@ -128,7 +128,7 @@ my %tohandler_simple = (
 # Put all dependent jars hash to array to prepare downloading
 my @jars_info = (
 	\%asm_all,
-	\%asm_8_0_1,
+	\%asm,
 	\%commons_cli,
 	\%commons_exec,
 	\%javassist,
