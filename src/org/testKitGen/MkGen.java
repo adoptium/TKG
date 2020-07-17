@@ -22,13 +22,15 @@ import java.util.List;
 
 public class MkGen {
 	private Arguments arg;
+	private TestTarget tt;
 	private List<String> dirList;
 	private List<String> subdirs;
 	private String makeFile;
 	private PlaylistInfo pli;
 
-	public MkGen(Arguments arg, PlaylistInfo pli, String makeFile, List<String> dirList, List<String> subdirs) {
-		this. arg = arg;
+	public MkGen(Arguments arg, TestTarget tt, PlaylistInfo pli, String makeFile, List<String> dirList, List<String> subdirs) {
+		this.arg = arg;
+		this.tt = tt;
 		this.dirList = dirList;
 		this.subdirs = subdirs;
 		this.makeFile = makeFile;
@@ -37,7 +39,7 @@ public class MkGen {
 
 	public void start() {
 		writeVars();
-		if (pli.getParseResult()) {
+		if (pli.containsTest()) {
 			writeTargets();
 		}
 		System.out.println("Generated " + makeFile + "\n");
@@ -75,7 +77,7 @@ public class MkGen {
 			String testTargetName = var.getSubTestName();
 			String indent = "\t";
 
-			if (testInfo.genCmd()) {
+			if (tt.isExecutedTarget(testInfo)) {
 				if (!testInfo.getCapabilities().isEmpty()) {
 					List<String> capabilityReqs_HashKeys = new ArrayList<>(testInfo.getCapabilities().keySet());
 					Collections.sort(capabilityReqs_HashKeys);
@@ -196,7 +198,7 @@ public class MkGen {
 		}
 
 		String testCaseName = testInfo.getTestCaseName();
-		if (testInfo.genCmd()) {
+		if (tt.isExecutedTarget(testInfo)) {
 			f.write(testCaseName + ":");
 			for (Variation var : testInfo.getVars()) {
 				f.write(" \\\n" + var.getSubTestName());
@@ -222,12 +224,12 @@ public class MkGen {
 				writeSingleTest(testsInPlaylist, testInfo, f);
 			}
 	
-			if (TestTarget.isCategory() || TestTarget.isList()) {
-				f.write(TestTarget.getTestTarget() + ":");
+			if (tt.isCategory() || tt.isList()) {
+				f.write(tt.getTestTargetName() + ":");
 				for (String eachTest : testsInPlaylist) {
 					f.write(" \\\n" + eachTest);
 				}
-				f.write("\n\n.PHONY: " + TestTarget.getTestTarget() + "\n\n");
+				f.write("\n\n.PHONY: " + tt.getTestTargetName() + "\n\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

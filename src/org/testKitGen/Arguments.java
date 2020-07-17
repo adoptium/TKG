@@ -30,6 +30,8 @@ public class Arguments {
 	private Integer numOfMachines = null;
 	private Integer testTime = null;
 	private String TRSSURL = "";
+	private String testTargetName = null;
+	private String testList = null;
 
 	private static final String usage = "Usage:\n"
 			+ "    java TestKitGen --mode=[tests|parallelList] --spec=[linux_x86-64] --jdkVersion=[8|9|...] --impl=[openj9|ibm|hotspot|sap] [options]\n\n"
@@ -112,9 +114,15 @@ public class Arguments {
 		return TRSSURL;
 	}
 
+	public String getTestTargetName() {
+		return testTargetName;
+	}
+
+	public String getTestList() {
+		return testList;
+	}
+
 	public void parse(String[] args) {
-		String testTarget = null;
-		String testList = null;
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
 			String arglc = arg.toLowerCase();
@@ -150,7 +158,7 @@ public class Arguments {
 				testList = arg.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--testtarget=")) {
 				// test Target is case sensitive
-				testTarget = arg.substring(arg.indexOf("=") + 1);
+				testTargetName = arg.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--trssurl=")) {
 				// TRSSURL is case sensitive
 				TRSSURL = arg.substring(arg.indexOf("=") + 1);
@@ -180,6 +188,5 @@ public class Arguments {
 				System.exit(1);
 			}
 		}
-		TestTarget.parse(testTarget, testList);
 	}
 }

@@ -20,16 +20,18 @@ import java.util.List;
 public class ParallelGenVisitor implements DirectoryVisitor {
 	private Arguments arg;
 	private ModesDictionary md;
+	private TestTarget tt;
 
-	public ParallelGenVisitor(Arguments arg, ModesDictionary md) {
+	public ParallelGenVisitor(Arguments arg, ModesDictionary md, TestTarget tt) {
 		this.arg = arg;
 		this.md = md;
+		this.tt = tt;
 	}
 
 	@Override
 	public boolean visit(File playlistXML, String absoluteDir, List<String> dirList, List<String> subDirs) {
-		PlaylistInfo pli = new PlaylistInfo(arg, md, playlistXML);
-		pli.parseInfo();
+		PlaylistInfoParser parser = new PlaylistInfoParser(arg, md, tt, playlistXML);
+		parser.parse();
 		return true;
 	}
 }
