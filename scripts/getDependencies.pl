@@ -62,9 +62,9 @@ my %asm_all = (
 	sha1 => '535f141f6c8fc65986a3469839a852a3266d1025'
 );
 my %asm = (
-	url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/8.0.1/asm-8.0.1.jar',
+	url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/9.0-beta/asm-9.0-beta.jar',
 	fname => 'asm.jar',
-	sha1 => '3f5199523fb95304b44563f5d56d9f5a07270669'
+	sha1 => 'a0f58cad836a410f6ba133aaa209aea7e54aaf8a'
 );
 my %commons_cli = (
 	url => 'https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar',
