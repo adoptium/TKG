@@ -32,6 +32,7 @@ import org.json.simple.parser.ParseException;
 
 public class TestDivider {
 	private Arguments arg;
+	private TestTarget tt;
 	private boolean durationFound;
 	private List<String> testsToExecute;
 	private List<String> testsToDisplay;
@@ -39,8 +40,9 @@ public class TestDivider {
 	private String parallelmk;
 	private int defaultAvgTestTime;
 
-	public TestDivider(Arguments arg) {
+	public TestDivider(Arguments arg, TestTarget tt) {
 		this.arg = arg;
+		this.tt = tt;
 		durationFound = false;
 		testsToExecute = TestInfo.getTestsToExecute();
 		testsToDisplay = TestInfo.getTestsToDisplay();
@@ -137,9 +139,9 @@ public class TestDivider {
 		int limit = 10; // limit the number of builds used to calculate the average duration 
 		String URL = (arg.getTRSSURL().isEmpty() ? Constants.TRSS_URL : arg.getTRSSURL()) + "/api/getTestAvgDuration?limit=" + limit + "&jdkVersion=" + arg.getJdkVersion() + "&impl=" + impl + "&platform=" + plat;
 
-		if (TestTarget.isSingleTest()) {
-			URL += "&testName=" + TestTarget.getTestTarget();
-		} else if (TestTarget.isCategory()) {
+		if (tt.isSingleTest()) {
+			URL += "&testName=" + tt.getTestTargetName();
+		} else if (tt.isCategory()) {
 			if (!group.equals("")) {
 				URL += "&group=" + group; 
 			}
@@ -173,9 +175,9 @@ public class TestDivider {
 
 	private String getGroup() {
 		String group = "";
-		if (TestTarget.isCategory()) {
+		if (tt.isCategory()) {
 			for (String g : Constants.ALLGROUPS) {
-				if (TestTarget.getCategorySet().contains(g)) {
+				if (tt.getCategorySet().contains(g)) {
 					if (group.equals("")) {
 						group = g;
 					} else {
@@ -190,9 +192,9 @@ public class TestDivider {
 
 	private String getLevel() {
 		String level = "";
-		if (TestTarget.isCategory()) {
+		if (tt.isCategory()) {
 			for (String l : Constants.ALLLEVELS) {
-				if (TestTarget.getCategorySet().contains(l)) {
+				if (tt.getCategorySet().contains(l)) {
 					if (level.equals("")) {
 						level = l;
 					} else {
@@ -309,7 +311,7 @@ public class TestDivider {
 			(a, b) -> a.getValue() == b.getValue() ? b.getKey().compareTo(a.getKey()) : b.getValue().compareTo(a.getValue())
 		);
 
-		if (TestTarget.isDisabled()) {
+		if (tt.isDisabled()) {
 			// TRSS does not contain test duration for running disabled test at this moment
 			System.out.println("Warning: Test duration data cannot be found for executing disabled target.");
 			printDefaultTime();
@@ -460,9 +462,10 @@ public class TestDivider {
 			divideOnMachineNum(parallelLists, testListTime, Math.max(1, Math.min(arg.getNumOfMachines(), testsToExecute.size())), durationQueue);
 		}
 	}
+
 	public void generateLists() {
 		if (numOfTests == 0) {
-			System.out.println("No tests found for target: " + TestTarget.getTestTarget());
+			System.out.println("No tests found for target: " + tt.getTestTargetName());
 			System.out.println("No parallel test lists generated.");
 			return;
 		}

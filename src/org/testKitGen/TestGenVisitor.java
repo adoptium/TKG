@@ -20,22 +20,24 @@ import java.util.List;
 public class TestGenVisitor implements DirectoryVisitor {
 	private Arguments arg;
 	private ModesDictionary md;
+	private TestTarget tt;
 
-	public TestGenVisitor(Arguments arg, ModesDictionary md) {
+	public TestGenVisitor(Arguments arg, ModesDictionary md, TestTarget tt) {
 		this.arg = arg;
 		this.md = md;
+		this.tt = tt;
 	}
 
 	@Override
 	public boolean visit(File playlistXML, String absoluteDir, List<String> dirList, List<String> subDirs) {
-		PlaylistInfo pli = new PlaylistInfo(arg, md, playlistXML);
-		pli.parseInfo();
-		boolean testFound = !subDirs.isEmpty() || pli.getParseResult();
+		PlaylistInfoParser parser = new PlaylistInfoParser(arg, md, tt, playlistXML);
+		PlaylistInfo pli = parser.parse();
+		boolean testFound = !subDirs.isEmpty() || pli.containsTest();
 		String makeFile = absoluteDir + "/" + Constants.TESTMK;
 		File file = new File(makeFile); 
 		file.delete();
 		if (testFound) {
-			MkGen mg = new MkGen(arg, pli, makeFile, dirList, subDirs);
+			MkGen mg = new MkGen(arg, tt, pli, makeFile, dirList, subDirs);
 			mg.start();
 			return true;
 		}
