@@ -46,6 +46,8 @@ else ifneq (,$(findstring linux_x86-64,$(SPEC)))
 	ARCH_DIR=amd64
 else ifneq (,$(findstring linux_x86,$(SPEC)))
 	ARCH_DIR=i386
+else ifneq (,$(findstring aarch64,$(SPEC)))
+	ARCH_DIR=aarch64
 endif
 
 ifndef NATIVE_TEST_LIBS
