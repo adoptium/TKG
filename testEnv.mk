@@ -26,3 +26,6 @@ testEnvTeardown:
 
 RESERVED_OPTIONS += -XX:+UseJITServer
 endif
+
+export TR_silentEnv=1
+export TR_enableBreakOnDFSet=1
