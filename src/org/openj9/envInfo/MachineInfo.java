@@ -46,6 +46,12 @@ public class MachineInfo {
 	public static final String[] LLDB_VERSION_CMD = new String[] {"lldb", "--version"}; // debugger on Darwin/Mac
 	public static final String[] GCLIBC_VERSION_CMD = new String[] {"bash", "-c", "ldd --version | head -1"};
 
+	public static final String[] ANT_VERSION_CMD = new String[] {"ant", "-version"};
+	public static final String[] MAKE_VERSION_CMD = new String[] {"make", "--version"};
+	public static final String[] PERL_VERSION_CMD = new String[] {"perl", "--version"};
+	public static final String[] CURL_VERSION_CMD = new String[] {"curl", "--version"};
+
+
 	// Console
 	public static final String[] NUM_JAVA_PROCESSES_CMD = new String[] {"bash", "-c", "ps -ef | grep -i [j]ava | wc -l"};
 	public static final String[] ACTIVE_JAVA_PROCESSES_CMD = new String[] {"bash", "-c", "ps -ef | grep -i [j]ava"};
@@ -105,6 +111,10 @@ public class MachineInfo {
 		infoMap.put("procArch", execCommands(PROC_ARCH_CMD));
 		infoMap.put("sysOS", execCommands(SYS_OS_CMD));
 		infoMap.put("ulimit", execCommands(ULIMIT_CMD));
+		infoMap.put("Ant Version", execCommands(ANT_VERSION_CMD));
+		infoMap.put("Make Version", execCommands(MAKE_VERSION_CMD));
+		infoMap.put("Perl Version", execCommands(PERL_VERSION_CMD));
+		infoMap.put("Curl Version", execCommands(CURL_VERSION_CMD));
 	}
 
 	private void getSpaceInfo(String path) {
