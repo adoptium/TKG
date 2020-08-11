@@ -49,8 +49,6 @@ AUTOGEN_FILES += $(wildcard $(CURRENT_DIR)$(D)machineConfigure.mk)
 AUTOGEN_FILES += $(wildcard $(CURRENT_DIR)$(D)..$(D)*$(D)autoGenTest.mk)
 
 clean:
-ifneq (,$(findstring .mk,$(AUTOGEN_FILES)))
-	$(RM) $(AUTOGEN_FILES);
-else
-	@echo "Nothing to clean";
-endif
+	${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE)
+
+.PHONY: autoconfig autogen clean

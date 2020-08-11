@@ -14,6 +14,7 @@
 
 package org.testKitGen;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -42,5 +43,10 @@ public class UtilsGen {
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+
+	public void clean() {
+		File f = new File(utilsmk);
+		f.delete();
 	}
 }

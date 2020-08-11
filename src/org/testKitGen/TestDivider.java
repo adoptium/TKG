@@ -51,7 +51,6 @@ public class TestDivider {
 		defaultAvgTestTime = 40000; // in milliseconds
 	}
 
-
 	private void divideOnTestTime(List<List<String>> parallelLists, List<Integer> testListTime, int testTime, Queue<Map.Entry<String, Integer>> durationQueue) {
 		if (durationFound) {
 			Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
@@ -499,5 +498,10 @@ public class TestDivider {
 			listIndex++;
 			start = end;
 		}
+	}
+
+	public void clean() {
+		File f = new File(parallelmk);
+		f.delete();
 	}
 }

@@ -118,7 +118,8 @@ genParallelList: envDetect
 #######################################
 # clean
 #######################################
-clean:
+clean: envDetect
+	$(MAKE) -f makeGen.mk MODE=clean
 	$(MAKE) -f clean.mk clean
 
 .PHONY: clean
