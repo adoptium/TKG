@@ -53,9 +53,7 @@ public class TestTarget {
 	}
 
 	private boolean filterOnDisabled(TestInfo testInfo) {
-		if (isEchoDisabled() && !testInfo.isDisabled()) return false;
-		//todo: remove isCategory when single target disabled behavior matches category target
-		if (isCategory() && isDisabled() && !testInfo.isDisabled()) return false;
+		if ((isEchoDisabled() || isDisabled()) && !testInfo.isDisabled()) return false;
 		return true;
 	}
 
@@ -121,11 +119,9 @@ public class TestTarget {
 		boolean rt = false;
 		if (isEchoDisabled()) {
 			rt = false;
-		} else if (isSingleTest()) {
-			rt = true;
 		} else if (isList()) {
 			rt = !testInfo.isDisabled();
-		} else if (isCategory()) {
+		} else {
 			rt = (isRegular() && !testInfo.isDisabled()) || (isDisabled() && testInfo.isDisabled());
 		}
 		return rt;
