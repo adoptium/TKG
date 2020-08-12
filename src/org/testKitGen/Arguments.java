@@ -16,7 +16,7 @@ package org.testKitGen;
 
 public class Arguments {
 	enum Mode { 
-		GEN_TESTS, GEN_PARALLEL_LIST;
+		GEN_TESTS, GEN_PARALLEL_LIST, CLEAN;
 	}
 	private static Arguments instance;
 	private Mode mode = Mode.GEN_TESTS;
@@ -36,7 +36,7 @@ public class Arguments {
 	private static final String usage = "Usage:\n"
 			+ "    java TestKitGen --mode=[tests|parallelList] --spec=[linux_x86-64] --jdkVersion=[8|9|...] --impl=[openj9|ibm|hotspot|sap] [options]\n\n"
 			+ "Options:\n" + "    --spec=<spec>           Spec that the build will run on\n"
-			+ "    --mode=<string>           Specify running mode, available modes are tests or parallelList\n"
+			+ "    --mode=<string>           Specify running mode, available modes are tests, parallelList or clean\n"
 			+ "                              tests is to generate test make files\n"
 			+ "                              parallelList is generate parallel list file\n"
 			+ "                              Defaults to tests\n"
@@ -132,6 +132,8 @@ public class Arguments {
 					mode = Mode.GEN_TESTS;
 				} else if (modeStr.equals("parallellist")) {
 					mode = Mode.GEN_PARALLEL_LIST;
+				} else if (modeStr.equals("clean")) {
+					mode = Mode.CLEAN;
 				} else {
 					System.err.println("Invalid mode: " + modeStr);
 					System.err.println(usage);

@@ -21,14 +21,18 @@ public class MainRunner {
 	public static void main(String[] args) {
 		Arguments argInfo = Arguments.getInstance();
 		argInfo.parse(args);
-		TestTarget tt = TestTarget.getInstance();
-		tt.parse(argInfo.getTestTargetName(), argInfo.getTestList());
-		ModesDictionary md = new ModesDictionary(argInfo);
-		md.parse();
-		if (argInfo.getMode() == Arguments.Mode.GEN_TESTS) {
-			genTests(argInfo, md, tt);
-		} else if (argInfo.getMode() == Arguments.Mode.GEN_PARALLEL_LIST) {
-			genParallelList(argInfo, md, tt);
+		if (argInfo.getMode() == Arguments.Mode.CLEAN) {
+			clean(argInfo);
+		} else {
+			TestTarget tt = TestTarget.getInstance();
+			tt.parse(argInfo.getTestTargetName(), argInfo.getTestList());
+			ModesDictionary md = new ModesDictionary(argInfo);
+			md.parse();
+			if (argInfo.getMode() == Arguments.Mode.GEN_TESTS) {
+				genTests(argInfo, md, tt);
+			} else if (argInfo.getMode() == Arguments.Mode.GEN_PARALLEL_LIST) {
+				genParallelList(argInfo, md, tt);
+			}
 		}
 	}
 
@@ -50,5 +54,15 @@ public class MainRunner {
 		dw.traverse();
 		TestDivider td = new TestDivider(argInfo, tt);
 		td.generateLists();
+	}
+
+	public static void clean(Arguments argInfo) {
+		DirectoryWalker dw = new DirectoryWalker(argInfo, new CleanVisitor());
+		dw.traverse();
+		UtilsGen ug = new UtilsGen(argInfo, null);
+		ug.clean();
+		TestDivider td = new TestDivider(argInfo, null);
+		td.clean();
+		System.out.println("\nGenerated makefiles are successfully removed\n");
 	}
 }
