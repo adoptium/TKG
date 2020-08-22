@@ -33,7 +33,6 @@ import org.json.simple.parser.ParseException;
 public class TestDivider {
 	private Arguments arg;
 	private TestTarget tt;
-	private boolean durationFound;
 	private List<String> testsToExecute;
 	private List<String> testsToDisplay;
 	private int numOfTests;
@@ -43,7 +42,6 @@ public class TestDivider {
 	public TestDivider(Arguments arg, TestTarget tt) {
 		this.arg = arg;
 		this.tt = tt;
-		durationFound = false;
 		testsToExecute = TestInfo.getTestsToExecute();
 		testsToDisplay = TestInfo.getTestsToDisplay();
 		numOfTests = TestInfo.numOfTests();
@@ -52,85 +50,59 @@ public class TestDivider {
 	}
 
 	private void divideOnTestTime(List<List<String>> parallelLists, List<Integer> testListTime, int testTime, Queue<Map.Entry<String, Integer>> durationQueue) {
-		if (durationFound) {
-			Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
-				(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
-			);
-			int limitFactor = testTime;
-			int index = 0;
-			while (!durationQueue.isEmpty()) {
-				Map.Entry<String, Integer> testEntry = durationQueue.poll();
-				String testName = testEntry.getKey();
-				int testDuration = testEntry.getValue();
-				if (!machineQueue.isEmpty() && (machineQueue.peek().getValue() + testDuration < limitFactor)) {
-					Map.Entry<Integer, Integer> machineEntry = machineQueue.poll();
-					parallelLists.get(machineEntry.getKey()).add(testName);
-					int newTime = machineEntry.getValue() + testDuration;
-					testListTime.set(machineEntry.getKey(), newTime);
-					machineEntry.setValue(newTime);
-					machineQueue.offer(machineEntry);
-				} else {
-					parallelLists.add(new ArrayList<String>());
-					parallelLists.get(index).add(testName);
-					testListTime.add(testDuration);
-					if (testDuration < limitFactor) {
-						Map.Entry<Integer,Integer> entry = new AbstractMap.SimpleEntry<>(index, testDuration);
-						machineQueue.offer(entry);
-					} else { 
-						/* If the test time is greater than the limiting factor, set it as the new limiting factor. */
-						limitFactor = testDuration;
-						System.out.println("Warning: Test " + testName + " has duration " + formatTime(testDuration) + ", which is greater than the specified test list execution time " + testTime + "m. So this value is used to limit the overall execution time.");
-					}
-					index++;
-					
+		Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
+			(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
+		);
+		int limitFactor = testTime;
+		int index = 0;
+		while (!durationQueue.isEmpty()) {
+			Map.Entry<String, Integer> testEntry = durationQueue.poll();
+			String testName = testEntry.getKey();
+			int testDuration = testEntry.getValue();
+			if (!machineQueue.isEmpty() && (machineQueue.peek().getValue() + testDuration < limitFactor)) {
+				Map.Entry<Integer, Integer> machineEntry = machineQueue.poll();
+				parallelLists.get(machineEntry.getKey()).add(testName);
+				int newTime = machineEntry.getValue() + testDuration;
+				testListTime.set(machineEntry.getKey(), newTime);
+				machineEntry.setValue(newTime);
+				machineQueue.offer(machineEntry);
+			} else {
+				parallelLists.add(new ArrayList<String>());
+				parallelLists.get(index).add(testName);
+				testListTime.add(testDuration);
+				if (testDuration < limitFactor) {
+					Map.Entry<Integer,Integer> entry = new AbstractMap.SimpleEntry<>(index, testDuration);
+					machineQueue.offer(entry);
+				} else { 
+					/* If the test time is greater than the limiting factor, set it as the new limiting factor. */
+					limitFactor = testDuration;
+					System.out.println("Warning: Test " + testName + " has duration " + formatTime(testDuration) + ", which is greater than the specified test list execution time " + testTime + "m. So this value is used to limit the overall execution time.");
 				}
+				index++;
+				
 			}
-		} else {
-			int testsInEachList = testTime / defaultAvgTestTime;
-			/* If a single test time is greater than allowed time on each machine, run 1 test per machine. */
-			if (testsInEachList == 0) {
-				testsInEachList = 1;
-			}
-			/* Populate regular tests first and append the effortless along to the regular test lists. */
-			populateParallelLists(parallelLists, testsToExecute, testsInEachList, 0);
-
-			/* If no regular test, no need to divide the effortless tests. */
-			int numOfMachines = parallelLists.size() != 0 ? parallelLists.size() : 1;
-			testsInEachList = testsToDisplay.size() / numOfMachines;
-			int remainder = testsToDisplay.size() % numOfMachines;
-			populateParallelLists(parallelLists, testsToDisplay, testsInEachList, remainder);
 		}
 	}
 
 	private void divideOnMachineNum(List<List<String>> parallelLists, List<Integer> testListTime, int numOfMachines, Queue<Map.Entry<String, Integer>> durationQueue) {
-		if (durationFound) {
-			Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
-				(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
-			);
-			for (int i = 0; i < numOfMachines; i++) {
-				parallelLists.add(new ArrayList<String>());
-				testListTime.add(0);
-				Map.Entry<Integer,Integer> entry = new AbstractMap.SimpleEntry<>(i, 0);
-				machineQueue.offer(entry);
-			}
-			while (!durationQueue.isEmpty()) {
-				Map.Entry<String, Integer> testEntry = durationQueue.poll();
-				Map.Entry<Integer, Integer> machineEntry = machineQueue.poll();
+		Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
+			(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
+		);
+		for (int i = 0; i < numOfMachines; i++) {
+			parallelLists.add(new ArrayList<String>());
+			testListTime.add(0);
+			Map.Entry<Integer,Integer> entry = new AbstractMap.SimpleEntry<>(i, 0);
+			machineQueue.offer(entry);
+		}
+		while (!durationQueue.isEmpty()) {
+			Map.Entry<String, Integer> testEntry = durationQueue.poll();
+			Map.Entry<Integer, Integer> machineEntry = machineQueue.poll();
 
-				parallelLists.get(machineEntry.getKey()).add(testEntry.getKey());
-				int newTime = machineEntry.getValue() + testEntry.getValue();
-				testListTime.set(machineEntry.getKey(), newTime);
-				machineEntry.setValue(newTime);
-				machineQueue.offer(machineEntry);
-			}
-		} else {
-			int testsInEachList = testsToExecute.size() / numOfMachines;
-			int remainder = testsToExecute.size() % numOfMachines;
-			populateParallelLists(parallelLists, testsToExecute, testsInEachList, remainder);
-
-			testsInEachList = testsToDisplay.size() / numOfMachines;
-			remainder = testsToDisplay.size() % numOfMachines;
-			populateParallelLists(parallelLists, testsToDisplay, testsInEachList, remainder);
+			parallelLists.get(machineEntry.getKey()).add(testEntry.getKey());
+			int newTime = machineEntry.getValue() + testEntry.getValue();
+			testListTime.set(machineEntry.getKey(), newTime);
+			machineEntry.setValue(newTime);
+			machineQueue.offer(machineEntry);
 		}
 	}
 
@@ -334,7 +306,6 @@ public class TestDivider {
 				int duration = TRSSMap.containsKey(test) ? TRSSMap.get(test) : cacheMap.get(test);
 				if (duration > 0) {
 					durationQueue.offer(new AbstractMap.SimpleEntry<>(test, duration));
-					durationFound = true;
 				} else {
 					durationQueue.offer(new AbstractMap.SimpleEntry<>(test, defaultAvgTestTime));
 					testsInvalid.put(test, duration);
@@ -351,12 +322,15 @@ public class TestDivider {
 			}
 		}
 
-		System.out.println("\nTEST DURATION");
+		System.out.println("\nTEST DURATION");	
 		System.out.println("====================================================================================");
 		System.out.println("Total number of tests searched: " + numOfTests);
-		if (durationFound) {
-			int foundNum = numOfTests - testsNotFound.size() - testsInvalid.size();
-			System.out.println("Number of test durations found: " + foundNum);
+		int foundNum = numOfTests - testsNotFound.size() - testsInvalid.size();
+		System.out.println("Number of test durations found: " + foundNum);
+		if (foundNum == 0) {
+			System.out.println("No test duration data found.");
+			printDefaultTime();
+		} else {
 			System.out.println("Top slowest tests: ");
 			List<Map.Entry<String, Integer>> lastTests = new ArrayList<>();
 			for (int i = 0; i < Math.min(foundNum, 3); i++) {
@@ -378,9 +352,6 @@ public class TestDivider {
 					System.out.println("\t" + entry.getKey() + " : " + entry.getValue() + "ms");
 				}
 			}
-		} else {
-			System.out.println("No test duration data found.");
-			printDefaultTime();
 		}
 		System.out.println("====================================================================================");
 		return durationQueue;
@@ -417,23 +388,18 @@ public class TestDivider {
 	}
 
 	private void printParallelStatus(List<List<String>> parallelLists, List<Integer> testListTime) {
-		if (durationFound) {
-			int maxListTime = 0;
-			int totalTime = 0;
-			for (int listTime : testListTime) {
-				maxListTime = maxListTime > listTime ? maxListTime : listTime;
-				totalTime += listTime;
-			}
-			System.out.println("Reducing estimated test running time from " + formatTime(totalTime) + " to " + formatTime(maxListTime) + ".\n");
+		int maxListTime = 0;
+		int totalTime = 0;
+		for (int listTime : testListTime) {
+			maxListTime = maxListTime > listTime ? maxListTime : listTime;
+			totalTime += listTime;
 		}
+		System.out.println("Reducing estimated test running time from " + formatTime(totalTime) + " to " + formatTime(maxListTime) + ".\n");
 
 		for (int i = 0; i < parallelLists.size(); i++) {
-			
 			System.out.println("-------------------------------------testList_" + i + "-------------------------------------");
 			System.out.println("Number of tests: " + parallelLists.get(i).size());
-			if (durationFound) {
-				System.out.println("Estimated running time: " + formatTime(testListTime.get(i)));
-			}
+			System.out.println("Estimated running time: " + formatTime(testListTime.get(i)));
 			System.out.print("TESTLIST=");
 			for (int j = 0; j < parallelLists.get(i).size(); j++) {
 				System.out.print(parallelLists.get(i).get(j));
@@ -475,29 +441,6 @@ public class TestDivider {
 		writeParallelmk(parallelLists);
 		printParallelStatus(parallelLists, testListTime);
 		System.out.println("Parallel test lists file (" + parallelmk + ") is generated successfully.");
-	}
-
-	private void populateParallelLists(List<List<String>> parallelLists, List<String> tests, int testInList, int remainder) {
-		/* it's better to have adjacent tests stay archived together */
-		int listIndex = 0;
-		int start = 0;
-		while (start < tests.size()) {
-			int end = start + testInList;
-			if (remainder > 0) {
-				end += 1;
-				remainder--;
-			}
-			if (listIndex >= parallelLists.size()) {
-				parallelLists.add(new ArrayList<String>());
-			}
-			/* when divideOnTestTime(), the end might be greater than test.size() */
-			if (end > tests.size()) {
-				end = tests.size();
-			}
-			parallelLists.get(listIndex).addAll(tests.subList(start, end));
-			listIndex++;
-			start = end;
-		}
 	}
 
 	public void clean() {
