@@ -164,6 +164,7 @@ public class Arguments {
 			} else if (arglc.startsWith("--trssurl=")) {
 				// TRSSURL is case sensitive
 				TRSSURL = arg.substring(arg.indexOf("=") + 1);
+				TRSSURL = TRSSURL.replaceAll("/$", "");
 			} else if (arglc.startsWith("--numofmachines")) {
 				String numOfMachinesStr = arg.substring(arg.indexOf("=") + 1);
 				if (!numOfMachinesStr.isEmpty()) {
