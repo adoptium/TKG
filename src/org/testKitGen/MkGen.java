@@ -224,7 +224,7 @@ public class MkGen {
 				writeSingleTest(testsInPlaylist, testInfo, f);
 			}
 	
-			if (tt.isCategory() || tt.isList()) {
+			if (tt.isCategory() || tt.isList() || tt.isDisabled()) {
 				f.write(tt.getTestTargetName() + ":");
 				for (String eachTest : testsInPlaylist) {
 					f.write(" \\\n" + eachTest);

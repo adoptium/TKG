@@ -310,7 +310,7 @@ public class TestDivider {
 			(a, b) -> a.getValue() == b.getValue() ? b.getKey().compareTo(a.getKey()) : b.getValue().compareTo(a.getValue())
 		);
 
-		if (tt.isDisabled()) {
+		if (tt.isDisabled() || tt.isEchoDisabled()) {
 			// TRSS does not contain test duration for running disabled test at this moment
 			System.out.println("Warning: Test duration data cannot be found for executing disabled target.");
 			printDefaultTime();
