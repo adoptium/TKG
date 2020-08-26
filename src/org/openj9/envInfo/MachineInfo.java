@@ -22,6 +22,11 @@ import java.nio.file.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.lang.management.ManagementFactory;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.lang.*;
 
 public class MachineInfo {
 	public static final String[] UNAME_CMD = new String[] {"uname", "-a"};
@@ -56,6 +61,15 @@ public class MachineInfo {
 	public static final String[] NUM_JAVA_PROCESSES_CMD = new String[] {"bash", "-c", "ps -ef | grep -i [j]ava | wc -l"};
 	public static final String[] ACTIVE_JAVA_PROCESSES_CMD = new String[] {"bash", "-c", "ps -ef | grep -i [j]ava"};
 
+	public static Map<String, String> requirements;
+	static {
+		requirements = new HashMap<>();
+		requirements.put("antVersion", "1.9.6");
+   	 	requirements.put("makeVersion", "4.1");
+ 		requirements.put("perlVersion", "5.10.1");
+		requirements.put("curlVersion", "7.20.0");
+	}
+
 	private Map<String, String> infoMap;
 	
 	public MachineInfo() {
@@ -66,6 +80,7 @@ public class MachineInfo {
 		getSysInfo();
 		getRuntimeInfo();
 		getSpaceInfo("");
+		validateInfo();
 	}
 
 	public String toString() {
@@ -100,8 +115,76 @@ public class MachineInfo {
 			proc.waitFor();
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
+			return "Command could not be executed";
 		}
 		return rt;
+	}
+
+	private String parseInfo(String version) {
+		Pattern pattern = Pattern.compile("[0-9]+[.][0-9]+([.][0-9]+)?"); 
+		Matcher matcher = pattern.matcher(version);
+		if (matcher.find()) {
+			return matcher.group(0);
+		} else {
+			return "";
+		}
+	}
+
+	private ArrayList<Integer> versionStr2ArrList(String version) throws NumberFormatException {
+		String[] versionSplit = version.split("\\.");
+		ArrayList<Integer> versionArr = new ArrayList<Integer>();
+		for (int i=0; i < versionSplit.length; i++) {
+			versionArr.add(Integer.parseInt(versionSplit[i]));
+		}
+		return versionArr;
+	}
+
+	private void makeSameLength(ArrayList<Integer> list, int requiredLength){
+		int differenceInLength = requiredLength - list.size();
+		for (int i=0; i<differenceInLength; i++){
+			list.add(0);
+		}
+	}
+
+	private boolean validateVersion(String versionName, String actualVersionStr, String requriedVersionStr) {
+		boolean isValid = true;
+		try { 
+			ArrayList<Integer> accVer = versionStr2ArrList(actualVersionStr);
+			ArrayList<Integer> reqVer = versionStr2ArrList(requriedVersionStr);
+			int accVerLen = accVer.size();
+			int reqVerLen = reqVer.size();
+			if (accVerLen > reqVerLen) {
+				makeSameLength(reqVer, accVerLen);
+			} else if (accVerLen < reqVerLen) {
+				makeSameLength(accVer, reqVerLen);
+			}
+			for (int i=0; i < accVer.size(); i++) {
+				if (reqVer.get(i) > accVer.get(i)){
+					isValid = false;
+				} else if (reqVer.get(i) < accVer.get(i)) {
+					break;
+				}
+			}
+			if (!isValid) {
+				System.out.println("Error: required " + versionName + ": " + requriedVersionStr + ". Installed version: " + actualVersionStr);
+			}
+		} catch (NumberFormatException e){
+			System.out.println("Warning: "+ versionName + " information cannot be extracted.");
+			System.out.println(versionName + " output: " + actualVersionStr);
+		}
+		return isValid;
+	}
+
+	private void validateInfo() {
+		boolean valid = true;
+		for (Map.Entry<String, String> entry : requirements.entrySet()) {
+			String version = parseInfo(infoMap.get(entry.getKey()));
+			valid &= validateVersion(entry.getKey(), version, entry.getValue());
+		}
+		if (!valid) {
+			/*System.out.println("\n");
+			System.exit(1);*/
+		}
 	}
 
 	private void getSysInfo() {
@@ -111,10 +194,10 @@ public class MachineInfo {
 		infoMap.put("procArch", execCommands(PROC_ARCH_CMD));
 		infoMap.put("sysOS", execCommands(SYS_OS_CMD));
 		infoMap.put("ulimit", execCommands(ULIMIT_CMD));
-		infoMap.put("Ant Version", execCommands(ANT_VERSION_CMD));
-		infoMap.put("Make Version", execCommands(MAKE_VERSION_CMD));
-		infoMap.put("Perl Version", execCommands(PERL_VERSION_CMD));
-		infoMap.put("Curl Version", execCommands(CURL_VERSION_CMD));
+		infoMap.put("antVersion", execCommands(ANT_VERSION_CMD));
+		infoMap.put("makeVersion", execCommands(MAKE_VERSION_CMD));
+		infoMap.put("perlVersion", execCommands(PERL_VERSION_CMD));
+		infoMap.put("curlVersion", execCommands(CURL_VERSION_CMD));
 	}
 
 	private void getSpaceInfo(String path) {
