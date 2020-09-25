@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class TestInfoParser {
@@ -45,7 +46,7 @@ public class TestInfoParser {
 		boolean isValidImpl = implNodes.getLength() == 0;
 		if (!isValidImpl) {
 			List<String> impls = new ArrayList<String>();
-			getElements(impls, "impl", Constants.ALLIMPLS, ti.getTestCaseName());
+			getElements(impls, "impls", "impl", Constants.ALLIMPLS, ti.getTestCaseName());
 			isValidImpl = impls.contains(arg.getImpl());
 		}
 		if (!isValidImpl) return null;
@@ -94,22 +95,23 @@ public class TestInfoParser {
 			ti.setPlatformRequirements(preqNodes.item(0).getTextContent().trim());
 		}
 
-		NodeList variationsNodes = testEle.getElementsByTagName("variation");
-		List<Variation> variations = new ArrayList<Variation>();
-		for (int i = 0; i < variationsNodes.getLength(); i++) {
+		List<String> variations = new ArrayList<String>();
+		getElements(variations, "variations", "variation", null, ti.getTestCaseName());
+		List<Variation> listOfVars = new ArrayList<Variation>();
+		for (int i = 0; i < variations.size(); i++) {
 			String subTestName = ti.getTestCaseName() + "_" + i;
-			Variation var = parseVariation(subTestName, variationsNodes.item(i).getTextContent(), ti.getPlatformRequirements());
-			variations.add(var);
+			Variation var = parseVariation(subTestName, variations.get(i), ti.getPlatformRequirements());
+			listOfVars.add(var);
 		}
 		if (variations.size() == 0) {
 			String subTestName = ti.getTestCaseName() + "_0";
 			Variation var = parseVariation(subTestName, "NoOptions", ti.getPlatformRequirements());
-			variations.add(var);
+			listOfVars.add(var);
 		}
-		ti.setVars(variations);
+		ti.setVars(listOfVars);
 
 		List<String> levels = new ArrayList<String>();
-		getElements(levels, "level", Constants.ALLLEVELS, ti.getTestCaseName());
+		getElements(levels, "levels", "level", Constants.ALLLEVELS, ti.getTestCaseName());
 		// level defaults to "extended"
 		if (levels.size() == 0) {
 			levels.add("extended");
@@ -125,7 +127,7 @@ public class TestInfoParser {
 		ti.setLevels(levels);
 
 		List<String> groups = new ArrayList<String>();
-		getElements(groups, "group", Constants.ALLGROUPS, ti.getTestCaseName());
+		getElements(groups, "groups", "group", Constants.ALLGROUPS, ti.getTestCaseName());
 		// group defaults to "extended"
 		if (groups.size() == 0) {
 			groups.add("functional");
@@ -133,17 +135,12 @@ public class TestInfoParser {
 		ti.setGroups(groups);
 
 		List<String> types = new ArrayList<String>();
-		getElements(types, "type", Constants.ALLTYPES, ti.getTestCaseName());
+		getElements(types, "types", "type", Constants.ALLTYPES, ti.getTestCaseName());
 		// type defaults to "regular"
 		if (types.size() == 0) {
 			types.add("regular");
 		}
 		ti.setTypes(types);
-	
-		NodeList disabledNodes = testEle.getElementsByTagName("disabled");
-		if (disabledNodes.getLength() > 0) {
-			ti.setDisabledReasons(disabledNodes.item(0).getTextContent().split("[\t\n]"));
-		}
 
 		ti.setCommand(testEle.getElementsByTagName("command").item(0).getTextContent().trim());
 
@@ -170,20 +167,56 @@ public class TestInfoParser {
 			}
 		}
 
+		parseDisableInfo(ti);
 		return ti;
 	}
 
-	private void getElements(List<String> list, String tag, List<String> all, String testName) {
-		NodeList nodes = testEle.getElementsByTagName(tag);
-		for (int i = 0; i < nodes.getLength(); i++) {
-			String value = nodes.item(i).getTextContent().trim();
-			if (!all.contains(value)) {
-				System.err.println("The " + tag + ": " + value + " for test " + testName
-						+ " is not valid, the valid " + tag + " strings are " + joinStrList(all) + ".");
-				System.exit(1);
+	private void parseDisableInfo(TestInfo ti) {
+		NodeList disabledNodes = testEle.getElementsByTagName("disabled");
+		if (disabledNodes.getLength() == 0) return;
+		for (int i = 0; i < disabledNodes.getLength(); i++) {
+			Element disabled = (Element) disabledNodes.item(i);
+			Node commentNode = disabled.getElementsByTagName("comment").item(0);
+			String comment = "";
+			if (commentNode != null) {
+				comment = commentNode.getTextContent().trim();
 			}
-			list.add(nodes.item(i).getTextContent().trim());
+			//TODO: remove temporarily support for old style
+			if (comment == "") {
+				comment = disabledNodes.item(i).getTextContent().trim();
+			}
+			Node variationNode = disabled.getElementsByTagName("variation").item(0);
+			String variation = null;
+			if (variationNode != null) {
+				variation = variationNode.getTextContent().trim();
+			}
+			for (Variation var : ti.getVars()) {
+				if ((variation == null) || var.getVariation().equals(variation)) {
+					var.addDisabledReasons(comment);
+				}
+			} 
 		}
+	}
+
+	private void getElements(List<String> list, String parentTag, String childTag, List<String> all, String testName) {
+		NodeList parents = testEle.getElementsByTagName(parentTag);
+		if (parents.getLength() > 0) {
+			Element parentElement = (Element) parents.item(0);
+			NodeList children = parentElement.getElementsByTagName(childTag);
+			for (int i = 0; i < children.getLength(); i++) {
+				Node child = children.item(i);
+				String value = child.getTextContent().trim();
+				if ((all != null) && (!all.contains(value))) {
+					System.err.println("Error: The " + childTag + ": " + value + " for test " + testName
+							+ " is not valid, the valid " + childTag + " strings are " + joinStrList(all) + ".");
+					System.exit(1);
+				}
+				list.add(child.getTextContent().trim());
+			}
+
+		}
+
+
 	}
 
 	private String joinStrList(List<String> list) {
