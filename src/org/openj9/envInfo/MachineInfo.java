@@ -51,10 +51,10 @@ public class MachineInfo {
 	public static final String[] LLDB_VERSION_CMD = new String[] {"lldb", "--version"}; // debugger on Darwin/Mac
 	public static final String[] GCLIBC_VERSION_CMD = new String[] {"bash", "-c", "ldd --version | head -1"};
 
-	public static final String[] ANT_VERSION_CMD = new String[] {"ant", "-version"};
-	public static final String[] MAKE_VERSION_CMD = new String[] {"make", "--version"};
-	public static final String[] PERL_VERSION_CMD = new String[] {"perl", "--version"};
-	public static final String[] CURL_VERSION_CMD = new String[] {"curl", "--version"};
+	public static final String[] ANT_VERSION_CMD = new String[] {"bash", "-c", "ant -version"};
+	public static final String[] MAKE_VERSION_CMD = new String[] {"bash", "-c", "make --version"};
+	public static final String[] PERL_VERSION_CMD = new String[] {"bash", "-c", "perl --version"};
+	public static final String[] CURL_VERSION_CMD = new String[] {"bash", "-c", "curl --version"};
 
 
 	// Console
