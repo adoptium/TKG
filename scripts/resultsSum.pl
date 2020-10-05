@@ -237,11 +237,18 @@ sub resultReporter {
 		if ((!defined $hudsonUrl) || ($hudsonUrl eq '')) {
 			$hudsonUrl = "https://ci.adoptopenjdk.net/";
 		}
+
+		my $rebuildLinkBase = "parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$platformParam$customTargetParam";
 		print "To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:\n";
-		print "<Jenkins URL>/parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$platformParam$customTargetParam&TARGET=<FAILED test target>\n\n";
+		print "<Jenkins URL>/$rebuildLinkBase&TARGET=<FAILED test target>\n\n";
 		print "For example, to rebuild the failed tests in <Jenkins URL>=${hudsonUrl}job/Grinder, use the following links:\n";
 		foreach my $failedTarget (@failed) {
-			print "${hudsonUrl}job/Grinder/parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$platformParam$customTargetParam&TARGET=$failedTarget\n";
+			print "${hudsonUrl}job/Grinder/$rebuildLinkBase&TARGET=$failedTarget\n";
+		}
+		if ($numOfFailed > 1) {
+			my $failedList = "&TARGET=testList%20TESTLIST=" . join(",", @failed);
+			print "rebuild the failed tests in one link:\n";
+			print "${hudsonUrl}job/Grinder/$rebuildLinkBase$failedList\n";
 		}
 		print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 	}
