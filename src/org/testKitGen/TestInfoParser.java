@@ -58,23 +58,9 @@ public class TestInfoParser {
 
 		for (int j = 0; j < subsets.getLength(); j++) {
 			String subset = subsets.item(j).getTextContent().trim();
-
-			if (subset.equalsIgnoreCase(arg.getJdkVersion())) {
-				isValidSubset = true;
+			isValidSubset = checkJavaVersion(subset);
+			if (isValidSubset) {
 				break;
-			} else {
-				try {
-					Pattern pattern = Pattern.compile("^(.*)\\+$");
-					Matcher matcher = pattern.matcher(subset);
-					if (matcher.matches()) {
-						if (Integer.parseInt(matcher.group(1)) <= Integer.parseInt(arg.getJdkVersion())) {
-							isValidSubset = true;
-							break;
-						}
-					}
-				} catch (NumberFormatException e) {
-					// Nothing to do
-				}
 			}
 		}
 		if (!isValidSubset) return null;
@@ -171,31 +157,62 @@ public class TestInfoParser {
 		return ti;
 	}
 
+	private boolean checkJavaVersion(String version) {
+		boolean rt = false;
+		if (version.equalsIgnoreCase(arg.getJdkVersion())) {
+			rt = true;
+		} else {
+			try {
+				Pattern pattern = Pattern.compile("^(.*)\\+$");
+				Matcher matcher = pattern.matcher(version);
+				if (matcher.matches()) {
+					if (Integer.parseInt(matcher.group(1)) <= Integer.parseInt(arg.getJdkVersion())) {
+						rt = true;
+					}
+				}
+			} catch (NumberFormatException e) {
+				// Nothing to do
+			}
+		}
+		return rt;
+	}
+
 	private void parseDisableInfo(TestInfo ti) {
 		NodeList disabledNodes = testEle.getElementsByTagName("disabled");
 		if (disabledNodes.getLength() == 0) return;
 		for (int i = 0; i < disabledNodes.getLength(); i++) {
 			Element disabled = (Element) disabledNodes.item(i);
-			Node commentNode = disabled.getElementsByTagName("comment").item(0);
-			String comment = "";
-			if (commentNode != null) {
-				comment = commentNode.getTextContent().trim();
-			}
+			String comment = getDisabledEle(disabled, "comment", ti.getTestCaseName());
 			//TODO: remove temporarily support for old style
-			if (comment == "") {
+			if (comment == null) {
 				comment = disabledNodes.item(i).getTextContent().trim();
 			}
-			Node variationNode = disabled.getElementsByTagName("variation").item(0);
-			String variation = null;
-			if (variationNode != null) {
-				variation = variationNode.getTextContent().trim();
-			}
+
+			String impl = getDisabledEle(disabled, "impl", ti.getTestCaseName());
+			String subset = getDisabledEle(disabled, "subset", ti.getTestCaseName());
+			String variation = getDisabledEle(disabled, "variation", ti.getTestCaseName());
 			for (Variation var : ti.getVars()) {
-				if ((variation == null) || var.getVariation().equals(variation)) {
+				if (((impl == null) || arg.getImpl().equals(impl)) 
+					&& ((subset == null) || checkJavaVersion(subset)) 
+					&& ((variation == null) || var.getVariation().equals(variation))) {
 					var.addDisabledReasons(comment);
 				}
 			} 
 		}
+	}
+
+	private String getDisabledEle(Element disabled, String ele, String test) {
+		String rt = null;
+		NodeList nodes = disabled.getElementsByTagName(ele);
+		if (nodes != null) {
+			if (nodes.getLength() == 1) {
+				rt = nodes.item(0).getTextContent().trim();
+			} else if (nodes.getLength() > 1) {
+				System.err.println("Error: Multiple " + ele + " elements are not allowed in a single disable block (test " + test + "). The elements inside the disable element are in AND relationship. If you want to disable more than one " + ele + "s, please add more disable blocks. Or remove " + ele + " element from the block to disable all " + ele + "s.");
+				System.exit(1);
+			}
+		}
+		return rt;
 	}
 
 	private void getElements(List<String> list, String parentTag, String childTag, List<String> all, String testName) {
@@ -213,10 +230,7 @@ public class TestInfoParser {
 				}
 				list.add(child.getTextContent().trim());
 			}
-
 		}
-
-
 	}
 
 	private String joinStrList(List<String> list) {
