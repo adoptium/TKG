@@ -18,6 +18,7 @@ lib
 bin
 test_output_*
 resources/TRSS
+scripts/testBot/__pycache__
 
 # misc auto generated files
 autoGen.mk
