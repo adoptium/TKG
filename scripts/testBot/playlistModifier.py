@@ -26,6 +26,9 @@ def main():
     ap.add_argument("-f", "--file", required=True, help="regex file name to modify")
     ap.add_argument("-m", "--mode", required=True, help="operation mode, e.g., exclude")
     ap.add_argument("-t", "--test", required=False, help="test name")
+    ap.add_argument("-v", "--ver", required=False, help="java version")
+    ap.add_argument("-i", "--impl", required=False, help="java impl")
+    ap.add_argument("-p", "--plat", required=False, help="platform")
     ap.add_argument("-c", "--comment", required=False, help="comment")
     run(vars(ap.parse_args()))
 
@@ -39,7 +42,7 @@ def run(args):
     if (args["mode"] == "format"):
         formatter(files)
     if (args["mode"] == "exclude"):
-        updated = addDisabled(files, args["test"], args["comment"])
+        updated = addDisabled(files, args)
         if not updated:
             print(f"Could not find test {args['test']}!")
             sys.exit(-1)
@@ -54,10 +57,10 @@ def find_files(name, path):
     print("\n")
     return result
 
-def addDisabled(files, test, comment):
+def addDisabled(files, args):
     updated = False
-    testCaseName = test
-    match = re.match(r"^(\S+)_(\d+)$", test)
+    testCaseName = args["test"]
+    match = re.match(r"^(\S+)_(\d+)$", args["test"])
     nthVar = None
     if match:
         testCaseName = match.group(1)
@@ -68,7 +71,7 @@ def addDisabled(files, test, comment):
         if test:
             disabled = etree.Element("disabled")
             commentEle = etree.Element("comment")
-            commentEle.text = comment
+            commentEle.text = args["comment"]
             disabled.append(commentEle)
             if nthVar is not None:
                 var = test[0].find("variations")
@@ -77,6 +80,14 @@ def addDisabled(files, test, comment):
                 elif (nthVar != 0):
                     print(f"Could not find test case {testCaseName}_{nthVar} (i.e., the {nthVar}th variation for test {testCaseName})!")
                     sys.exit(-1)
+            if "ver" in args:
+                verEle = etree.Element("subset")
+                verEle.text = args["ver"]
+                disabled.append(verEle)
+            if "impl" in args:
+                implEle = etree.Element("impl")
+                implEle.text = args["impl"]
+                disabled.append(implEle)
             testCaseName = test[0].find("testCaseName")
             testCaseName.addnext(disabled)
             updateFile(file, root)

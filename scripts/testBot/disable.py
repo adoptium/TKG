@@ -28,24 +28,37 @@ def main():
         "directory": args["directory"]
     }
     message = args["message"].strip()
-    match = re.match(r"auto ([A-Za-z]+) test (\S+)( in (\S+))?", message)
+    match = re.match(r"auto ([A-Za-z]+) test (\S+)(.*)", message)
     if match:
         print(f"{args['message']}\n")
-        file = "playlist.xml"
         if match.group(3):
-            file = match.group(4)
-        if (file == "playlist.xml"):
+            options = match.group(3).split()
+            for op in options:
+                if m := re.match(r"file=(\S+)", op):
+                    newArgs["file"] = m.group(1)
+                elif m := re.match(r"impl=(\S+)", op):
+                    newArgs["impl"] = m.group(1)
+                elif m := re.match(r"ver=(\S+)", op):
+                    newArgs["ver"] = m.group(1)
+                elif m := re.match(r"plat=(\S+)", op):
+                    newArgs["plat"] = m.group(1)
+                else:
+                    print(f"unrecognized argument: {op}")
+                    sys.exit(-1)
+        if ("file" not in newArgs):
+            newArgs["file"] = "playlist.xml"
+        if (newArgs["file"] == "playlist.xml"):
             newArgs.update({
                 "mode": match.group(1),
                 "test": match.group(2),
-                "comment": args["comment"],
-                "file": file
+                "comment": args["comment"]
             })
             playlistModifier.run(newArgs)
         else:
             print("function not supported for now")
     else:
         print(f"unrecognized message: {args['message']}")
+        sys.exit(-1)
 
 if __name__ == "__main__":
     main()
