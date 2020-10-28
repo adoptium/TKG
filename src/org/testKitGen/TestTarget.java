@@ -53,7 +53,18 @@ public class TestTarget {
 	}
 
 	private boolean filterOnDisabled(TestInfo testInfo) {
-		if ((isEchoDisabled() || isDisabled()) && !testInfo.isDisabled()) return false;
+		// only filter tests when target is disabled
+		if (!isEchoDisabled() && !isDisabled()) return true;
+
+		ListIterator<Variation> iter = testInfo.getVars().listIterator();
+		while (iter.hasNext()) {
+			if (!iter.next().isDisabled()) {
+				iter.remove();
+			};
+		}
+		if (testInfo.getVars().isEmpty()) {
+			return false;
+		}
 		return true;
 	}
 
@@ -115,14 +126,14 @@ public class TestTarget {
 		return rt;
 	}
 
-	public boolean isExecutedTarget(TestInfo testInfo) {
+	public boolean isExecutedTarget(Variation var) {
 		boolean rt = false;
 		if (isEchoDisabled()) {
 			rt = false;
 		} else if (isList()) {
-			rt = !testInfo.isDisabled();
+			rt = !var.isDisabled();
 		} else {
-			rt = (isRegular() && !testInfo.isDisabled()) || (isDisabled() && testInfo.isDisabled());
+			rt = (isRegular() && !var.isDisabled()) || (isDisabled() && var.isDisabled());
 		}
 		return rt;
 	}

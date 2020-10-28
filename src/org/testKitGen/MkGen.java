@@ -77,7 +77,7 @@ public class MkGen {
 			String testTargetName = var.getSubTestName();
 			String indent = "\t";
 
-			if (tt.isExecutedTarget(testInfo)) {
+			if (tt.isExecutedTarget(var)) {
 				if (!testInfo.getCapabilities().isEmpty()) {
 					List<String> capabilityReqs_HashKeys = new ArrayList<>(testInfo.getCapabilities().keySet());
 					Collections.sort(capabilityReqs_HashKeys);
@@ -103,12 +103,12 @@ public class MkGen {
 				f.write(indent + "@perl '-MTime::HiRes=gettimeofday' -e 'print \"" + testTargetName
 						+ " Start Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 
-				if (testInfo.isDisabled()) {
+				if (var.isDisabled()) {
 					// This line is also the key words to match runningDisabled
 					f.write(indent
 							+ "@echo \"Test is disabled due to:\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-					for (String dReason : testInfo.getDisabledReasons()) {
-						f.write(indent + "@echo \"" + dReason + "\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+					for (String dReason : var.getDisabledReasons()) {
+						f.write(indent + "@echo \"- " + dReason + "\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 					}
 				}
 
@@ -169,7 +169,7 @@ public class MkGen {
 
 				f.write("\n.PHONY: " + testTargetName + "\n\n");
 
-			} else {
+			} else if (var.isDisabled()) {
 				String printName = testTargetName;
 				testTargetName = "echo.disabled." + testTargetName;
 				f.write(testTargetName + ":\n");
@@ -186,7 +186,7 @@ public class MkGen {
 						+ "_DISABLED\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				f.write(indent + "@echo \"Disabled Reason:\"\n");
 
-				for (String dReason : testInfo.getDisabledReasons()) {
+				for (String dReason : var.getDisabledReasons()) {
 					f.write(indent + "@echo \"" + dReason + "\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				}
 
@@ -195,21 +195,6 @@ public class MkGen {
 				f.write("\n.PHONY: " + testTargetName + "\n\n");
 			}
 			testsInPlaylist.add(testTargetName);
-		}
-
-		String testCaseName = testInfo.getTestCaseName();
-		if (tt.isExecutedTarget(testInfo)) {
-			f.write(testCaseName + ":");
-			for (Variation var : testInfo.getVars()) {
-				f.write(" \\\n" + var.getSubTestName());
-			}
-			f.write("\n\n.PHONY: " + testCaseName + "\n\n");
-		} else {
-			f.write("echo.disabled." + testCaseName + ":");
-			for (Variation var : testInfo.getVars()) {
-				f.write(" \\\necho.disabled." + var.getSubTestName());
-			}
-			f.write("\n\n.PHONY: " + testCaseName + "\n\n");
 		}
 	}
 
@@ -224,7 +209,7 @@ public class MkGen {
 				writeSingleTest(testsInPlaylist, testInfo, f);
 			}
 	
-			if (tt.isCategory() || tt.isList() || tt.isDisabled()) {
+			if (!((testsInPlaylist.size() == 1) && testsInPlaylist.get(0).equals(tt.getTestTargetName()))) {
 				f.write(tt.getTestTargetName() + ":");
 				for (String eachTest : testsInPlaylist) {
 					f.write(" \\\n" + eachTest);

@@ -31,7 +31,6 @@ public class TestInfo {
 	private List<String> levels;
 	private List<String> groups;
 	private List<String> types;
-	private String[] disabledReasons;
 	private static List<String> testsToExecute = new ArrayList<>();
 	private static List<String> testsToDisplay = new ArrayList<>();
 
@@ -47,7 +46,6 @@ public class TestInfo {
 		this.levels = new ArrayList<String>();
 		this.groups = new ArrayList<String>();
 		this.types = new ArrayList<String>();
-		this.disabledReasons = null;
 	}
 
 	public String getTestCaseName() {
@@ -138,22 +136,10 @@ public class TestInfo {
 		this.types = types;
 	}
 
-	public String[] getDisabledReasons() {
-		return this.disabledReasons;
-	}
-
-	public void setDisabledReasons(String[] disabledReasons) {
-		this.disabledReasons = disabledReasons;
-	}
-
-	public boolean isDisabled() {
-		return getDisabledReasons() != null;
-	}
-
 	public static void countTests(TestInfo ti, TestTarget tt) {
 		for (Variation var : ti.getVars()) {
 			String testName = var.getSubTestName();
-			if (var.isValid() && tt.isExecutedTarget(ti)) {
+			if (var.isValid() && tt.isExecutedTarget(var)) {
 				testsToExecute.add(testName);
 			} else {
 				testsToDisplay.add(testName);

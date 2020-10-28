@@ -14,18 +14,23 @@
 
 package org.testKitGen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Variation {
 	private String variation;
 	private String subTestName;
 	private String mode;
 	private String jvmOptions;
 	private boolean isValid;
+	private List<String> disabledReasons;
 
 	public Variation(String subTestName, String variation) {
 		this.subTestName = subTestName;
 		this.variation = variation;
 		this.isValid = true;
 		this.jvmOptions = "";
+		this.disabledReasons = new ArrayList<String>();
 	}
 
 	public String getVariation() {
@@ -58,5 +63,17 @@ public class Variation {
 
 	public void setValid(boolean isValid) {
 		this.isValid = isValid;
+	}
+
+	public List<String> getDisabledReasons() {
+		return this.disabledReasons;
+	}
+
+	public void addDisabledReasons(String disabledReasons) {
+		this.disabledReasons.add(disabledReasons);
+	}
+
+	public boolean isDisabled() {
+		return getDisabledReasons().size() != 0;
 	}
 }
