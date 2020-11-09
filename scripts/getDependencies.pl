@@ -124,6 +124,12 @@ my %tohandler_simple = (
 	shaalg => '256'
 );
 
+my %osgi = (
+	url => ' https://mirror.umd.edu/eclipse/equinox/drops/S-4.18M1a-202010120320/org.eclipse.osgi_3.16.100.v20200904-1304.jar',
+	fname => 'org.eclipse.osgi_3.16.100.v20200904-1304.jar',
+	sha1 => 'e0c1c2fa5e5f520d2347f9e7a7d2873e3b96bab3'
+);
+
 
 # Put all dependent jars hash to array to prepare downloading
 my @jars_info = (
@@ -138,7 +144,8 @@ my @jars_info = (
 	\%asmtools,
 	\%jaxb_api,
 	\%json_simple,
-	\%tohandler_simple
+	\%tohandler_simple,
+	\%osgi
 );
 
 print "--------------------------------------------\n";
