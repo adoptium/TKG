@@ -26,6 +26,8 @@
 	<property name="TEST_JDK_HOME" value="${TEST_JDK_HOME}" />
 	<property name="JAVAC" value="${TEST_JDK_HOME}/bin/javac" />
 
+	<import file="./getDependencies.xml"/>
+
 	<var name="build.list" value= "" />
 	<if>
 		<equals arg1="${BUILD_LIST}" arg2=""/>
@@ -70,7 +72,7 @@
 		<mkdir dir="${ascii.test.dir}" />
 	</target>
 
-	<target name="stage_test_material" depends="-create_test_directory">
+	<target name="stage_test_material" depends="-create_test_directory,getDependentLibs">
 		<copy todir="${ascii.test.dir}">
 			<fileset dir="${ascii.workspace.dir}">
 				<include name="TKG/**" />
