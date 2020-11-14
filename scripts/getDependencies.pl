@@ -26,9 +26,11 @@ use File::Path qw(make_path);
 my $path;
 # define task
 my $task = "default";
+my $dependencyList = "all";
 
 GetOptions ("path=s" => \$path,
-			"task=s" => \$task)
+			"task=s" => \$task,
+			"dependencyList=s" => \$dependencyList)
 	or die("Error in command line arguments\n");
 
 if (not defined $path) {
@@ -46,6 +48,7 @@ my $sep = File::Spec->catfile('', '');
 print "--------------------------------------------\n";
 print "path is set to $path\n";
 print "task is set to $task\n";
+print "dependencyList is set to $dependencyList\n";
 
 # Define a a hash for each dependent jar
 # Contents in the hash should be: 
@@ -56,97 +59,88 @@ print "task is set to $task\n";
 #   shafn  - optional. sha file name (has to be used with shaurl)
 #   shaalg - optional. sha is calculated based on shaalg (default value is sha1)
 
-my %asm_all = (
-	url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm-all/6.0_BETA/asm-all-6.0_BETA.jar',
-	fname => 'asm-all.jar',
-	sha1 => '535f141f6c8fc65986a3469839a852a3266d1025'
-);
-my %asm = (
-	url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/9.0-beta/asm-9.0-beta.jar',
-	fname => 'asm.jar',
-	sha1 => 'a0f58cad836a410f6ba133aaa209aea7e54aaf8a'
-);
-my %commons_cli = (
-	url => 'https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar',
-	fname => 'commons-cli.jar',
-	sha1 => '2bf96b7aa8b611c177d329452af1dc933e14501c'
-);
-my %commons_exec = (
-	url => 'https://repo1.maven.org/maven2/org/apache/commons/commons-exec/1.1/commons-exec-1.1.jar',
-	fname => 'commons-exec.jar',
-	sha1 => '07dfdf16fade726000564386825ed6d911a44ba1'
-);
-my %javassist = (
-	url => 'https://repo1.maven.org/maven2/org/javassist/javassist/3.20.0-GA/javassist-3.20.0-GA.jar',
-	fname => 'javassist.jar',
-	sha1 => 'a9cbcdfb7e9f86fbc74d3afae65f2248bfbf82a0'
-);
-my %junit4 = (
-	url => 'https://repo1.maven.org/maven2/junit/junit/4.10/junit-4.10.jar',
-	fname => 'junit4.jar',
-	sha1 => 'e4f1766ce7404a08f45d859fb9c226fc9e41a861'
-);
-my %testng = (
-	url => 'https://repo1.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
-	fname => 'testng.jar',
-	sha1 => '10c93c2c0d165e895a7582dfd8b165f108658db5'
-);
-my %jcommander = (
-	url => 'https://repo1.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.jar',
-	fname => 'jcommander.jar',
-	sha1 => 'bfcb96281ea3b59d626704f74bc6d625ff51cbce'
-);
-my %asmtools = (
-	url => 'https://ci.adoptopenjdk.net/view/Dependencies/job/asmtools/lastSuccessfulBuild/artifact/asmtools.jar',
-	fname => 'asmtools.jar',
-	shaurl => 'https://ci.adoptopenjdk.net/view/Dependencies/job/asmtools/lastSuccessfulBuild/artifact/asmtools.jar.sha256sum.txt',
-	shafn => 'asmtools.jar.sha256sum.txt',
-	shaalg => '256'
-);
-# this is needed for JDK11 and up
-my %jaxb_api = (
-	url => 'https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.0/jaxb-api-2.3.0.jar',
-	fname => 'jaxb-api.jar',
-	sha1 => '99f802e0cb3e953ba3d6e698795c4aeb98d37c48'
-);
+my %base = (
+	asm_all => {
+		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm-all/6.0_BETA/asm-all-6.0_BETA.jar',
+		fname => 'asm-all.jar',
+		sha1 => '535f141f6c8fc65986a3469839a852a3266d1025'
+	},
+	asm => {
+		url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/9.0-beta/asm-9.0-beta.jar',
+		fname => 'asm.jar',
+		sha1 => 'a0f58cad836a410f6ba133aaa209aea7e54aaf8a'
+	},
+	commons_cli => {
+		url => 'https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar',
+		fname => 'commons-cli.jar',
+		sha1 => '2bf96b7aa8b611c177d329452af1dc933e14501c'
+	},
+	commons_exec => {
+		url => 'https://repo1.maven.org/maven2/org/apache/commons/commons-exec/1.1/commons-exec-1.1.jar',
+		fname => 'commons-exec.jar',
+		sha1 => '07dfdf16fade726000564386825ed6d911a44ba1'
+	},
+	javassist => {
+		url => 'https://repo1.maven.org/maven2/org/javassist/javassist/3.20.0-GA/javassist-3.20.0-GA.jar',
+		fname => 'javassist.jar',
+		sha1 => 'a9cbcdfb7e9f86fbc74d3afae65f2248bfbf82a0'
+	},
+	junit4 => {
+		url => 'https://repo1.maven.org/maven2/junit/junit/4.10/junit-4.10.jar',
+		fname => 'junit4.jar',
+		sha1 => 'e4f1766ce7404a08f45d859fb9c226fc9e41a861'
+	},
+	testng => {
+		url => 'https://repo1.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
+		fname => 'testng.jar',
+		sha1 => '10c93c2c0d165e895a7582dfd8b165f108658db5'
+	},
+	jcommander => {
+		url => 'https://repo1.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.jar',
+		fname => 'jcommander.jar',
+		sha1 => 'bfcb96281ea3b59d626704f74bc6d625ff51cbce'
+	},
+	asmtools => {
+		url => 'https://ci.adoptopenjdk.net/view/Dependencies/job/asmtools/lastSuccessfulBuild/artifact/asmtools.jar',
+		fname => 'asmtools.jar',
+		shaurl => 'https://ci.adoptopenjdk.net/view/Dependencies/job/asmtools/lastSuccessfulBuild/artifact/asmtools.jar.sha256sum.txt',
+		shafn => 'asmtools.jar.sha256sum.txt',
+		shaalg => '256'
+	},
+	jaxb_api => {
+		url => 'https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.0/jaxb-api-2.3.0.jar',
+		fname => 'jaxb-api.jar',
+		sha1 => '99f802e0cb3e953ba3d6e698795c4aeb98d37c48'
+	},
+	json_simple => {
+		url => 'https://repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar',
+		fname => 'json-simple.jar',
+		sha1 => 'c9ad4a0850ab676c5c64461a05ca524cdfff59f1'
+	},
+	tohandler_simple => {
+		url => 'https://ci.eclipse.org/openj9/view/Infrastructure/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar',
+		fname => 'openj9jtregtimeouthandler.jar',
+		shaurl => 'https://ci.eclipse.org/openj9/view/Infrastructure/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar.sha256sum.txt',
+		shafn => 'openj9jtregtimeouthandler.jar.sha256sum.txt',
+		shaalg => '256'
+	},
+	osgi => {
+		url => ' https://mirror.umd.edu/eclipse/equinox/drops/S-4.18M1a-202010120320/org.eclipse.osgi_3.16.100.v20200904-1304.jar',
+		fname => 'org.eclipse.osgi_3.16.100.v20200904-1304.jar',
+		sha1 => 'e0c1c2fa5e5f520d2347f9e7a7d2873e3b96bab3'
+	});
 
-my %json_simple = (
-	url => 'https://repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar',
-	fname => 'json-simple.jar',
-	sha1 => 'c9ad4a0850ab676c5c64461a05ca524cdfff59f1'
-);
-
-my %tohandler_simple = (
-	url => 'https://ci.eclipse.org/openj9/view/Infrastructure/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar',
-	fname => 'openj9jtregtimeouthandler.jar',
-	shaurl => 'https://ci.eclipse.org/openj9/view/Infrastructure/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar.sha256sum.txt',
-	shafn => 'openj9jtregtimeouthandler.jar.sha256sum.txt',
-	shaalg => '256'
-);
-
-my %osgi = (
-	url => ' https://mirror.umd.edu/eclipse/equinox/drops/S-4.18M1a-202010120320/org.eclipse.osgi_3.16.100.v20200904-1304.jar',
-	fname => 'org.eclipse.osgi_3.16.100.v20200904-1304.jar',
-	sha1 => 'e0c1c2fa5e5f520d2347f9e7a7d2873e3b96bab3'
-);
-
+my @dependencies = split(',', $dependencyList); 
 
 # Put all dependent jars hash to array to prepare downloading
-my @jars_info = (
-	\%asm_all,
-	\%asm,
-	\%commons_cli,
-	\%commons_exec,
-	\%javassist,
-	\%junit4,
-	\%testng,
-	\%jcommander,
-	\%asmtools,
-	\%jaxb_api,
-	\%json_simple,
-	\%tohandler_simple,
-	\%osgi
-);
+my @jars_info;
+foreach my $dependency (keys %base) {
+	foreach my $i (@dependencies) {
+		if ($i eq "all" || $dependency eq $i) {
+			push(@jars_info,$base{$dependency});
+		}
+	}
+}
 
 print "--------------------------------------------\n";
 print "Starting download third party dependent jars\n";

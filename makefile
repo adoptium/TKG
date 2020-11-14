@@ -34,14 +34,6 @@ ifndef TEST_ROOT
 endif
 
 #######################################
-# download all dependent jars
-#######################################
-getdependency:
-	perl scripts$(D)getDependencies.pl -path '$(TEST_ROOT)$(D)TKG$(D)lib' -task default
-
-.PHONY: getdependency
-
-#######################################
 # run test
 #######################################
 _TESTTARGET = $(firstword $(MAKECMDGOALS))
@@ -81,9 +73,9 @@ endif
 # compile tools
 #######################################
 include moveDmp.mk
-COMPILE_TOOLS_CMD=ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME)
+COMPILE_TOOLS_CMD=ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME) -DTEST_ROOT=$(TEST_ROOT)
 
-compileTools: getdependency
+compileTools: 
 	$(RM) -r $(COMPILATION_OUTPUT); \
 	$(MKTREE) $(COMPILATION_OUTPUT); \
 	($(COMPILE_TOOLS_CMD) 2>&1; echo $$? ) | tee $(Q)$(COMPILATION_LOG)$(Q); \
