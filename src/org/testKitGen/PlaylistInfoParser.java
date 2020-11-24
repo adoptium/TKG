@@ -45,6 +45,7 @@ public class PlaylistInfoParser {
 		PlaylistInfo pli = new PlaylistInfo();
 		if (playlistXML == null) return pli;
 		try {
+			System.out.println("Parsing " + playlistXML.getAbsolutePath() + "\n");
 			Document xml = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(playlistXML);
 			NodeList childNodes = xml.getDocumentElement().getChildNodes();
 			List<TestInfo> testInfoList = new ArrayList<TestInfo>();
