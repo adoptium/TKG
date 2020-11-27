@@ -4262,6 +4262,27 @@ Removed verbose:stackwalk from anywhere it appeared.
             </setting>
         </settings>
     </mode>
+	<mode number="645">
+		<description>JIT on with shared classes, gencon GC (J9)</description>
+		<settings>
+			<setting type="either">
+				<clArg>-Xcompressedrefs</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xcompressedrefs"/>
+			</setting>
+			<setting type="either">
+				<clArg>-Xgcpolicy:gencon</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xgcpolicy:gencon"/>
+			</setting>
+			<setting type="either">
+				<clArg>-Xshareclasses</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xshareclasses"/>
+			</setting>
+			<setting type="either">
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xjit"/>
+				<clArg>-Xjit</clArg>
+			</setting>
+		</settings>
+	</mode>
     <mode number="685">
         <description>JIT on with compressed references, shared classes and -Xaggressive, gencon GC</description>
         <settings>
