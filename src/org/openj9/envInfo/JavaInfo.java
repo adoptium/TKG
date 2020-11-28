@@ -14,20 +14,15 @@
 
 package org.openj9.envInfo;
 
-import java.io.*;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-
 public class JavaInfo {
 
-    public String getSPEC() {
+    public String getSPEC(String javaImplInfo) {
         String osName = System.getProperty("os.name").toLowerCase();
         System.out.println("System.getProperty('os.name')=" + System.getProperty("os.name") + "\n");
         String osArch = System.getProperty("os.arch").toLowerCase();
         System.out.println("System.getProperty('os.arch')=" + System.getProperty("os.arch") + "\n");
-        String cmprssptrs = System.getProperty("java.fullversion");
-        System.out.println("System.getProperty('java.fullversion')=" + cmprssptrs + "\n");
+        String fullversion = System.getProperty("java.fullversion");
+        System.out.println("System.getProperty('java.fullversion')=" + fullversion + "\n");
         String spec = "";
         if (osName.contains("linux")) {
             spec = "linux";
@@ -73,14 +68,31 @@ public class JavaInfo {
             spec = spec.replace("riscv-64", "riscv64");
         }
 
-        if (cmprssptrs != null && cmprssptrs.contains("Compressed References")) {
-            spec += "_cmprssptrs";
+        if (javaImplInfo.equals("ibm") || javaImplInfo.equals("openj9")) {
+            spec += cmprssptrs();
         }
+
         if (spec.contains("ppc") && osArch.contains("le")) {
             spec += "_le";
         }
         
         return spec;
+    }
+
+    private String cmprssptrs() {
+        String rt = "";
+        CmdExecutor ce = CmdExecutor.getInstance();
+        String exe = System.getProperty("java.home") + "/bin/java";
+        String ver = "-version";
+        String comp = ce.execute(new String[] {exe, "-Xcompressedrefs", ver});
+        String nocomp = ce.execute(new String[] {exe, "-Xnocompressedrefs", ver});
+        if (comp.contains(System.getProperty("java.version"))) {
+            rt = "_cmprssptrs";
+            if (nocomp.contains(System.getProperty("java.version"))) {
+                rt = "_mxdptrs";
+            }
+        }
+        return rt;
     }
 
     public int getJDKVersion() {

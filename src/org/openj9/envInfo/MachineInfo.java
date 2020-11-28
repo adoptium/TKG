@@ -14,10 +14,7 @@
 
 package org.openj9.envInfo;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,7 +23,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
-import java.lang.*;
 
 public class MachineInfo {
 	public static final String[] UNAME_CMD = new String[] {"uname", "-a"};
@@ -99,27 +95,6 @@ public class MachineInfo {
 		return sb.toString();
 	}
 
-	private String execCommands(String[] commands) {
-		String rt = null;
-		try {
-			Process proc = Runtime.getRuntime().exec(commands);
-			BufferedReader stdOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			String newline = "";  
-			while ((line = stdOutput.readLine()) != null) {
-				sb.append(newline).append(line);
-				newline = "\n";
-			}
-			rt = sb.toString();
-			proc.waitFor();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-			return "Command could not be executed";
-		}
-		return rt;
-	}
-
 	private String parseInfo(String version) {
 		Pattern pattern = Pattern.compile("[0-9]+[.][0-9]+([.][0-9]+)?"); 
 		Matcher matcher = pattern.matcher(version);
@@ -188,16 +163,17 @@ public class MachineInfo {
 	}
 
 	private void getSysInfo() {
-		infoMap.put("uname", execCommands(UNAME_CMD));
-		infoMap.put("cpuCores", execCommands(CPU_CORES_CMD));
-		infoMap.put("sysArch", execCommands(SYS_ARCH_CMD));
-		infoMap.put("procArch", execCommands(PROC_ARCH_CMD));
-		infoMap.put("sysOS", execCommands(SYS_OS_CMD));
-		infoMap.put("ulimit", execCommands(ULIMIT_CMD));
-		infoMap.put("antVersion", execCommands(ANT_VERSION_CMD));
-		infoMap.put("makeVersion", execCommands(MAKE_VERSION_CMD));
-		infoMap.put("perlVersion", execCommands(PERL_VERSION_CMD));
-		infoMap.put("curlVersion", execCommands(CURL_VERSION_CMD));
+		CmdExecutor ce = CmdExecutor.getInstance();
+		infoMap.put("uname", ce.execute(UNAME_CMD));
+		infoMap.put("cpuCores", ce.execute(CPU_CORES_CMD));
+		infoMap.put("sysArch", ce.execute(SYS_ARCH_CMD));
+		infoMap.put("procArch", ce.execute(PROC_ARCH_CMD));
+		infoMap.put("sysOS", ce.execute(SYS_OS_CMD));
+		infoMap.put("ulimit", ce.execute(ULIMIT_CMD));
+		infoMap.put("antVersion", ce.execute(ANT_VERSION_CMD));
+		infoMap.put("makeVersion", ce.execute(MAKE_VERSION_CMD));
+		infoMap.put("perlVersion", ce.execute(PERL_VERSION_CMD));
+		infoMap.put("curlVersion", ce.execute(CURL_VERSION_CMD));
 	}
 
 	private void getSpaceInfo(String path) {
