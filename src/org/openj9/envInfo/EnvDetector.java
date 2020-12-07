@@ -47,9 +47,9 @@ public class EnvDetector {
 	 */
 	private static void getJavaInfo() {
 		JavaInfo envDetection = new JavaInfo();
-		String SPECInfo = envDetection.getSPEC();
-		int javaVersionInfo = envDetection.getJDKVersion();
 		String javaImplInfo = envDetection.getJDKImpl();
+		String SPECInfo = envDetection.getSPEC(javaImplInfo);
+		int javaVersionInfo = envDetection.getJDKVersion();
 		if (SPECInfo == null || javaVersionInfo == -1 || javaImplInfo == null) {
 			System.exit(1);
 		}
