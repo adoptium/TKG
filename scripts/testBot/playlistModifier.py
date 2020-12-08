@@ -75,10 +75,14 @@ def addDisabled(files, args):
             disabled.append(commentEle)
             if nthVar is not None:
                 var = test[0].find("variations")
-                if nthVar < len(var):
+                if var is not None and nthVar < len(var):
                     disabled.append(copy.deepcopy(var[nthVar]))
-                elif (nthVar != 0):
-                    print(f"Could not find test case {testCaseName}_{nthVar} (i.e., the {nthVar}th variation for test {testCaseName})!")
+                elif nthVar == 0:
+                    varEle = etree.Element("variation")
+                    varEle.text = "NoOptions"
+                    disabled.append(varEle)
+                else:
+                    print(f"Could not find test case {testCaseName}_{nthVar} (i.e., the {nthVar + 1}th variation for test {testCaseName})!")
                     sys.exit(-1)
             if "ver" in args:
                 verEle = etree.Element("subset")
