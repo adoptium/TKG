@@ -123,27 +123,6 @@ public class TestDivider {
 		return URL;
 	}
 
-	private String getImpl() {
-		String impl = "";
-		if (arg.getImpl().equals("openj9")) {
-			impl = "j9";
-		} else if (arg.getImpl().equals("hotspot")) {
-			impl = "hs";
-		}
-		return impl;
-	}
-
-	private String getPlat() {
-		String plat = "";
-		try (FileReader platReader = new FileReader(Constants.BUILDPLAT_JSON)) {
-			Properties platProp = new Properties();
-			platProp.load(platReader);
-			plat = platProp.getProperty(arg.getSpec());
-		} catch (IOException e) {
-		}
-		return plat;
-	}
-
 	private String getGroup() {
 		String group = "";
 		if (tt.isCategory()) {
@@ -199,8 +178,8 @@ public class TestDivider {
 	}
 
 	private Map<String, Integer> getDataFromFile() {
-		String impl = getImpl();
-		String plat = getPlat();
+		String impl = arg.getBuildImpl();
+		String plat = arg.getPlat();
 		if (impl.equals("") || plat.equals("")) {
 			return null;
 		}
@@ -238,8 +217,8 @@ public class TestDivider {
 	}
 
 	private Map<String, Integer> getDataFromTRSS()  {
-		String impl = getImpl();
-		String plat = getPlat();
+		String impl = arg.getBuildImpl();
+		String plat = arg.getPlat();
 		if (impl.equals("") || plat.equals("")) {
 			return null;
 		}

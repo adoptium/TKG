@@ -190,15 +190,24 @@ public class TestInfoParser {
 
 			String impl = getDisabledEle(disabled, "impl", ti.getTestCaseName());
 			String subset = getDisabledEle(disabled, "subset", ti.getTestCaseName());
+			String plat = getDisabledEle(disabled, "plat", ti.getTestCaseName());
 			String variation = getDisabledEle(disabled, "variation", ti.getTestCaseName());
+
 			for (Variation var : ti.getVars()) {
 				if (((impl == null) || arg.getImpl().equals(impl)) 
 					&& ((subset == null) || checkJavaVersion(subset)) 
+					&& ((plat == null) || checkPlat(plat))
 					&& ((variation == null) || var.getVariation().equals(variation))) {
 					var.addDisabledReasons(comment);
 				}
 			} 
 		}
+	}
+
+	private boolean checkPlat(String plat) {
+		Pattern pattern = Pattern.compile(plat);
+		Matcher matcher = pattern.matcher(arg.getPlat());
+		return matcher.matches();
 	}
 
 	private String getDisabledEle(Element disabled, String ele, String test) {
