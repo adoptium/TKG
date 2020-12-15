@@ -14,6 +14,10 @@
 
 package org.testKitGen;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
 public class Arguments {
 	enum Mode { 
 		GEN_TESTS, GEN_PARALLEL_LIST, CLEAN;
@@ -21,8 +25,10 @@ public class Arguments {
 	private static Arguments instance;
 	private Mode mode = Mode.GEN_TESTS;
 	private String spec = "";
+	private String plat = "";
 	private String jdkVersion = "";
 	private String impl = "";
+	private String buildImpl = "";
 	private String projectRootDir = System.getProperty("user.dir") + "/..";
 	private String buildList = "";
 	private String iterations = "";
@@ -78,12 +84,20 @@ public class Arguments {
 		return spec;
 	}
 
+	public String getPlat() {
+		return plat;
+	}
+
 	public String getJdkVersion() {
 		return jdkVersion;
 	}
 
 	public String getImpl() {
 		return impl;
+	}
+
+	public String getBuildImpl() {
+		return buildImpl;
 	}
 
 	public String getProjectRootDir() {
@@ -122,6 +136,17 @@ public class Arguments {
 		return testList;
 	}
 
+	private String spec2Plat(String spec) {
+		String plat = "";
+		try (FileReader platReader = new FileReader(Constants.BUILDPLAT_JSON)) {
+			Properties platProp = new Properties();
+			platProp.load(platReader);
+			plat = platProp.getProperty(spec);
+		} catch (IOException e) {
+		}
+		return plat;
+	}
+
 	public void parse(String[] args) {
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
@@ -141,10 +166,16 @@ public class Arguments {
 				}
 			} else if (arglc.startsWith("--spec=")) {
 				spec = arglc.substring(arg.indexOf("=") + 1);
+				plat = spec2Plat(spec);
 			} else if (arglc.startsWith("--jdkversion=")) {
 				jdkVersion = arglc.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--impl=")) {
 				impl = arglc.substring(arg.indexOf("=") + 1);
+				if (impl.equals("openj9")) {
+					buildImpl = "j9";
+				} else if (impl.equals("hotspot")) {
+					buildImpl = "hs";
+				}
 			} else if (arglc.startsWith("--projectrootdir=")) {
 				// projectRootDir is case sensitive
 				projectRootDir = arg.substring(arg.indexOf("=") + 1);
