@@ -125,9 +125,9 @@ my %base = (
 		shaalg => '256'
 	},
 	osgi => {
-		url => ' https://mirror.umd.edu/eclipse/equinox/drops/S-4.18M1a-202010120320/org.eclipse.osgi_3.16.100.v20200904-1304.jar',
-		fname => 'org.eclipse.osgi_3.16.100.v20200904-1304.jar',
-		sha1 => 'e0c1c2fa5e5f520d2347f9e7a7d2873e3b96bab3'
+		url => ' https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.16.100/org.eclipse.osgi-3.16.100.jar',
+		fname => 'org.eclipse.osgi-3.16.100.jar',
+		sha1 => '7ddb312f386b799d6e004d193a01c50169bf69f3'
 	});
 
 my @dependencies = split(',', $dependencyList); 
