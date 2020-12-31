@@ -92,6 +92,10 @@ def addDisabled(files, args):
                 implEle = etree.Element("impl")
                 implEle.text = args["impl"]
                 disabled.append(implEle)
+            if "plat" in args:
+                platEle = etree.Element("plat")
+                platEle.text = args["plat"]
+                disabled.append(platEle)
             testCaseName = test[0].find("testCaseName")
             testCaseName.addnext(disabled)
             updateFile(file, root)
