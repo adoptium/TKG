@@ -77,6 +77,7 @@ else
 	export JDK_IMPL:=$(JDK_IMPL)
 endif
 
+export JDK_VENDOR:=$(JDK_VENDOR)
 
 ifndef JVM_VERSION
 	OPENJDK_VERSION = openjdk$(JDK_VERSION)
@@ -317,4 +318,4 @@ rmResultFile:
 
 resultsSummary:
 	$(CD) $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(Q); \
-	perl $(Q)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --tapFile=$(Q)$(TAPRESULTFILE)$(Q) --platFile=$(Q)$(PLATFROMFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(CUSTOM_TARGET)
+	perl $(Q)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --tapFile=$(Q)$(TAPRESULTFILE)$(Q) --platFile=$(Q)$(PLATFROMFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --jdkVendor=$(Q)$(JDK_VENDOR)$(Q) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(CUSTOM_TARGET)

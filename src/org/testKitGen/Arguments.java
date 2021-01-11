@@ -29,6 +29,7 @@ public class Arguments {
 	private String jdkVersion = "";
 	private String impl = "";
 	private String buildImpl = "";
+	private String vendor = "";
 	private String projectRootDir = System.getProperty("user.dir") + "/..";
 	private String buildList = "";
 	private String iterations = "";
@@ -48,6 +49,7 @@ public class Arguments {
 			+ "                              Defaults to tests\n"
 			+ "    --jdkVersion=<version>    JDK version that the build will run on, e.g. 8, 9, 10, etc.\n"
 			+ "    --impl=<implementation>   Java implementation, e.g. openj9, ibm, hotspot, sap\n"
+			+ "    --vendor=<jdk vendor>     Java vendor information, e.g. adoptopenjdk, ibm\n"
 			+ "    --projectRootDir=<path>   Root path for searching playlist.xml\n"
 			+ "                              Defaults to the parent folder of TKG \n"
 			+ "    --buildList=<paths>       Comma separated project paths (relative to projectRootDir) to search for playlist.xml\n"
@@ -98,6 +100,10 @@ public class Arguments {
 
 	public String getBuildImpl() {
 		return buildImpl;
+	}
+
+	public String getVendor() {
+		return vendor;
 	}
 
 	public String getProjectRootDir() {
@@ -176,6 +182,8 @@ public class Arguments {
 				} else if (impl.equals("hotspot")) {
 					buildImpl = "hs";
 				}
+			} else if (arglc.startsWith("--vendor=")) {
+				vendor = arglc.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--projectrootdir=")) {
 				// projectRootDir is case sensitive
 				projectRootDir = arg.substring(arg.indexOf("=") + 1);

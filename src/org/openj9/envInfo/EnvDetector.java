@@ -48,6 +48,7 @@ public class EnvDetector {
 	private static void getJavaInfo() {
 		JavaInfo envDetection = new JavaInfo();
 		String javaImplInfo = envDetection.getJDKImpl();
+		String vendorInfo = envDetection.getJDKVendor();
 		String SPECInfo = envDetection.getSPEC(javaImplInfo);
 		int javaVersionInfo = envDetection.getJDKVersion();
 		if (SPECInfo == null || javaVersionInfo == -1 || javaImplInfo == null) {
@@ -56,6 +57,7 @@ public class EnvDetector {
 		String SPECvalue = "DETECTED_SPEC=" + SPECInfo + "\n";
 		String JDKVERSIONvalue = "DETECTED_JDK_VERSION=" + javaVersionInfo + "\n";
 		String JDKIMPLvalue = "DETECTED_JDK_IMPL=" + javaImplInfo + "\n";
+		String JDKVENDORvalue = "DETECTED_JDK_VENDOR=" + vendorInfo + "\n";
 
 		/**
 		 * autoGenEnv.mk file will be created to store auto detected java info.
@@ -69,6 +71,7 @@ public class EnvDetector {
 			output.write(SPECvalue);
 			output.write(JDKVERSIONvalue);
 			output.write(JDKIMPLvalue);
+			output.write(JDKVENDORvalue);
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();

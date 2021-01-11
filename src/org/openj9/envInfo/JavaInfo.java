@@ -126,4 +126,33 @@ public class JavaInfo {
             return null;
         }
     }
+
+    public String getJDKVendor() {
+        String vendor = System.getProperty("java.vendor");
+        System.out.println("System.getProperty('java.vendor')=" + vendor + "\n");
+        String vendorLC = vendor.toLowerCase();
+        if (vendorLC.contains("adoptopenjdk")) {
+            return "adoptopenjdk";
+        } else if (vendorLC.contains("eclipse")) {
+            return "eclipse";
+        } else if (vendorLC.contains("ibm")) {
+            return "ibm";
+        } else if (vendorLC.contains("alibaba")) {
+            return "alibaba";
+        } else if (vendorLC.contains("amazon")) {
+            return "amazon";
+        } else if (vendorLC.contains("azul")) {
+            return "azul";
+        }  else if (vendorLC.contains("sap")) {
+            return "sap";
+        } else if (vendorLC.contains("bellsoft")) {
+            return "bellsoft";
+        } else if (vendorLC.contains("oracle")) {
+            return "oracle";
+        } else {
+            System.out.println("Warning: cannot determine vendor, use System.getProperty('java.vendor')=" + vendor + " directly.\n");
+            return vendor;
+        }
+    }
+
 }
