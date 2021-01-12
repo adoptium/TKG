@@ -4589,6 +4589,13 @@
 			</setting>
 		</settings>
 	</mode>
-	
-	
+	<mode number="1000">
+		<description>no options on 32bit platforms</description>
+		<settings>
+			<setting type="either">
+				<envVar name="OPENJ9_JAVA_OPTIONS" value=""/>
+				<clArg></clArg>
+			</setting>
+		</settings>
+	</mode>
 </modes>
