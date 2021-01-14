@@ -177,3 +177,4 @@ variation:Mode110-OSRG,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,no,yes,yes,y
 variation:Mode607-OSRG,no,no,yes,yes,no,no,yes,yes,no,no,yes,no,no,no,no,no,yes,yes,no,no,yes,yes,no,no,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no
 variation:Mode610-OSRG,no,no,yes,yes,no,no,yes,yes,no,no,yes,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,no,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no
 variation:Mode612-OSRG,no,no,yes,yes,no,no,yes,yes,no,no,yes,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,no,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no
+variation:Mode1000,yes,no,no,no,yes,no,no,no,yes,no,no,no,no,no,yes,no,no,no,yes,no,no,no,yes,no,no,yes,no,no,no,no,no,no,no,no,no,no
