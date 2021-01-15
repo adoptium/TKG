@@ -30,7 +30,6 @@ my $jdkImpl = "";
 my $buildList = "";
 my $spec = "";
 my $customTarget = "";
-my $totalCount = 0;
 
 for (my $i = 0; $i < scalar(@ARGV); $i++) {
 	my $arg = $ARGV[$i];
@@ -54,8 +53,6 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 		($spec) = $arg =~ /^\-\-spec=(.*)/;
 	} elsif ($arg =~ /^\-\-customTarget=/) {
 		($customTarget) = $arg =~ /^\-\-customTarget=(.*)/;
-	} elsif ($arg =~ /^\-\-totalCount=/) {
-		($totalCount) = $arg =~ /^\-\-totalCount=(.*)/;
 	}
 }
 
@@ -206,8 +203,7 @@ sub resultReporter {
 	}
 	print "   SKIPPED: $numOfSkipped";
 	print "\n";
-        # Only produce TAP file if test results were found, or there are no tests for the given target
-	if (($numOfTotal > 0) || ($totalCount == 0)) {
+	if ($numOfTotal > 0) {
 		#generate tap output
 		my $dir = dirname($tapFile);
 		if (!(-e $dir and -d $dir)) {
