@@ -40,15 +40,10 @@ public class TestInfoParser {
 
 		ti.setTestCaseName(testEle.getElementsByTagName("testCaseName").item(0).getTextContent().trim());
 
-		// Do not generate make taget if impl doesn't match the exported impl
-		NodeList implNodes = testEle.getElementsByTagName("impl");
-
-		boolean isValidImpl = implNodes.getLength() == 0;
-		if (!isValidImpl) {
-			List<String> impls = new ArrayList<String>();
-			getElements(impls, "impls", "impl", Constants.ALLIMPLS, ti.getTestCaseName());
-			isValidImpl = impls.contains(arg.getImpl());
-		}
+		// Do not generate make target if impl doesn't match the exported jdk_impl
+		List<String> impls = new ArrayList<String>();
+		getElements(impls, "impls", "impl", Constants.ALLIMPLS, ti.getTestCaseName());
+		boolean isValidImpl = (impls.size() == 0) || impls.contains(arg.getImpl());
 		if (!isValidImpl) return null;
 
 		// Do not generate make target if vendor doesn't match the exported jdk_vendor
@@ -58,12 +53,10 @@ public class TestInfoParser {
 		if (!isValidVendor) return null;
 
 		// Do not generate make target if subset doesn't match the exported jdk_version
-		NodeList subsets = testEle.getElementsByTagName("subset");
-
-		boolean isValidSubset = subsets.getLength() == 0;
-
-		for (int j = 0; j < subsets.getLength(); j++) {
-			String subset = subsets.item(j).getTextContent().trim();
+		List<String> subsets = new ArrayList<String>();
+		getElements(subsets, "subsets", "subset", null, ti.getTestCaseName());
+		boolean isValidSubset = subsets.size() == 0;
+		for (String subset : subsets) {
 			isValidSubset = checkJavaVersion(subset);
 			if (isValidSubset) {
 				break;
