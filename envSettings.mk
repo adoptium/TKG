@@ -40,7 +40,7 @@ ifneq ($(AUTO_DETECT), false)
     endif
 
     ifndef JDK_VERSION
-		export JDK_VERSION:=$(DETECTED_JDK_VERSION)
+        export JDK_VERSION:=$(DETECTED_JDK_VERSION)
     else
         ifneq ($(JDK_VERSION), $(DETECTED_JDK_VERSION))
             $(error DETECTED_JDK_VERSION value is $(DETECTED_JDK_VERSION), settled JDK_VERSION value is $(JDK_VERSION). JDK_VERSION value does not match. Please reset or unset JDK_VERSION)
@@ -48,14 +48,22 @@ ifneq ($(AUTO_DETECT), false)
     endif
 
     ifndef JDK_IMPL
-		export JDK_IMPL:=$(DETECTED_JDK_IMPL)
+        export JDK_IMPL:=$(DETECTED_JDK_IMPL)
     else
         ifneq ($(JDK_IMPL), $(DETECTED_JDK_IMPL))
             ifneq ($(JDK_IMPL), sap)
                 $(error DETECTED_JDK_IMPL value is $(DETECTED_JDK_IMPL), settled JDK_IMPL value is $(JDK_IMPL). JDK_IMPL value does not match. Please reset or unset JDK_IMPL)
-	        endif
-	    endif
-	endif
+            endif
+        endif
+    endif
+
+    ifndef JDK_VENDOR
+        export JDK_VENDOR:=$(DETECTED_JDK_VENDOR)
+    else
+        ifneq ($(JDK_VENDOR), $(DETECTED_JDK_VENDOR))
+            $(error DETECTED_JDK_VENDOR value is $(DETECTED_JDK_VENDOR), settled JDK_VENDOR value is $(JDK_VENDOR). JDK_VENDOR value does not match. Please reset or unset JDK_VENDOR)
+        endif
+    endif
 else
     ifndef SPEC
         $(error Please export AUTO_DETECT=true or export SPEC value manually (i.e., export SPEC=linux_x86-64_cmprssptrs))
@@ -65,6 +73,9 @@ else
     endif
     ifndef JDK_IMPL
         $(error Please export AUTO_DETECT=true or export JDK_IMPL value manually (i.e., export JDK_IMPL=openj9))
+    endif
+    ifndef JDK_VENDOR
+        $(error Please export AUTO_DETECT=true or export JDK_VENDOR value manually (i.e., export JDK_VENDOR=adoptopenjdk))
     endif
 endif
 

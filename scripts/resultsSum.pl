@@ -27,6 +27,7 @@ my $platFile;
 my $diagnostic = 'failure';
 my $jdkVersion = "";
 my $jdkImpl = "";
+my $jdkVendor = "";
 my $buildList = "";
 my $spec = "";
 my $customTarget = "";
@@ -47,6 +48,8 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 		($jdkVersion) = $arg =~ /^\-\-jdkVersion=(.*)/;
 	} elsif ($arg =~ /^\-\-jdkImpl=/) {
 		($jdkImpl) = $arg =~ /^\-\-jdkImpl=(.*)/;
+	} elsif ($arg =~ /^\-\-jdkVendor=/) {
+		($jdkVendor) = $arg =~ /^\-\-jdkVendor=(.*)/;
 	} elsif ($arg =~ /^\-\-buildList=/) {
 		($buildList) = $arg =~ /^\-\-buildList=(.*)/;
 	} elsif ($arg =~ /^\-\-spec=/) {
@@ -237,8 +240,12 @@ sub resultReporter {
 		if ((!defined $hudsonUrl) || ($hudsonUrl eq '')) {
 			$hudsonUrl = "https://ci.adoptopenjdk.net/";
 		}
+		my $vendorParam =  "";
+		if ($jdkVendor ne '') {
+			$vendorParam = "&JDK_VENDOR=" . $jdkVendor;
+		}
 
-		my $rebuildLinkBase = "parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$buildParam$platformParam$customTargetParam";
+		my $rebuildLinkBase = "parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$vendorParam$buildParam$platformParam$customTargetParam";
 		print "To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:\n";
 		print "<Jenkins URL>/$rebuildLinkBase&TARGET=<FAILED test target>\n\n";
 		print "For example, to rebuild the failed tests in <Jenkins URL>=${hudsonUrl}job/Grinder, use the following links:\n";
