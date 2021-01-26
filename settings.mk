@@ -179,7 +179,7 @@ ifndef UNIQUEID
 	GETID := $(TEST_ROOT)$(D)TKG$(D)scripts$(D)getUniqueId.pl
 	export UNIQUEID := $(shell perl $(GETID) -v)
 endif
-TESTOUTPUT := $(TEST_ROOT)$(D)TKG$(D)test_output_$(UNIQUEID)
+TESTOUTPUT := $(TEST_ROOT)$(D)TKG$(D)output_$(UNIQUEID)
 ifeq ($(TEST_ITERATIONS), 1)
 	REPORTDIR_NQ = $(TESTOUTPUT)$(D)$@
 else
