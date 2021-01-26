@@ -17,7 +17,6 @@ package org.openj9.envInfo;
 import java.io.File;
 import java.nio.file.*;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
@@ -58,40 +57,47 @@ public class MachineInfo {
 	public static final String[] NUM_JAVA_PROCESSES_CMD = new String[] {"bash", "-c", "ps -ef | grep -i [j]ava | wc -l"};
 	public static final String[] ACTIVE_JAVA_PROCESSES_CMD = new String[] {"bash", "-c", "ps -ef | grep -i [j]ava"};
 
+	public static Map<String, String> requirements;
+	static {
+		requirements = new HashMap<>();
+		requirements.put("antVersion", "1.9.6");
+   	 	requirements.put("makeVersion", "4.1");
+ 		requirements.put("perlVersion", "5.10.1");
+		requirements.put("curlVersion", "7.20.0");
+	}
 
-	private List<Info> infoList;
+	private Map<String, String> infoMap;
 	
 	public MachineInfo() {
-		this.infoList = new ArrayList<Info>();
+		this.infoMap = new LinkedHashMap<>();
 	}
 
 	public void getInfo() {
 		getSysInfo();
-		getPrerequisiteInfo();
 		getRuntimeInfo();
-		getSpaceInfo();
+		getSpaceInfo("");
 		validateInfo();
 	}
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		String newline = "";
-		for (Info info : infoList) {
-			String output = info.output != null ? info.output : "";
-			if (output.contains("\n")) {
-				output = "\n" + output;
-				output = output.replaceAll("(?m)\\n", "\n\t");
+		for (Map.Entry<String, String> entry : infoMap.entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue() != null ? entry.getValue() : "";
+			if (value.contains("\n")) {
+				value = "\n" + value;
+				value = value.replaceAll("(?m)\\n", "\n\t");
 			}
-			sb.append(newline).append(info.name).append(" : ").append(output);
+			sb.append(newline).append(key).append(" : ").append(value);
 			newline = "\n";
 		}
 		return sb.toString();
 	}
 
-	private String parseInfo(String output) {
-		if (output == null) return ""; 
+	private String parseInfo(String version) {
 		Pattern pattern = Pattern.compile("[0-9]+[.][0-9]+([.][0-9]+)?"); 
-		Matcher matcher = pattern.matcher(output);
+		Matcher matcher = pattern.matcher(version);
 		if (matcher.find()) {
 			return matcher.group(0);
 		} else {
@@ -146,48 +152,43 @@ public class MachineInfo {
 
 	private void validateInfo() {
 		boolean valid = true;
-		for (Info info : infoList) {
-			if (info.req != null) {
-				String version = parseInfo(info.output);
-				valid &= validateVersion(info.name, version, info.req);
-			}
+		for (Map.Entry<String, String> entry : requirements.entrySet()) {
+			String version = parseInfo(infoMap.get(entry.getKey()));
+			valid &= validateVersion(entry.getKey(), version, entry.getValue());
 		}
 		if (!valid) {
-			System.exit(1);
+			/*System.out.println("\n");
+			System.exit(1);*/
 		}
 	}
 
 	private void getSysInfo() {
 		CmdExecutor ce = CmdExecutor.getInstance();
-		infoList.add(new Info("uname", UNAME_CMD, ce.execute(UNAME_CMD), null));
-		infoList.add(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD), null));
-		infoList.add(new Info("sysArch", SYS_ARCH_CMD, ce.execute(SYS_ARCH_CMD), null));
-		infoList.add(new Info("procArch", PROC_ARCH_CMD, ce.execute(PROC_ARCH_CMD), null));
-		infoList.add(new Info("sysOS", SYS_OS_CMD, ce.execute(SYS_OS_CMD), null));
-		infoList.add(new Info("ulimit", ULIMIT_CMD, ce.execute(ULIMIT_CMD), null));
-	}
-	
-	private void getPrerequisiteInfo() {
-		CmdExecutor ce = CmdExecutor.getInstance();
-		infoList.add(new Info("antVersion", ANT_VERSION_CMD, ce.execute(ANT_VERSION_CMD), "1.9.6"));
-		/* required version is 4.1, but some exception applies, do not verify for now*/
-		infoList.add(new Info("makeVersion", MAKE_VERSION_CMD, ce.execute(MAKE_VERSION_CMD), null));
-		infoList.add(new Info("perlVersion", PERL_VERSION_CMD, ce.execute(PERL_VERSION_CMD), "5.10.1"));
-		infoList.add(new Info("curlVersion", CURL_VERSION_CMD, ce.execute(CURL_VERSION_CMD), "7.20.0"));
+		infoMap.put("uname", ce.execute(UNAME_CMD));
+		infoMap.put("cpuCores", ce.execute(CPU_CORES_CMD));
+		infoMap.put("sysArch", ce.execute(SYS_ARCH_CMD));
+		infoMap.put("procArch", ce.execute(PROC_ARCH_CMD));
+		infoMap.put("sysOS", ce.execute(SYS_OS_CMD));
+		infoMap.put("ulimit", ce.execute(ULIMIT_CMD));
+		infoMap.put("antVersion", ce.execute(ANT_VERSION_CMD));
+		infoMap.put("makeVersion", ce.execute(MAKE_VERSION_CMD));
+		infoMap.put("perlVersion", ce.execute(PERL_VERSION_CMD));
+		infoMap.put("curlVersion", ce.execute(CURL_VERSION_CMD));
 	}
 
-	private void getSpaceInfo() {
-		File file = Paths.get("").toAbsolutePath().toFile();
-		infoList.add(new Info("File path", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getAbsolutePath()"}, file.getAbsolutePath(), null));
-		infoList.add(new Info("Total space (bytes)", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getTotalSpace()"}, String.valueOf(file.getTotalSpace()), null));
-		infoList.add(new Info("Free space (bytes)", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getFreeSpace()"}, String.valueOf(file.getFreeSpace()), null));
-		infoList.add(new Info("Usable space (bytes)", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getUsableSpace()"}, String.valueOf(file.getUsableSpace()), null));
+	private void getSpaceInfo(String path) {
+		Path userPath = Paths.get(path);
+		File file = userPath.toAbsolutePath().toFile();
+		infoMap.put("File path", file.getAbsolutePath());
+		infoMap.put("Total space (bytes)", String.valueOf(file.getTotalSpace()));
+		infoMap.put("Free space (bytes)", String.valueOf(file.getFreeSpace()));
+		infoMap.put("Usable space (bytes)", String.valueOf(file.getUsableSpace()));
 	}
 
 	private void getRuntimeInfo() {
-		infoList.add(new Info("vmVendor", new String[] {"ManagementFactory.getRuntimeMXBean().getSpecVendor()"}, ManagementFactory.getRuntimeMXBean().getSpecVendor(), null));
-		infoList.add(new Info("vmVersion", new String[] {"ManagementFactory.getRuntimeMXBean().getVmVersion()"}, ManagementFactory.getRuntimeMXBean().getVmVersion(), null));
-		infoList.add(new Info("Total memory (bytes)", new String[] {"String.valueOf(Runtime.getRuntime().totalMemory())"}, String.valueOf(Runtime.getRuntime().totalMemory()), null));
-		infoList.add(new Info("Free memory (bytes)", new String[] {"String.valueOf(Runtime.getRuntime().freeMemory())"}, String.valueOf(Runtime.getRuntime().freeMemory()), null));
+		infoMap.put("vmVendor", ManagementFactory.getRuntimeMXBean().getSpecVendor());
+		infoMap.put("vmVersion", ManagementFactory.getRuntimeMXBean().getVmVersion());
+		infoMap.put("Total memory (bytes)", String.valueOf(Runtime.getRuntime().totalMemory()));
+		infoMap.put("Free memory (bytes)", String.valueOf(Runtime.getRuntime().freeMemory()));
 	}
 }
