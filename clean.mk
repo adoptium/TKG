@@ -26,7 +26,7 @@ cleanBuild:
 	$(RM) -r $(BUILD_ROOT)
 
 clean: cleanBuild
-	$(RM) -r $(TEST_ROOT)$(D)TKG$(D)test_output_*
+	$(RM) -r $(TEST_ROOT)$(D)TKG$(D)output_*
 	$(RM) $(FAILEDTARGETS)
 	ant -f $(TEST_ROOT)$(D)TKG$(D)scripts/build_tools.xml clean
 

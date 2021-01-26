@@ -16,7 +16,7 @@
 # misc auto generated folders
 lib
 bin
-test_output_*
+output_*
 resources/TRSS
 scripts/testBot/__pycache__
 
