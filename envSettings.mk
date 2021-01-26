@@ -65,17 +65,22 @@ ifneq ($(AUTO_DETECT), false)
         endif
     endif
 else
+    $(info AUTO_DETECT is set to false)
     ifndef SPEC
-        $(error Please export AUTO_DETECT=true or export SPEC value manually (i.e., export SPEC=linux_x86-64_cmprssptrs))
+        export SPEC:=$(DETECTED_SPEC)
+        $(info Warning: No SPEC has been exported. Use auto detected SPEC=$(SPEC).)
     endif
     ifndef JDK_VERSION
-        $(error Please export AUTO_DETECT=true or export JDK_VERSION value manually (i.e., export JDK_VERSION=8))
+        export JDK_VERSION:=$(DETECTED_JDK_VERSION)
+        $(info Warning: No JDK_VERSION has been exported. Use auto detected JDK_VERSION=$(JDK_VERSION).)
     endif
     ifndef JDK_IMPL
-        $(error Please export AUTO_DETECT=true or export JDK_IMPL value manually (i.e., export JDK_IMPL=openj9))
+        export JDK_IMPL:=$(DETECTED_JDK_IMPL)
+        $(info Warning: No JDK_IMPL has been exported. Use auto detected JDK_IMPL=$(JDK_IMPL).)
     endif
     ifndef JDK_VENDOR
-        $(error Please export AUTO_DETECT=true or export JDK_VENDOR value manually (i.e., export JDK_VENDOR=adoptopenjdk))
+        export JDK_VENDOR:=$(DETECTED_JDK_VENDOR)
+        $(info Warning: No JDK_VENDOR has been exported. Use auto detected JDK_VENDOR=$(JDK_VENDOR).)
     endif
 endif
 
