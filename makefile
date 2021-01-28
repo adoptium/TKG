@@ -62,12 +62,8 @@ compile: envDetect
 # If AUTO_DETECT is turned on, compile and execute envDetector in build_envInfo.xml.
 #######################################
 envDetect: compileTools
-ifneq ($(AUTO_DETECT), false)
-	@echo "AUTO_DETECT is set to true"
+
 	${TEST_JDK_HOME}$(D)bin$(D)java -cp .$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector
-else
-	@echo "AUTO_DETECT is set to false"
-endif
 
 #######################################
 # compile tools
