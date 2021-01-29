@@ -28,6 +28,7 @@ def main():
     ap.add_argument("-t", "--test", required=False, help="test name")
     ap.add_argument("-v", "--ver", required=False, help="java version")
     ap.add_argument("-i", "--impl", required=False, help="java impl")
+    ap.add_argument("-vd", "--vendor", required=False, help="java vendor")
     ap.add_argument("-p", "--plat", required=False, help="platform")
     ap.add_argument("-c", "--comment", required=False, help="comment")
     run(vars(ap.parse_args()))
@@ -92,6 +93,10 @@ def addDisabled(files, args):
                 implEle = etree.Element("impl")
                 implEle.text = args["impl"]
                 disabled.append(implEle)
+            if "vendor" in args:
+                vendorEle = etree.Element("vendor")
+                vendorEle.text = args["vendor"]
+                disabled.append(vendorEle)
             if "plat" in args:
                 platEle = etree.Element("plat")
                 platEle.text = args["plat"]
