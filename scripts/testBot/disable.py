@@ -38,6 +38,8 @@ def main():
                     newArgs["file"] = m.group(1)
                 elif m := re.match(r"impl=(\S+)", op):
                     newArgs["impl"] = m.group(1)
+                elif m := re.match(r"vendor=(\S+)", op):
+                    newArgs["vendor"] = m.group(1)
                 elif m := re.match(r"ver=(\S+)", op):
                     newArgs["ver"] = m.group(1)
                 elif m := re.match(r"plat=(\S+)", op):
