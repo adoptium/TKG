@@ -70,10 +70,10 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element name="subsets" minOccurs="0">
+              <xs:element name="versions" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element type="xs:string" name="subset" maxOccurs="unbounded"/>
+                    <xs:element type="xs:string" name="version" maxOccurs="unbounded"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>

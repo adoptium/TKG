@@ -52,17 +52,21 @@ public class TestInfoParser {
 		boolean isValidVendor = (vendors.size() == 0) || vendors.contains(arg.getVendor());
 		if (!isValidVendor) return null;
 
-		// Do not generate make target if subset doesn't match the exported jdk_version
-		List<String> subsets = new ArrayList<String>();
-		getElements(subsets, "subsets", "subset", null, ti.getTestCaseName());
-		boolean isValidSubset = subsets.size() == 0;
-		for (String subset : subsets) {
-			isValidSubset = checkJavaVersion(subset);
-			if (isValidSubset) {
+		// Do not generate make target if version doesn't match the exported jdk_version
+		List<String> versions = new ArrayList<String>();
+		getElements(versions, "versions", "version", null, ti.getTestCaseName());
+		//TODO: remove temporarily support for old style
+		if (versions.size() == 0) {
+			getElements(versions, "subsets", "subset", null, ti.getTestCaseName());
+		}
+		boolean isValidVersion = versions.size() == 0;
+		for (String version : versions) {
+			isValidVersion = checkJavaVersion(version);
+			if (isValidVersion) {
 				break;
 			}
 		}
-		if (!isValidSubset) return null;
+		if (!isValidVersion) return null;
 
 		// Do not generate make target if the test is AOT not applicable when test flag
 		// is set to AOT
@@ -189,14 +193,18 @@ public class TestInfoParser {
 
 			String impl = getDisabledEle(disabled, "impl", ti.getTestCaseName());
 			String vendor = getDisabledEle(disabled, "vendor", ti.getTestCaseName());
-			String subset = getDisabledEle(disabled, "subset", ti.getTestCaseName());
+			String version = getDisabledEle(disabled, "version", ti.getTestCaseName());
+			//TODO: remove temporarily support for old style
+			if (version == null) {
+				version = getDisabledEle(disabled, "subset", ti.getTestCaseName());
+			}
 			String plat = getDisabledEle(disabled, "plat", ti.getTestCaseName());
 			String variation = getDisabledEle(disabled, "variation", ti.getTestCaseName());
 
 			for (Variation var : ti.getVars()) {
 				if (((impl == null) || arg.getImpl().equals(impl))
 					&& ((vendor == null) || arg.getVendor().equals(vendor))
-					&& ((subset == null) || checkJavaVersion(subset))
+					&& ((version == null) || checkJavaVersion(version))
 					&& ((plat == null) || checkPlat(plat))
 					&& ((variation == null) || var.getVariation().equals(variation))) {
 					var.addDisabledReasons(comment);

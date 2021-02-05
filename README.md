@@ -5,4 +5,4 @@ TestKitGen (TKG) is a lightweight test harness for bringing together a diverse s
 TKG standardizes: 
 - test target generation (generates make targets based on contents of playlist.xml files)
 - test output, defaulting to Test Anything Protocol (TAP) as the simplest, lowest common denominator
-- the way tests are tagged, grouped, included and excluded (categorizing by elements in the playlist file, by group, impl, subset (version), etc)
+- the way tests are tagged, grouped, included and excluded (categorizing by elements in the playlist file, by group, impl, version, etc)
