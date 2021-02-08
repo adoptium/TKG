@@ -16,6 +16,7 @@ import playlistModifier
 import argparse
 import re
 import sys
+import shlex
 
 def main():
     ap = argparse.ArgumentParser()
@@ -32,17 +33,17 @@ def main():
     if match:
         print(f"{args['message']}\n")
         if match.group(3):
-            options = match.group(3).split()
+            options = shlex.split(match.group(3))
             for op in options:
-                if m := re.match(r"file=(\S+)", op):
+                if m := re.match(r"file=(.*)", op):
                     newArgs["file"] = m.group(1)
-                elif m := re.match(r"impl=(\S+)", op):
+                elif m := re.match(r"impl=(.*)", op):
                     newArgs["impl"] = m.group(1)
-                elif m := re.match(r"vendor=(\S+)", op):
+                elif m := re.match(r"vendor=(.*)", op):
                     newArgs["vendor"] = m.group(1)
-                elif m := re.match(r"ver=(\S+)", op):
+                elif m := re.match(r"ver=(.*)", op):
                     newArgs["ver"] = m.group(1)
-                elif m := re.match(r"plat=(\S+)", op):
+                elif m := re.match(r"plat=(.*)", op):
                     newArgs["plat"] = m.group(1)
                 else:
                     print(f"unrecognized argument: {op}")
@@ -63,4 +64,4 @@ def main():
         sys.exit(-1)
 
 if __name__ == "__main__":
-    main()
+    main() 
