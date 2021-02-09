@@ -182,9 +182,9 @@ public class TestInfoParser {
 		for (int i = 0; i < disabledNodes.getLength(); i++) {
 			Element disabled = (Element) disabledNodes.item(i);
 			String comment = getDisabledEle(disabled, "comment", ti.getTestCaseName());
-			//TODO: remove temporarily support for old style
 			if (comment == null) {
-				comment = disabledNodes.item(i).getTextContent().trim();
+				System.err.println("Error: Please provide a comment inside disable element in test " + ti.getTestCaseName() + ".");
+				System.exit(1);
 			}
 
 			String impl = getDisabledEle(disabled, "impl", ti.getTestCaseName());
