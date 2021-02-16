@@ -86,7 +86,7 @@ def addDisabled(files, args):
                     print(f"Could not find test case {testCaseName}_{nthVar} (i.e., the {nthVar + 1}th variation for test {testCaseName})!")
                     sys.exit(-1)
             if "ver" in args:
-                verEle = etree.Element("subset")
+                verEle = etree.Element("version")
                 verEle.text = args["ver"]
                 disabled.append(verEle)
             if "impl" in args:
