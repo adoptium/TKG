@@ -21,28 +21,14 @@ import java.util.List;
 public class DirectoryWalker {
 	private Arguments arg;
 	private DirectoryVisitor dv;
+	private BuildList bl;
 	private ArrayList<String> dirList;
 
-	public DirectoryWalker(Arguments arg, DirectoryVisitor dv) {
+	public DirectoryWalker(Arguments arg, DirectoryVisitor dv, BuildList bl) {
 		this.arg = arg;
 		this.dv = dv;
+		this.bl = bl;
 		dirList = new ArrayList<String>();
-	}
-
-	private boolean continueTraverse(String currentDir) {
-		// If the build list is empty then generate on every project.
-		if (arg.getBuildList().isEmpty()) {
-			return true;
-		}
-		// Only generate make files for projects that are specified in the build list.
-		String[] buildListArr = arg.getBuildList().split(",");
-		for (String buildPath : buildListArr) {
-			buildPath = buildPath.replaceAll("\\+", "/");
-			if (currentDir.equals(buildPath) || currentDir.equals("") || currentDir.contains(buildPath + "/") || buildPath.contains(currentDir + "/")) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public boolean traverse() {
@@ -52,7 +38,7 @@ public class DirectoryWalker {
 			absoluteDir = absoluteDir + '/' + currentDir;
 		}
 
-		if (!continueTraverse(currentDir)) {
+		if (!bl.contains(currentDir)) {
 			return false;
 		}
 

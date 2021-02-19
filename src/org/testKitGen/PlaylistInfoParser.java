@@ -39,8 +39,9 @@ public class PlaylistInfoParser {
 	private Arguments arg;
 	private ModesDictionary md;
 	private TestTarget tt;
-	private File playlistXML;
+	private File playlistXML; 
 	private File playlistXSD;
+	private BuildList bl;
 
 	public PlaylistInfoParser(Arguments arg, ModesDictionary md, TestTarget tt, File playlistXML) {
 		this.arg = arg;
@@ -86,6 +87,15 @@ public class PlaylistInfoParser {
 		}
 	}
 
+	public PlaylistInfoParser(Arguments arg, ModesDictionary md, TestTarget tt, File playlistXML, BuildList bl) {
+		this.arg = arg;
+		this.md = md;
+		this.tt = tt;
+		this.playlistXML = playlistXML;
+		this.bl = bl;
+		this.playlistXSD = new File(Constants.PLAYLISTXSD);
+	}
+
 	public PlaylistInfo parse() {
 		validate();
 		PlaylistInfo pli = new PlaylistInfo();
@@ -109,6 +119,9 @@ public class PlaylistInfoParser {
 							if (filterResult) {
 								testInfoList.add(ti);
 								TestInfo.countTests(ti, tt);
+								if (bl != null) {
+									bl.add(playlistXML);
+								}
 							}
 						}
 					}
