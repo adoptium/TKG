@@ -23,10 +23,12 @@ def main():
     ap.add_argument("-m", "--message", required=True, help="exclude message")
     ap.add_argument("-d", "--directory", required=True, help="directory to modify")
     ap.add_argument("-c", "--comment", required=True, help="comment")
+    ap.add_argument("-cp", "--copyright", required=False, default="false", help="update copyright date")
     args = vars(ap.parse_args())
 
     newArgs = {
-        "directory": args["directory"]
+        "directory": args["directory"],
+        "copyright": args["copyright"]
     }
     message = args["message"].strip()
     match = re.match(r"auto ([A-Za-z]+) test (\S+)(.*)", message)
