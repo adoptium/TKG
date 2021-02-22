@@ -21,23 +21,7 @@
 HOTSPOT_IMPLS=$(or hotspot,sap)
 
 ifneq ($(AUTO_DETECT), false) 
-    ifndef SPEC
-        export SPEC:=$(DETECTED_SPEC)
-    else
-        ifneq ($(SPEC), $(DETECTED_SPEC))
-            ifeq ($(DETECTED_JDK_IMPL), $(HOTSPOT_IMPLS))
-                ifeq ($(SPEC), linux_ppc-64_cmprssptrs_le)
-                    ifneq ($(DETECTED_SPEC), linux_ppc-64_le)
-                        $(error DETECTED_SPEC value is $(DETECTED_SPEC), settled SPEC value is $(SPEC). SPEC value does not match. Please reset or unset SPEC)
-                    endif
-                else ifneq ($(SPEC), $(DETECTED_SPEC)_cmprssptrs)
-                    $(error DETECTED_SPEC value is $(DETECTED_SPEC), settled SPEC value is $(SPEC). SPEC value does not match. Please reset or unset SPEC)
-                endif
-            else
-                $(error DETECTED_SPEC value is $(DETECTED_SPEC), settled SPEC value is $(SPEC). SPEC value does not match. Please reset or unset SPEC)
-            endif 
-        endif
-    endif
+    export SPEC:=$(DETECTED_SPEC)
 
     ifndef JDK_VERSION
         export JDK_VERSION:=$(DETECTED_JDK_VERSION)
