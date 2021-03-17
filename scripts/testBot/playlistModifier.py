@@ -19,6 +19,7 @@ import os
 import argparse
 from pathlib import Path
 import lxml.etree as etree
+import datetime
 
 def main():
     ap = argparse.ArgumentParser()
@@ -31,6 +32,7 @@ def main():
     ap.add_argument("-vd", "--vendor", required=False, help="java vendor")
     ap.add_argument("-p", "--plat", required=False, help="platform")
     ap.add_argument("-c", "--comment", required=False, help="comment")
+    ap.add_argument("-cp", "--copyright", required=False, default="false", help="update copyright date")
     run(vars(ap.parse_args()))
 
 def run(args):
@@ -41,7 +43,7 @@ def run(args):
         sys.exit(-1)
     print(f"- updating file(s)")
     if (args["mode"] == "format"):
-        formatter(files)
+        formatter(files, args)
     if (args["mode"] == "exclude"):
         updated = addDisabled(files, args)
         if not updated:
@@ -103,14 +105,29 @@ def addDisabled(files, args):
                 disabled.append(platEle)
             testCaseName = test[0].find("testCaseName")
             testCaseName.addnext(disabled)
+            updateCopyright(root, args)
             updateFile(file, root)
             updated = True
     return updated
 
-def formatter(files):
+def formatter(files, args):
     for file in files:
         root = etree.parse(file)
+        updateCopyright(root, args)
         updateFile(file, root)
+
+def updateCopyright(root, args):
+    if (args["copyright"] == "true"):
+        cr = root.xpath(f"/comment()")
+        if cr:
+            crtext = cr[0].text
+            find = fr"(.*)(Copyright \(c\) \d{{4}}, )(\d{{4}})(.*)"
+            search = re.search(find, crtext)
+            year = datetime.datetime.now().year
+            if (search is not None) and (search.group(3) != str(year)):
+                replace = fr"\g<1>\g<2>{year}\g<4>"
+                newcrtext = re.sub(find, replace, crtext, flags=re.DOTALL)
+                cr[0].text = newcrtext
 
 def updateFile(file, root):
     etree.indent(root, "\t")
