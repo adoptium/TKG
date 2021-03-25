@@ -128,6 +128,11 @@ my %base = (
 		url => ' https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.16.100/org.eclipse.osgi-3.16.100.jar',
 		fname => 'org.eclipse.osgi-3.16.100.jar',
 		sha1 => '7ddb312f386b799d6e004d193a01c50169bf69f3'
+	},
+	jython => {
+		url => ' https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
+		fname => 'jython-standalone.jar',
+		sha1 => '15592c29538abd36d15570eda9fa055ed1a618ba'
 	});
 
 my @dependencies = split(',', $dependencyList); 
