@@ -39,7 +39,7 @@ if (not defined $path) {
 
 if (! -d $path) {
 	print "$path does not exist, creating one.\n";
-	my $isCreated = make_path($path, {chmod => 0777, verbose => 1,});
+	my $isCreated = make_path($path, {chmod => 0777, verbose => 1});
 }
 
 # define directory path separator
@@ -51,7 +51,7 @@ print "task is set to $task\n";
 print "dependencyList is set to $dependencyList\n";
 
 # Define a a hash for each dependent jar
-# Contents in the hash should be: 
+# Contents in the hash should be:
 #   url - required. url to download the dependent jar
 #   fname - required. the dependent jar name
 #   sha1 - sha1 value for the dependent jar (can be skipped if both shaurl and shafn are provided)
@@ -125,24 +125,24 @@ my %base = (
 		shaalg => '256'
 	},
 	osgi => {
-		url => ' https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.16.100/org.eclipse.osgi-3.16.100.jar',
+		url => 'https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.16.100/org.eclipse.osgi-3.16.100.jar',
 		fname => 'org.eclipse.osgi-3.16.100.jar',
 		sha1 => '7ddb312f386b799d6e004d193a01c50169bf69f3'
 	},
 	jython => {
-		url => ' https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
+		url => 'https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
 		fname => 'jython-standalone.jar',
 		sha1 => '15592c29538abd36d15570eda9fa055ed1a618ba'
 	});
 
-my @dependencies = split(',', $dependencyList); 
+my @dependencies = split(',', $dependencyList);
 
 # Put all dependent jars hash to array to prepare downloading
 my @jars_info;
 foreach my $dependency (keys %base) {
 	foreach my $i (@dependencies) {
 		if ($i eq "all" || $dependency eq $i) {
-			push(@jars_info,$base{$dependency});
+			push(@jars_info, $base{$dependency});
 		}
 	}
 }
@@ -180,9 +180,9 @@ if ($task eq "clean") {
 			# if the sha file exists, parse the file and get the expected sha
 			if (-e $shafn) {
 				$expectedsha = getShaFromFile($shafn, $fn);
-			} 
+			}
 
-			# if expectedsha is not set above and shaurl is provided, download the sha file 
+			# if expectedsha is not set above and shaurl is provided, download the sha file
 			# and parse the file to get the expected sha
 			if (!$expectedsha && $shaurl) {
 				downloadFile($shaurl, $shafn);
@@ -226,7 +226,6 @@ if ($task eq "clean") {
 	die "ERROR: task unsatisfied!\n";
 }
 
-
 sub getShaFromFile {
 	my ( $shafile, $fn ) = @_;
 	my $sha = "";
@@ -245,11 +244,11 @@ sub downloadFile {
 	my ( $url, $filename ) = @_;
 	print "downloading $url\n";
 	my $output;
-	
+
 	# Delete existing file in case it is tagged incorrectly which curl would then honour..
 	if (-e $filename) {
 		qx(rm $filename);
-	} 
+	}
 
 	# .txt SHA files are in ISO8859-1
 	# note _ENCODE_FILE_NEW flag is set for zos
