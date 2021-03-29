@@ -55,10 +55,6 @@ public class TestInfoParser {
 		// Do not generate make target if version doesn't match the exported jdk_version
 		List<String> versions = new ArrayList<String>();
 		getElements(versions, "versions", "version", null, ti.getTestCaseName());
-		//TODO: remove temporarily support for old style
-		if (versions.size() == 0) {
-			getElements(versions, "subsets", "subset", null, ti.getTestCaseName());
-		}
 		boolean isValidVersion = versions.size() == 0;
 		for (String version : versions) {
 			isValidVersion = checkJavaVersion(version);
@@ -194,10 +190,6 @@ public class TestInfoParser {
 			String impl = getDisabledEle(disabled, "impl", ti.getTestCaseName());
 			String vendor = getDisabledEle(disabled, "vendor", ti.getTestCaseName());
 			String version = getDisabledEle(disabled, "version", ti.getTestCaseName());
-			//TODO: remove temporarily support for old style
-			if (version == null) {
-				version = getDisabledEle(disabled, "subset", ti.getTestCaseName());
-			}
 			String plat = getDisabledEle(disabled, "plat", ti.getTestCaseName());
 			String variation = getDisabledEle(disabled, "variation", ti.getTestCaseName());
 
