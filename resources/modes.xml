@@ -3926,6 +3926,31 @@
 			</setting>
 		</settings>
 	</mode>
+	<mode number="616">
+		<description>JIT on, optthruput GC (J9), gencon GC (J9)</description>
+		<settings>
+			<setting type="either">
+				<clArg>-Xcompressedrefs</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xcompressedrefs"/>
+			</setting>
+			<setting type="either">
+				<clArg>-Xgcpolicy:gencon</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xgcpolicy:gencon"/>
+			</setting>
+			<setting type="either">
+				<clArg>-Xdebug</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xdebug"/>
+			</setting>
+			<setting type="either">
+				<clArg>-Xrunjdwp:transport=dt_socket,address=8888,server=y,onthrow=no.pkg.foo,launch=echo</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xrunjdwp:transport=dt_socket,address=8888,server=y,onthrow=no.pkg.foo,launch=echo"/>
+			</setting>
+			<setting type="either">
+				<clArg>-Xjit:count=0</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xjit:count=0"/>
+			</setting>
+		</settings>
+	</mode>
 	<mode number="618">
 		<description>JIT off, optavgpause gc (J9)</description>
 		<settings>
