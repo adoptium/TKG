@@ -17,11 +17,22 @@ jobs:
         echo ::set-output name=url::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
         echo ::set-output name=id::$GITHUB_RUN_ID
       id: workflow_run_info
-    - uses: actions/checkout@v2
+    # Checkout current repo to access the repo-specific config file `.github/workflows/runAqaConfig.json`
+    - name: Checkout current repo
+      uses: actions/checkout@v2
+      with:
+        path: 'main'
+    # Checkout the main TKG repo to access the shared script `scripts/testRepo/runAqaArgParse.py`
+    - name: Checkout main TKG repo
+      uses: actions/checkout@v2
+      with:
+        repository: 'adoptium/TKG.git'
+        ref: 'master'
+        path: 'TKG'
     - name: Parse parameters
       env:
         args: ${{ github.event.comment.body }}
-      run: python3 .github/workflows/runAqaArgParse.py $args 2> log.txt
+      run: python3 TKG/scripts/testBot/runAqaArgParse.py $args 2> log.txt
       id: argparse
     - name: Output log
       if: failure()
@@ -72,6 +83,7 @@ jobs:
           - platform: ${{ steps.argparse.outputs.platform }}
           - jdk_version: ${{ steps.argparse.outputs.jdk_version }}
           - jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
+          - openjdk_testrepo: ${{ steps.argparse.outputs.openjdk_testrepo }}
 
           Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
           `;
@@ -92,6 +104,7 @@ jobs:
         echo platform: ${{ steps.argparse.outputs.platform }}
         echo jdk_version: ${{ steps.argparse.outputs.jdk_version }}
         echo jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
+        echo openjdk_testrepo: ${{ steps.argparse.outputs.openjdk_testrepo }}
 
   runBuild:
     runs-on: ${{ matrix.platform }}
@@ -133,12 +146,13 @@ jobs:
             core.setFailed(`Request failed with error ${err}`)
           }
     - name: AQA
-      uses: AdoptOpenJDK/run-aqa@v1
+      uses: adoptium/run-aqa@v1
       with:
          build_list: ${{ matrix.build_list }}
          target: ${{ matrix.target }}
          jdksource: 'install-jdk'
          version: ${{ matrix.jdk_version }}
+         openjdk_testRepo: ${{ matrix.openjdk_testrepo }}
          tkg_Repo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
     - uses: actions/upload-artifact@v2
       if: failure()

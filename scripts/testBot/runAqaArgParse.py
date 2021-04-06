@@ -53,6 +53,15 @@ def main():
     parser.add_argument('--platform', default=['x86-64_linux'], nargs='+')
     parser.add_argument('--jdk_version', default=['8'], nargs='+')
     parser.add_argument('--jdk_impl', default=['openj9'], choices=['hotspot', 'openj9'], nargs='+')
+
+    # Custom repo options which may be enabled/disabled in the `runAqaConfig.json` file.
+    with open('main/.github/workflows/runAqaConfig.json') as f:
+        config = json.load(f)
+        if config['custom_openjdk_testrepo']:
+            parser.add_argument('--openjdk_testrepo', default=['AdoptOpenJDK/openjdk-tests'], nargs='+')
+        if config['custom_tkg_repo']:
+            parser.add_argument('--tkg_repo', default=['adoptium/TKG:master'], nargs='+')
+
     args = vars(parser.parse_args(raw_args))
     # All args are lists of strings
 
