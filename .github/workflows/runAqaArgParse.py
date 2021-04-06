@@ -53,6 +53,7 @@ def main():
     parser.add_argument('--platform', default=['x86-64_linux'], nargs='+')
     parser.add_argument('--jdk_version', default=['8'], nargs='+')
     parser.add_argument('--jdk_impl', default=['openj9'], choices=['hotspot', 'openj9'], nargs='+')
+    parser.add_argument('--openjdk_testrepo', default=['AdoptOpenJDK/openjdk-tests'], nargs='+')
     args = vars(parser.parse_args(raw_args))
     # All args are lists of strings
 
