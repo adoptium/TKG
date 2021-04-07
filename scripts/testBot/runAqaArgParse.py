@@ -58,7 +58,7 @@ def main():
     with open('main/.github/workflows/runAqaConfig.json') as f:
         config = json.load(f)
         if config['custom_openjdk_testrepo']:
-            parser.add_argument('--openjdk_testrepo', default=['AdoptOpenJDK/openjdk-tests'], nargs='+')
+            parser.add_argument('--openjdk_testrepo', default=['AdoptOpenJDK/openjdk-tests:master'], nargs='+')
         if config['custom_tkg_repo']:
             parser.add_argument('--tkg_repo', default=['adoptium/TKG:master'], nargs='+')
 
