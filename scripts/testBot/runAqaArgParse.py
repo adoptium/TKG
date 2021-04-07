@@ -79,6 +79,8 @@ Click the above link to view the documentation for the Run AQA GitHub Workflow''
         sys.stderr.write(help_msg)
         print('::error ::Help command invoked')
         exit(2)
+    # Remove help flag from the args because it is not a parameter for the job matrix.
+    del args['help']
 
     # Map grinder platform names to github runner names
     args['platform'] = map_platforms(args['platform'])
