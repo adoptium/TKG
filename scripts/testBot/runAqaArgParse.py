@@ -45,6 +45,7 @@ def main():
 
     parser = argparse.ArgumentParser(prog=keyword, add_help=False)
     # Improvement: Automatically resolve the valid choices for each argument populate them below, rather than hard-coding choices.
+    parser.add_argument('--help', '-h', action='store_true')
     parser.add_argument('--sdk_resource', default=['nightly'], choices=['nightly', 'releases', 'customized'], nargs='+')
     parser.add_argument('--customized_sdk_url', default=['None'], nargs='+')
     parser.add_argument('--archive_extension', default=['.tar'], choices=['.zip', '.tar', '.7z'], nargs='+')
@@ -64,6 +65,22 @@ def main():
 
     args = vars(parser.parse_args(raw_args))
     # All args are lists of strings
+
+    # Help was requested. The simplest way to handle this is as if it were an error
+    # because stdout is reserved for workflow commands and logs.
+    if args['help']:
+        # For some unknown reason, the first tilde in this help message should not be escaped,
+        # otherwise a syntax error occurs when passed to the GitHub Script.
+        help_msg = '''Run AQA GitHub Action Documentation
+`\\`\\`
+https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/RunAqa.md
+\\`\\`\\`
+Click the above link to view the documentation for the Run AQA GitHub Workflow'''
+        sys.stderr.write(help_msg)
+        print('::error ::Help command invoked')
+        exit(2)
+    # Remove help flag from the args because it is not a parameter for the job matrix.
+    del args['help']
 
     # Map grinder platform names to github runner names
     args['platform'] = map_platforms(args['platform'])
