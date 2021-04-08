@@ -76,6 +76,7 @@ jobs:
           comment_body = `
           @${{ github.actor }} Build(s) started with the following parameters:
           - sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+          - build_repo: ${{ steps.argparse.outputs.build_repo }}
           - customized_sdk_url: ${{ steps.argparse.outputs.customized_sdk_url }}
           - archive_extension: ${{ steps.argparse.outputs.archive_extension }}
           - build_list: ${{ steps.argparse.outputs.build_list }}
@@ -93,18 +94,9 @@ jobs:
             repo: context.repo.repo,
             body: comment_body
           })
-    - name: Echo parameters
+    - name: Echo all parameters
       run: |
-        echo build_parameters: ${{ steps.argparse.outputs.build_parameters }}
-        echo sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
-        echo customized_sdk_url: ${{ steps.argparse.outputs.customized_sdk_url }}
-        echo archive_extension: ${{ steps.argparse.outputs.archive_extension }}
-        echo build_list: ${{ steps.argparse.outputs.build_list }}
-        echo target: ${{ steps.argparse.outputs.target }}
-        echo platform: ${{ steps.argparse.outputs.platform }}
-        echo jdk_version: ${{ steps.argparse.outputs.jdk_version }}
-        echo jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
-        echo openjdk_testrepo: ${{ steps.argparse.outputs.openjdk_testrepo }}
+        echo ${{ steps.argparse.outputs.build_parameters }}
 
   runBuild:
     runs-on: ${{ matrix.platform }}
@@ -114,12 +106,25 @@ jobs:
       matrix: ${{ fromJson(needs.parseComment.outputs.build_parameters) }}
     steps:
     - uses: AdoptOpenJDK/install-jdk@v1
-      if: matrix.sdk_resource != 'customized'
+      if: matrix.sdk_resource == 'nightly' || matrix.sdk_resource == 'releases'
       with:
         version: ${{ matrix.jdk_version }}
         source: ${{ matrix.sdk_resource }}
         sourceType: 'buildType'
         impl: ${{ matrix.jdk_impl }}
+    - name: Checkout PR Ref
+      uses: actions/checkout@v2
+      if: matrix.sdk_resource == 'build-jdk'
+      with:
+        repository: ${{ matrix.build_repo_branch.repo }}
+        ref: ${{ matrix.build_repo_branch.branch }}
+        path: 'openjdk-build'
+    - uses: AdoptOpenJDK/build-jdk@v1
+      if: matrix.sdk_resource == 'build-jdk'
+      with:
+        javaToBuild: jdk${{ matrix.jdk_version }}u
+        impl: ${{ matrix.jdk_impl }}
+        usePRRef: true # usePRRef=true will cause build-jdk to use the existing openjdk-build/ directory > See https://github.com/AdoptOpenJDK/build-jdk/issues/24#issuecomment-816322945
     - uses: AdoptOpenJDK/install-jdk@v1
       if: matrix.sdk_resource == 'customized'
       with:
