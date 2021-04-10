@@ -17,22 +17,15 @@ jobs:
         echo ::set-output name=url::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
         echo ::set-output name=id::$GITHUB_RUN_ID
       id: workflow_run_info
-    # Checkout current repo to access the repo-specific config file `.github/workflows/runAqaConfig.json`
+    # Checkout current (TKG) repo to access the repo-specific config file `.github/workflows/runAqaConfig.json` and the shared script `scripts/testRepo/runAqaArgParse.py`
     - name: Checkout current repo
       uses: actions/checkout@v2
       with:
         path: 'main'
-    # Checkout the main TKG repo to access the shared script `scripts/testRepo/runAqaArgParse.py`
-    - name: Checkout main TKG repo
-      uses: actions/checkout@v2
-      with:
-        repository: 'adoptium/TKG.git'
-        ref: 'master'
-        path: 'TKG'
     - name: Parse parameters
       env:
         args: ${{ github.event.comment.body }}
-      run: python3 TKG/scripts/testBot/runAqaArgParse.py $args 2> log.txt
+      run: python3 main/scripts/testBot/runAqaArgParse.py $args 2> log.txt
       id: argparse
     - name: Output log
       if: failure()
