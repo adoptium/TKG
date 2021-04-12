@@ -24,6 +24,7 @@ public final class Constants {
 	public static final String RESOURCE = "resources";
 	public static final String MODESXML = Constants.RESOURCE + "/modes.xml";
 	public static final String OTTAWACSV = Constants.RESOURCE + "/ottawa.csv";
+	public static final String PLAYLISTXSD = Constants.RESOURCE + "/playlist.xsd";
 	public static final String BUILDPLAT_JSON = Constants.RESOURCE + "/buildPlatformMap.properties";
 	public static final String TRSSCACHE_DIR = Constants.RESOURCE + "/TRSS";
 	public static final String TESTMK = "autoGen.mk";

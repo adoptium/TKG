@@ -21,27 +21,74 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 public class PlaylistInfoParser {
 	private Arguments arg;
 	private ModesDictionary md;
 	private TestTarget tt;
 	private File playlistXML;
+	private File playlistXSD;
 
 	public PlaylistInfoParser(Arguments arg, ModesDictionary md, TestTarget tt, File playlistXML) {
 		this.arg = arg;
 		this.md = md;
 		this.tt = tt;
 		this.playlistXML = playlistXML;
+		this.playlistXSD = new File(Constants.PLAYLISTXSD);
+	}
+
+	private static class xsdErrorHandler extends DefaultHandler {
+		@Override
+		public void warning(SAXParseException e) throws SAXException {
+			throw e;
+		}
+		
+		@Override
+		public void error(SAXParseException e) throws SAXException {
+			throw e;
+		}
+
+		@Override
+		public void fatalError(SAXParseException e) throws SAXException {
+			throw e;
+		}
+	 }
+	
+	private void validate() {
+		if (playlistXML != null) {
+			try {
+				Validator validator = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(playlistXSD).newValidator();
+				validator.setErrorHandler(new xsdErrorHandler());
+				validator.validate(new StreamSource(playlistXML));
+			} catch (SAXParseException e) {
+				System.err.println("Error: schema validation failed for " + playlistXML.getAbsolutePath() + " with exception:\n");
+				System.err.println("Line: "+e.getLineNumber());
+				System.err.println("Column: "+e.getColumnNumber());
+				System.err.println("Message: "+e.getMessage());
+				//TODO: turn on validation after playlist changes
+				//System.exit(1);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
 	}
 
 	public PlaylistInfo parse() {
+		validate();
 		PlaylistInfo pli = new PlaylistInfo();
 		if (playlistXML == null) return pli;
 		try {
