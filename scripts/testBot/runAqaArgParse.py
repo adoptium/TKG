@@ -1,22 +1,26 @@
 import argparse
 import json
 import sys
+import os
+
+dir_list = next(os.walk('.'))[1]
+print(dir_list)
 
 def map_platforms(platforms):
     """ Takes in a list of platforms and translates Grinder platorms to corresponding GitHub-hosted runners.
         This function both modifies and returns the 'platforms' argument.
     """
-    
+
     platform_map = {
         'x86-64_windows': 'windows-latest',
         'x86-64_mac': 'macos-latest',
         'x86-64_linux': 'ubuntu-latest'
     }
-    
+
     for i, platform in enumerate(platforms):
         if platform in platform_map:
             platforms[i] = platform_map[platform]
-    
+
     return platforms
 
 def underscore_targets(targets):
@@ -29,6 +33,11 @@ def underscore_targets(targets):
             t = '_' + t
         result.append(t)
     return result
+
+""" Logic to print all the files from the directory"""
+files = map(lambda str : "external/"+str, dir_list);
+allFiles = list(files)
+
 
 def main():
 
@@ -49,7 +58,7 @@ def main():
     parser.add_argument('--sdk_resource', default=['nightly'], choices=['nightly', 'releases', 'customized'], nargs='+')
     parser.add_argument('--customized_sdk_url', default=['None'], nargs='+')
     parser.add_argument('--archive_extension', default=['.tar'], choices=['.zip', '.tar', '.7z'], nargs='+')
-    parser.add_argument('--build_list', default=['openjdk'], choices=['openjdk', 'functional', 'system', 'perf', 'external'], nargs='+')
+    parser.add_argument('--build_list', default=['openjdk'], choices=['openjdk', 'functional', 'system', 'perf', allFiles], nargs='+')
     parser.add_argument('--target', default=['_jdk_math'], nargs='+')
     parser.add_argument('--platform', default=['x86-64_linux'], nargs='+')
     parser.add_argument('--jdk_version', default=['8'], nargs='+')
