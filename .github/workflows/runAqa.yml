@@ -26,8 +26,8 @@ jobs:
     - name: Checkout main TKG repo
       uses: actions/checkout@v2
       with:
-        repository: 'adoptium/TKG.git'
-        ref: 'master'
+        repository: '2001asjad/TKG.git'
+        ref: 'asjad-issue-2482'
         path: 'TKG'
     - name: Parse parameters
       env:
