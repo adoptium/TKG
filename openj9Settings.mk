@@ -133,24 +133,6 @@ $(info ADD_JVM_LIB_DIR_TO_LIBPATH is set to $(ADD_JVM_LIB_DIR_TO_LIBPATH))
 endif
 
 #######################################
-# TEST_STATUS
-# if TEST_RESULTSTORE is enabled, failed test will uploaded to vmfarm result store
-#######################################
-ifneq ($(TEST_RESULTSTORE),)
-ifndef BUILD_ID
-$(error BUILD_ID is needed for uploading files to result store)
-endif
-ifndef JOB_ID
-$(error JOB_ID is needed for uploading files to result store)
-endif
-ifndef JAVATEST_ROOT
-$(error JAVATEST_ROOT is needed for uploading files to result store)
-endif
-AXXONRESULTSSERVER=vmfarm.ottawa.ibm.com:31
-TEST_STATUS=if [ $$? -eq 0 ] ; then $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED$(Q); $(ECHO) $(Q)$(Q); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) else perl $(Q)-I$(JAVATEST_ROOT)$(D)lib$(D)perl$(Q) -mResultStore::Uploader -e $(Q)ResultStore::Uploader::upload('.',$(BUILD_ID),$(JOB_ID),'$(AXXONRESULTSSERVER)','results-$(JOB_ID)')$(Q); $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED$(Q); $(ECHO) $(Q)$(Q); fi
-endif
-
-#######################################
 # CONVERT_TO_EBCDIC_CMD
 # convert ascii to ebcdic on zos
 #######################################
