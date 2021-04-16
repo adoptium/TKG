@@ -4,7 +4,7 @@ import sys
 import os
 
 dir_list = next(os.walk('.'))[1]
-print(dir_list)
+
 
 def map_platforms(platforms):
     """ Takes in a list of platforms and translates Grinder platorms to corresponding GitHub-hosted runners.
