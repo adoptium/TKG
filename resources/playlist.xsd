@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="playlist">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element type="xs:string" name="include" minOccurs="0"/>
+        <xs:element name="test" maxOccurs="unbounded" minOccurs="1">
+          <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+              <xs:element name="disabled">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element type="xs:string" name="comment" maxOccurs="1" minOccurs="1"/>
+                    <xs:element type="xs:string" name="variation" maxOccurs="1" minOccurs="0"/>
+                    <xs:element type="xs:string" name="version" maxOccurs="1" minOccurs="0"/>
+                    <xs:element type="xs:string" name="impl" maxOccurs="1" minOccurs="0"/>
+                    <xs:element type="xs:string" name="vendor" maxOccurs="1" minOccurs="0"/>
+                    <xs:element type="xs:string" name="plat" maxOccurs="1" minOccurs="0"/>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+              <xs:element type="xs:string" name="testCaseName"/>
+              <xs:element name="variations" >
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="variation" maxOccurs="unbounded" minOccurs="1"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element type="xs:string" name="command"/>
+              <xs:element type="xs:string" name="capabilities"/>
+              <xs:element type="xs:string" name="platformRequirements"/>
+              <xs:element type="xs:string" name="platform"/>
+              <xs:element type="xs:string" name="aot"/>
+              <xs:element name="levels">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="level" maxOccurs="unbounded" minOccurs="1"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="groups">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="group" maxOccurs="unbounded" minOccurs="1"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="types">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="type" maxOccurs="unbounded" minOccurs="1"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="impls">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="impl" maxOccurs="unbounded" minOccurs="1"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="versions">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="version" maxOccurs="unbounded" minOccurs="1"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:choice>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
