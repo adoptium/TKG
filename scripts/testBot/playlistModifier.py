@@ -100,7 +100,7 @@ def addDisabled(files, args):
                 vendorEle.text = args["vendor"]
                 disabled.append(vendorEle)
             if "plat" in args:
-                platEle = etree.Element("plat")
+                platEle = etree.Element("platform")
                 platEle.text = args["plat"]
                 disabled.append(platEle)
             testCaseName = test[0].find("testCaseName")
