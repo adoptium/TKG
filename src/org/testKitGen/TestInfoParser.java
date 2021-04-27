@@ -75,6 +75,11 @@ public class TestInfoParser {
 		}
 		if (!isValidAot) return null;
 
+		NodeList platNodes = testEle.getElementsByTagName("platform");
+		if (platNodes.getLength() > 0) {
+			ti.setPlatform(platNodes.item(0).getTextContent().trim());
+		}
+
 		NodeList preqNodes = testEle.getElementsByTagName("platformRequirements");
 		if (preqNodes.getLength() > 0) {
 			ti.setPlatformRequirements(preqNodes.item(0).getTextContent().trim());
@@ -85,12 +90,12 @@ public class TestInfoParser {
 		List<Variation> listOfVars = new ArrayList<Variation>();
 		for (int i = 0; i < variations.size(); i++) {
 			String subTestName = ti.getTestCaseName() + "_" + i;
-			Variation var = parseVariation(subTestName, variations.get(i), ti.getPlatformRequirements());
+			Variation var = parseVariation(subTestName, variations.get(i), ti.getPlatform(), ti.getPlatformRequirements());
 			listOfVars.add(var);
 		}
 		if (variations.size() == 0) {
 			String subTestName = ti.getTestCaseName() + "_0";
-			Variation var = parseVariation(subTestName, "NoOptions", ti.getPlatformRequirements());
+			Variation var = parseVariation(subTestName, "NoOptions", ti.getPlatform(), ti.getPlatformRequirements());
 			listOfVars.add(var);
 		}
 		ti.setVars(listOfVars);
@@ -206,6 +211,7 @@ public class TestInfoParser {
 	}
 
 	private boolean checkPlat(String plat) {
+		if (plat == null) return true;
 		Pattern pattern = Pattern.compile(plat);
 		Matcher matcher = pattern.matcher(arg.getPlat());
 		return matcher.matches();
@@ -254,7 +260,7 @@ public class TestInfoParser {
 		return sb.toString();
 	}
 
-	private Variation parseVariation(String subTestName, String variation, String platformRequirements) {
+	private Variation parseVariation(String subTestName, String variation, String platform, String platformRequirements) {
 		Variation var = new Variation(subTestName, variation);
 
 		String jvmOptions = " " + variation + " ";
@@ -276,6 +282,8 @@ public class TestInfoParser {
 			jvmOptions = jvmOptions.replace("Mode" + mode, clArgs);
 		}
 		jvmOptions = jvmOptions.trim();
+		isValid &= checkPlat(platform);
+		//TODO: remove platformRequirements
 		isValid &= checkPlatformReq(platformRequirements);
 
 		var.setJvmOptions(jvmOptions);

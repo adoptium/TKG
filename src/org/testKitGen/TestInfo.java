@@ -22,6 +22,7 @@ import java.util.Map;
 public class TestInfo {
 	private String testCaseName;
 	private String command;
+	private String platform;
 	private String platformRequirements;
 	private List<Variation> vars;
 	private Map<String, String> capabilities;
@@ -37,6 +38,7 @@ public class TestInfo {
 	public TestInfo(Arguments arg) {
 		this.testCaseName = null;
 		this.command = null;
+		this.platform = null;
 		this.platformRequirements = null;
 		this.vars = new ArrayList<Variation>();
 		this.aotOptions = "";
@@ -70,6 +72,14 @@ public class TestInfo {
 
 	public void setCommand(String command) {
 		this.command = command;
+	}
+
+	public String getPlatform() {
+		return this.platform;
+	}
+
+	public void setPlatform(String platform) {
+		this.platform = platform;
 	}
 
 	public String getPlatformRequirements() {
