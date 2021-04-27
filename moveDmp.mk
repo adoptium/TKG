@@ -12,8 +12,7 @@
 # limitations under the License.
 ##############################################################################
 
-D = /
-Q = "
+include common.mk
 
 ifndef TEST_ROOT
 	TEST_ROOT := $(shell pwd)$(D)..

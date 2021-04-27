@@ -35,12 +35,10 @@ EXECUTABLE_SUFFIX =
 RUN_SCRIPT = sh
 RUN_SCRIPT_STRING = "sh -c"
 SCRIPT_SUFFIX=.sh
-Q="
-SQ='
-P=:
 AND_IF_SUCCESS=&&
 PROPS_DIR=props_unix
 TOTALCOUNT := 0
+include common.mk
 
 -include $(TEST_ROOT)$(D)TKG$(D)autoGenEnv.mk
 include $(TEST_ROOT)$(D)TKG$(D)envSettings.mk
@@ -84,7 +82,7 @@ ifndef JVM_VERSION
 
 ifeq (hotspot, $(JDK_IMPL))
 	JVM_VERSION = $(OPENJDK_VERSION)
-else 
+else
 	JVM_VERSION = $(OPENJDK_VERSION)-$(JDK_IMPL)
 endif
 
@@ -95,7 +93,7 @@ ifneq (,$(findstring win,$(SPEC)))
 P=;
 D=\\
 EXECUTABLE_SUFFIX=.exe
-RUN_SCRIPT="cmd /c" 
+RUN_SCRIPT="cmd /c"
 RUN_SCRIPT_STRING=$(RUN_SCRIPT)
 SCRIPT_SUFFIX=.bat
 PROPS_DIR=props_win
@@ -195,7 +193,7 @@ KEEP_REPORTDIR?=true
 ifeq ($(KEEP_REPORTDIR), false)
 	RM_REPORTDIR=$(RM) -r $(REPORTDIR);
 endif
-ifeq ($(TEST_ITERATIONS), 1) 
+ifeq ($(TEST_ITERATIONS), 1)
 	TEST_STATUS=if [ $$? -eq 0 ] ; then $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED$(Q); $(ECHO) $(Q)$(Q); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) else $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED$(Q); $(ECHO) $(Q)$(Q); fi
 else
 	TEST_STATUS=if [ $$? -eq 0 ] ; then $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED(ITER_$$itercnt)$(Q); $(ECHO) $(Q)$(Q); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) if [ $$itercnt -eq $(TEST_ITERATIONS) ] ; then $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED$(Q); $(ECHO) $(Q)$(Q); fi else $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED(ITER_$$itercnt)$(Q); $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED$(Q); $(ECHO) $(Q)$(Q); exit 1; fi
