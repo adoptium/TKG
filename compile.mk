@@ -14,7 +14,7 @@
 
 .DEFAULT_GOAL := compile
 
-D = /
+include common.mk
 
 ifndef TEST_ROOT
 	TEST_ROOT := $(shell pwd)$(D)..

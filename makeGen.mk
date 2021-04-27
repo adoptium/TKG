@@ -23,9 +23,7 @@ help:
 CURRENT_DIR := $(shell pwd)
 OPTS=
 
-D=/
-P=:
-Q="
+include common.mk
 
 TKG_JAR = .$(D)bin$(D)TestKitGen.jar
 JSON_SIMPLE = .$(D)lib$(D)json-simple.jar

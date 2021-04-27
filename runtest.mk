@@ -18,7 +18,7 @@
 
 .DEFAULT_GOAL := test
 
-D = /
+include common.mk
 
 SUBDIRS = ..
 
