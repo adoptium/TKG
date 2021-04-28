@@ -22,7 +22,7 @@
 SUBDIRS = ..
 
 ifndef TEST_ROOT
-	TEST_ROOT := $(shell pwd)$(D)..
+	TEST_ROOT := $(shell pwd)/..
 endif
 
 include $(TEST_ROOT)/TKG/common.mk
