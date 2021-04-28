@@ -39,8 +39,11 @@ AND_IF_SUCCESS=&&
 PROPS_DIR=props_unix
 TOTALCOUNT := 0
 
-include common.mk
+ifndef TEST_ROOT
+	TEST_ROOT := $(shell pwd)$(D)..
+endif
 
+include $(TEST_ROOT)/TKG/common.mk
 -include $(TEST_ROOT)$(D)TKG$(D)autoGenEnv.mk
 include $(TEST_ROOT)$(D)TKG$(D)envSettings.mk
 -include $(TEST_ROOT)$(D)TKG$(D)utils.mk

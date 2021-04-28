@@ -14,12 +14,11 @@
 
 .DEFAULT_GOAL := compile
 
-include common.mk
-
 ifndef TEST_ROOT
 	TEST_ROOT := $(shell pwd)$(D)..
 endif
 
+include $(TEST_ROOT)/TKG/common.mk
 include settings.mk
 include moveDmp.mk
 
