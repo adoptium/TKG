@@ -129,6 +129,13 @@ my %base = (
 		fname => 'org.eclipse.osgi-3.16.100.jar',
 		sha1 => '7ddb312f386b799d6e004d193a01c50169bf69f3'
 	},
+	jtreg => {
+		url => "https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/$jtregVersion.tar.gz",
+		fname => 'jtreg.tar.gz',
+		shaurl => "https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/$jtregVersion.tar.gz.sha256sum.txt",
+		shafn => "$jtregVersion.tar.gz.sha256sum.txt",
+		shaalg => '256'
+	},
 	jython => {
 		url => 'https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
 		fname => 'jython-standalone.jar',
