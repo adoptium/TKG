@@ -40,7 +40,7 @@ PROPS_DIR=props_unix
 TOTALCOUNT := 0
 
 ifndef TEST_ROOT
-	TEST_ROOT := $(shell pwd)$(D)..
+	TEST_ROOT := $(shell pwd)/..
 endif
 
 include $(TEST_ROOT)/TKG/common.mk
