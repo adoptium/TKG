@@ -129,11 +129,18 @@ my %base = (
 		fname => 'org.eclipse.osgi-3.16.100.jar',
 		sha1 => '7ddb312f386b799d6e004d193a01c50169bf69f3'
 	},
-	jtreg => {
-		url => "https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/$jtregVersion.tar.gz",
+	jtreg-4.2.0-tip.tar => {
+		url => "https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-4.2.0-tip.tar.gz",
 		fname => 'jtreg.tar.gz',
-		shaurl => "https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/$jtregVersion.tar.gz.sha256sum.txt",
-		shafn => "$jtregVersion.tar.gz.sha256sum.txt",
+		shaurl => "https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-4.2.0-tip.tar.gz.sha256sum.txt",
+		shafn => "jtreg-4.2.0-tip.tar.gz.sha256sum.txt",
+		shaalg => '256'
+	},
+	jtreg-5.1-b01.tar => {
+		url => "https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-5.1-b01.tar.gz",
+		fname => 'jtreg.tar.gz',
+		shaurl => "https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-5.1-b01.tar.gz.sha256sum.txt",
+		shafn => "jtreg-5.1-b01.tar.gz.sha256sum.txt",
 		shaalg => '256'
 	},
 	jython => {
