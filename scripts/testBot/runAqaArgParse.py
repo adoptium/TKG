@@ -3,8 +3,8 @@ import json
 import sys
 import os
 
-dir_list = next(os.walk('.'))[1]
-files = map(lambda str : "external/"+str, dir_list);
+dirList = next(os.walk('.'))[1]
+files = map(lambda str : "external/"+str, dirList);
 allFiles = list(files)
 
 def map_platforms(platforms):
