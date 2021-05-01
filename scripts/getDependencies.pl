@@ -131,14 +131,14 @@ my %base = (
 	},
 	jtreg_4_2_0_tip => {
 		url => 'https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-4.2.0-tip.tar.gz',
-		fname => 'jtreg-4.2.0-tip.tar.gz',
+		fname => 'jtreg_4_2_0_tip.tar.gz',
 		shaurl => 'https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-4.2.0-tip.tar.gz.sha256sum.txt',
 		shafn => 'jtreg-4.2.0-tip.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
 	jtreg_5_1_b01 => {
 		url => 'https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-5.1-b01.tar.gz',
-		fname => 'jtreg-5.1-b01.tar.gz',
+		fname => 'jtreg_5_1_b01.tar.gz',
 		shaurl => 'https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-5.1-b01.tar.gz.sha256sum.txt',
 		shafn => 'jtreg-5.1-b01.tar.gz.sha256sum.txt',
 		shaalg => '256'
