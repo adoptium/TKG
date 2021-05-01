@@ -94,7 +94,6 @@ export JVM_VERSION:=$(JVM_VERSION)
 endif
 
 ifneq (,$(findstring win,$(SPEC)))
-P=;
 D=\\
 EXECUTABLE_SUFFIX=.exe
 RUN_SCRIPT="cmd /c"
