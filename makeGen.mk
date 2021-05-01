@@ -27,10 +27,7 @@ OPTS=
 TKG_JAR = .$(D)bin$(D)TestKitGen.jar
 JSON_SIMPLE = .$(D)lib$(D)json-simple.jar
 
-ifneq (,$(findstring Win,$(OS)))
-CURRENT_DIR := $(subst \,/,$(CURRENT_DIR))
-P=;
-endif
+
 
 ifndef TEST_ROOT
 	TEST_ROOT := $(shell pwd)/..
