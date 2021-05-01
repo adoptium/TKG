@@ -16,3 +16,7 @@ D = /
 P = :
 Q = "
 SQ = '
+
+ifneq (,$(findstring Win,$(OS)))
+	P=;
+endif
