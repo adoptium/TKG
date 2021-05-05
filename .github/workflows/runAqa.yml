@@ -114,6 +114,7 @@ jobs:
         path: 'openjdk-build'
     - uses: AdoptOpenJDK/build-jdk@v1
       if: matrix.sdk_resource == 'build-jdk'
+      id: buildJDK
       with:
         javaToBuild: jdk${{ matrix.jdk_version }}u
         impl: ${{ matrix.jdk_impl }}
@@ -143,12 +144,24 @@ jobs:
           } catch (err) {
             core.setFailed(`Request failed with error ${err}`)
           }
-    - name: AQA
+    - name: AQA with install-jdk
       uses: adoptium/run-aqa@v1
+      if: matrix.sdk_resource != 'build-jdk'
       with:
          build_list: ${{ matrix.build_list }}
          target: ${{ matrix.target }}
          jdksource: 'install-jdk'
+         version: ${{ matrix.jdk_version }}
+         openjdk_testRepo: ${{ matrix.openjdk_testrepo }}
+         tkg_Repo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
+    - name: AQA with build-jdk
+      uses: adoptium/run-aqa@v1
+      if: matrix.sdk_resource == 'build-jdk'
+      env:
+        TEST_JDK_HOME: ${{ steps.buildJDK.outputs.BuildJDKDir }}
+      with:
+         build_list: ${{ matrix.build_list }}
+         target: ${{ matrix.target }}
          version: ${{ matrix.jdk_version }}
          openjdk_testRepo: ${{ matrix.openjdk_testrepo }}
          tkg_Repo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
