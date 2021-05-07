@@ -46,7 +46,8 @@ def main():
     parser = argparse.ArgumentParser(prog=keyword, add_help=False)
     # Improvement: Automatically resolve the valid choices for each argument populate them below, rather than hard-coding choices.
     parser.add_argument('--help', '-h', action='store_true')
-    parser.add_argument('--sdk_resource', default=['nightly'], choices=['nightly', 'releases', 'customized'], nargs='+')
+    parser.add_argument('--sdk_resource', default=['nightly'], choices=['nightly', 'releases', 'customized', 'build-jdk'], nargs='+')
+    parser.add_argument('--build_repo', default=['AdoptOpenJDK/openjdk-build:master'], nargs='+')
     parser.add_argument('--customized_sdk_url', default=['None'], nargs='+')
     parser.add_argument('--archive_extension', default=['.tar'], choices=['.zip', '.tar', '.7z'], nargs='+')
     parser.add_argument('--build_list', default=['openjdk'], choices=['openjdk', 'functional', 'system', 'perf', 'external'], nargs='+')
@@ -87,6 +88,20 @@ Click the above link to view the documentation for the Run AQA GitHub Workflow''
 
     # Underscore the targets if necessary
     args['target'] = underscore_targets(args['target'])
+
+    # Split repo and branch from the `build_repo` arg since it is not handled by the AdoptOpenJDK/build-jdk action.
+    build_repo_branch = []
+    for br in args['build_repo']:
+        spl = br.split(':')
+        if len(spl) != 2:
+            err_msg = 'Invalid repo+branch suppplied to argument --build_repo. Expecting format <repository>:<branch>'
+            print('::error ::{}'.format(err_msg))
+            sys.stderr.write(err_msg)
+            exit(2)
+        repo, branch = spl
+        entry = {'repo': repo, 'branch': branch}
+        build_repo_branch.append(entry)
+    args['build_repo_branch'] = build_repo_branch
 
     # If 'customized' sdk_resource, then customized_sdk_url and archive_extension must be present.
     if 'customized' in args['sdk_resource'] and args['customized_sdk_url'] == ['None']:
