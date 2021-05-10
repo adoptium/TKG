@@ -195,14 +195,17 @@ public class TestInfoParser {
 			String impl = getDisabledEle(disabled, "impl", ti.getTestCaseName());
 			String vendor = getDisabledEle(disabled, "vendor", ti.getTestCaseName());
 			String version = getDisabledEle(disabled, "version", ti.getTestCaseName());
-			String plat = getDisabledEle(disabled, "plat", ti.getTestCaseName());
+			String platform = getDisabledEle(disabled, "platform", ti.getTestCaseName());
+			if (platform == null) {
+				platform = getDisabledEle(disabled, "plat", ti.getTestCaseName());
+			}
 			String variation = getDisabledEle(disabled, "variation", ti.getTestCaseName());
 
 			for (Variation var : ti.getVars()) {
 				if (((impl == null) || arg.getImpl().equals(impl))
 					&& ((vendor == null) || arg.getVendor().equals(vendor))
 					&& ((version == null) || checkJavaVersion(version))
-					&& ((plat == null) || checkPlat(plat))
+					&& ((platform == null) || checkPlat(platform))
 					&& ((variation == null) || var.getVariation().equals(variation))) {
 					var.addDisabledReasons(comment);
 				}
