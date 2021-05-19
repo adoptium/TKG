@@ -78,8 +78,7 @@ public class PlaylistInfoParser {
 				System.err.println("Line: "+e.getLineNumber());
 				System.err.println("Column: "+e.getColumnNumber());
 				System.err.println("Message: "+e.getMessage());
-				//TODO: turn on validation after playlist changes
-				//System.exit(1);
+				System.exit(1);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);
