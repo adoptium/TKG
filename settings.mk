@@ -294,7 +294,12 @@ endif
 # Define the EXCLUDE_FILE to be used for temporarily excluding failed tests.
 # This macro is used in /test/Utils/src/org/openj9/test/util/IncludeExcludeTestAnnotationTransformer
 ifndef EXCLUDE_FILE
-	export EXCLUDE_FILE:=$(TEST_ROOT)$(D)TestConfig$(D)resources$(D)excludes$(D)$(JCL_VERSION)_exclude_$(JDK_VERSION).txt
+export EXCLUDE_FILE:=$(TEST_ROOT)$(D)TestConfig$(D)resources$(D)excludes$(D)$(JCL_VERSION)_exclude_$(JDK_VERSION).txt
+# TODO: https://github.com/eclipse-openj9/openj9/issues/12811
+OPENDJK_METHODHANDLES_ENABLED?=$(shell $(JAVA_COMMAND) -XshowSettings:properties -version 2>&1 | grep 'openjdk.methodhandles = true')
+ifneq (,$(findstring true,$(OPENDJK_METHODHANDLES_ENABLED)))
+export EXCLUDE_FILE:=$(EXCLUDE_FILE),$(TEST_ROOT)$(D)TestConfig$(D)resources$(D)excludes$(D)feature_ojdkmh_exclude.txt
+endif
 endif
 
 #######################################
