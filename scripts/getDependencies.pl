@@ -118,9 +118,9 @@ my %base = (
 		sha1 => 'c9ad4a0850ab676c5c64461a05ca524cdfff59f1'
 	},
 	tohandler_simple => {
-		url => 'https://ci.eclipse.org/openj9/view/Infrastructure/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar',
+		url => 'https://openj9-jenkins.osuosl.org/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar',
 		fname => 'openj9jtregtimeouthandler.jar',
-		shaurl => 'https://ci.eclipse.org/openj9/view/Infrastructure/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar.sha256sum.txt',
+		shaurl => 'https://openj9-jenkins.osuosl.org/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar.sha256sum.txt',
 		shafn => 'openj9jtregtimeouthandler.jar.sha256sum.txt',
 		shaalg => '256'
 	},
