@@ -47,7 +47,7 @@ public class JavaInfo {
             spec += "_x86";
         } else if (osArch.contains("ppc") || osArch.contains("powerpc")) {
             spec += "_ppc";
-        } else if (osArch.contains("s390x")) {
+        } else if (osArch.contains("s390")) {
             spec += "_390";
         } else if (osArch.contains("aarch") || osArch.contains("arm")) {
             spec += "_arm";
