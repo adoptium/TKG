@@ -47,7 +47,7 @@ def main():
     # Improvement: Automatically resolve the valid choices for each argument populate them below, rather than hard-coding choices.
     parser.add_argument('--help', '-h', action='store_true')
     parser.add_argument('--sdk_resource', default=['nightly'], choices=['nightly', 'releases', 'customized', 'build-jdk'], nargs='+')
-    parser.add_argument('--build_repo', default=['AdoptOpenJDK/openjdk-build:master'], nargs='+')
+    parser.add_argument('--build_repo', default=['adoptium/build-jdk:master'], nargs='+')
     parser.add_argument('--customized_sdk_url', default=['None'], nargs='+')
     parser.add_argument('--archive_extension', default=['.tar'], choices=['.zip', '.tar', '.7z'], nargs='+')
     parser.add_argument('--build_list', default=['openjdk'], choices=['openjdk', 'functional', 'system', 'perf', 'external'], nargs='+')
@@ -60,7 +60,7 @@ def main():
     with open('main/.github/workflows/runAqaConfig.json') as f:
         config = json.load(f)
         if config['custom_openjdk_testrepo']:
-            parser.add_argument('--openjdk_testrepo', default=['AdoptOpenJDK/openjdk-tests:master'], nargs='+')
+            parser.add_argument('--openjdk_testrepo', default=['adoptium/aqa-tests:master'], nargs='+')
         if config['custom_tkg_repo']:
             parser.add_argument('--tkg_repo', default=['adoptium/TKG:master'], nargs='+')
 
@@ -74,7 +74,7 @@ def main():
         # otherwise a syntax error occurs when passed to the GitHub Script.
         help_msg = '''Run AQA GitHub Action Documentation
 `\\`\\`
-https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/RunAqa.md
+https://github.com/adoptium/aqa-tests/blob/master/doc/RunAqa.md
 \\`\\`\\`
 Click the above link to view the documentation for the Run AQA GitHub Workflow'''
         sys.stderr.write(help_msg)
