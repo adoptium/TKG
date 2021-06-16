@@ -35,6 +35,7 @@ public class MachineInfo {
 	public static final String[] FREE_MEM_CMD = new String[] {"bash", "-c", "grep MemFree /proc/meminfo | awk '{print $2}"};
 	public static final String[] CPU_CORES_CMD = new String[] {"bash", "-c", "cat /proc/cpuinfo | grep processor | wc -l"};
 	public static final String[] CPU_CORES_CMD_MAC = new String[] {"bash", "-c", "sysctl -n hw.ncpu"};
+	public static final String[] CPU_CORES_CMD_SOLARIS = new String[] {"bash", "-c", "psrinfo | wc -l"};
 	public static final String[] NUMA_CMD = new String[] {"bash", "-c", "numactl --show | grep 'No NUMA support available on this system"};
 	public static final String[] SYS_VIRT_CMD = new String[] {""};
 
@@ -162,6 +163,8 @@ public class MachineInfo {
 		infoList.add(new Info("uname", UNAME_CMD, ce.execute(UNAME_CMD), null));
 		if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 			infoList.add(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD_MAC), null));
+		} else if (System.getProperty("os.name").toLowerCase().contains("sunos")) {
+			infoList.add(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD_SOLARIS), null));
 		} else {
 			infoList.add(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD), null));
 		}
