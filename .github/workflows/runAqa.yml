@@ -78,6 +78,7 @@ jobs:
           - jdk_version: ${{ steps.argparse.outputs.jdk_version }}
           - jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
           - openjdk_testrepo: ${{ steps.argparse.outputs.openjdk_testrepo }}
+          - openj9_repo: ${{ steps.argparse.outputs.openj9_repo }}
 
           Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
           `;
