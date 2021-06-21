@@ -61,6 +61,8 @@ def main():
         config = json.load(f)
         if config['custom_openjdk_testrepo']:
             parser.add_argument('--openjdk_testrepo', default=['adoptium/aqa-tests:master'], nargs='+')
+        if config['custom_openj9_repo']:
+            parser.add_argument('--openj9_repo', default=['eclipse-openj9/openj9:master'], nargs='+')
         if config['custom_tkg_repo']:
             parser.add_argument('--tkg_repo', default=['adoptium/TKG:master'], nargs='+')
 
