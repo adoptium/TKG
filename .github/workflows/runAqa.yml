@@ -154,6 +154,7 @@ jobs:
          jdksource: 'install-jdk'
          version: ${{ matrix.jdk_version }}
          openjdk_testRepo: ${{ matrix.openjdk_testrepo }}
+         openj9_repo: ${{ matrix.openj9_repo }}
          tkg_Repo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
     - name: AQA with build-jdk
       uses: adoptium/run-aqa@v1
@@ -165,6 +166,7 @@ jobs:
          target: ${{ matrix.target }}
          version: ${{ matrix.jdk_version }}
          openjdk_testRepo: ${{ matrix.openjdk_testrepo }}
+         openj9_repo: ${{ matrix.openj9_repo }}
          tkg_Repo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
     - uses: actions/upload-artifact@v2
       if: failure()
