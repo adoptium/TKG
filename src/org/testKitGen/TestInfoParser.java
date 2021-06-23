@@ -182,8 +182,15 @@ public class TestInfoParser {
 	}
 
 	private void parseDisableInfo(TestInfo ti) {
-		NodeList disabledNodes = testEle.getElementsByTagName("disabled");
-		if (disabledNodes.getLength() == 0) return;
+		NodeList disabledNodes = null;
+		NodeList disables = testEle.getElementsByTagName("disables");
+		if (disables.getLength() > 0) {
+			disabledNodes = ((Element) disables.item(0)).getElementsByTagName("disable");
+		} else {
+			//TODO: temporarily support disabled
+			disabledNodes = testEle.getElementsByTagName("disabled");
+		}
+		if (disabledNodes == null || disabledNodes.getLength() == 0) return;
 		for (int i = 0; i < disabledNodes.getLength(); i++) {
 			Element disabled = (Element) disabledNodes.item(i);
 			String comment = getDisabledEle(disabled, "comment", ti.getTestCaseName());
