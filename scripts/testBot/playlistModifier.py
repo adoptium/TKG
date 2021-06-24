@@ -72,39 +72,43 @@ def addDisabled(files, args):
         root = etree.parse(file)
         test = root.xpath(f"./test/testCaseName[text()='{testCaseName}']/..")
         if test:
-            disabled = etree.Element("disabled")
+            disable = etree.Element("disable")
             commentEle = etree.Element("comment")
             commentEle.text = args["comment"]
-            disabled.append(commentEle)
+            disable.append(commentEle)
             if nthVar is not None:
                 var = test[0].find("variations")
                 if var is not None and nthVar < len(var):
-                    disabled.append(copy.deepcopy(var[nthVar]))
+                    disable.append(copy.deepcopy(var[nthVar]))
                 elif nthVar == 0:
                     varEle = etree.Element("variation")
                     varEle.text = "NoOptions"
-                    disabled.append(varEle)
+                    disable.append(varEle)
                 else:
                     print(f"Could not find test case {testCaseName}_{nthVar} (i.e., the {nthVar + 1}th variation for test {testCaseName})!")
                     sys.exit(-1)
             if "ver" in args:
                 verEle = etree.Element("version")
                 verEle.text = args["ver"]
-                disabled.append(verEle)
+                disable.append(verEle)
             if "impl" in args:
                 implEle = etree.Element("impl")
                 implEle.text = args["impl"]
-                disabled.append(implEle)
+                disable.append(implEle)
             if "vendor" in args:
                 vendorEle = etree.Element("vendor")
                 vendorEle.text = args["vendor"]
-                disabled.append(vendorEle)
+                disable.append(vendorEle)
             if "plat" in args:
                 platEle = etree.Element("platform")
                 platEle.text = args["plat"]
-                disabled.append(platEle)
+                disable.append(platEle)
+            disables = test[0].find("disables")
+            if not disables:
+                disables = etree.Element("disables")
+            disables.append(disable)
             testCaseName = test[0].find("testCaseName")
-            testCaseName.addnext(disabled)
+            testCaseName.addnext(disables)
             updateCopyright(root, args)
             updateFile(file, root)
             updated = True
