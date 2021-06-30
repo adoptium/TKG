@@ -84,12 +84,13 @@ public class JavaInfo {
         CmdExecutor ce = CmdExecutor.getInstance();
         String exe = System.getProperty("java.home") + "/bin/java";
         String ver = "-version";
-        String comp = ce.execute(new String[] {exe, "-Xcompressedrefs", ver});
-        String nocomp = ce.execute(new String[] {exe, "-Xnocompressedrefs", ver});
-        if (comp.contains(System.getProperty("java.version"))) {
-            rt = "_cmprssptrs";
-            if (nocomp.contains(System.getProperty("java.version"))) {
-                rt = "_mxdptrs";
+        String comp = ce.execute(new String[] {exe, "-XX:+UseCompressedOops", ver});
+        String nocomp = ce.execute(new String[] {exe, "-XX:-UseCompressedOops", ver});
+        if (!comp.contains(System.getProperty("java.version")) || !nocomp.contains(System.getProperty("java.version"))) {
+            if (comp.contains(System.getProperty("java.version"))) {
+                rt = "_cmprssptrs";
+            } else {
+                rt = "_nocmprssptrs";
             }
         }
         return rt;
