@@ -66,10 +66,9 @@ public class JavaInfo {
             spec += "-64";
             spec = spec.replace("arm-64", "aarch64");
             spec = spec.replace("riscv-64", "riscv64");
-        }
-
-        if (javaImplInfo.equals("ibm") || javaImplInfo.equals("openj9")) {
-            spec += cmprssptrs();
+            if (javaImplInfo.equals("ibm") || javaImplInfo.equals("openj9")) {
+                spec += cmprssptrs();
+            }
         }
 
         if (spec.contains("ppc") && osArch.contains("le")) {
