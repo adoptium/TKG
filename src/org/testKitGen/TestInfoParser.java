@@ -77,7 +77,15 @@ public class TestInfoParser {
 
 		NodeList platNodes = testEle.getElementsByTagName("platform");
 		if (platNodes.getLength() > 0) {
-			ti.setPlatform(platNodes.item(0).getTextContent().trim());
+			// Ensure we only get the <test>-><platform> node and not <test>-><disabled>-><platform> nodes
+                        for (int i = 0; i < platNodes.getLength(); i++) {
+                                Node platNode = platNodes.item(i);
+				if (platNode.getParentNode().isSameNode(testEle)) {
+					// Found <test>-><platform> node
+					ti.setPlatform(platNode.getTextContent().trim());
+					break;
+				}
+			}
 		}
 
 		NodeList preqNodes = testEle.getElementsByTagName("platformRequirements");
