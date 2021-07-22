@@ -38,7 +38,12 @@ public class TestInfoParser {
 	public TestInfo parse() {
 		TestInfo ti = new TestInfo(arg);
 
-		ti.setTestCaseName(testEle.getElementsByTagName("testCaseName").item(0).getTextContent().trim());
+		String testCaseName = getImmediateChildContent(testEle, "testCaseName");
+		if (testCaseName == null) {
+			System.err.println("Error: missing testCaseName.");
+			System.exit(1);
+		}
+		ti.setTestCaseName(testCaseName);
 
 		// Do not generate make target if impl doesn't match the exported jdk_impl
 		List<String> impls = new ArrayList<String>();
@@ -64,33 +69,31 @@ public class TestInfoParser {
 		}
 		if (!isValidVersion) return null;
 
-		// Do not generate make target if the test is AOT not applicable when test flag
-		// is set to AOT
-		NodeList aot = testEle.getElementsByTagName("aot");
-
+		String aot = getImmediateChildContent(testEle, "aot");
 		boolean isValidAot = true;
-
-		if (aot.getLength() > 0 && arg.getTestFlag().contains("aot")) {
-			isValidAot = !aot.item(0).getTextContent().trim().equals("nonapplicable");
+		if (arg.getTestFlag().contains("aot")) {
+			if ((aot != null) && aot.equals("nonapplicable")) {
+				// Do not generate make target if the test is AOT not applicable when test flag is set to AOT
+				isValidAot = false;
+			} else if ((aot != null) && aot.equals("explicit")) {
+				// When test tagged with AOT explicit, its test command has AOT options and runs
+				// multiple times explicitly
+				ti.setIterations(1);
+			} else if ((aot == null) || aot.equals("applicable")) {
+				// aot defaults to "applicable" when testFlag contains AOT
+				ti.setAotOptions("$(AOT_OPTIONS) ");
+			}
 		}
 		if (!isValidAot) return null;
 
-		NodeList platNodes = testEle.getElementsByTagName("platform");
-		if (platNodes.getLength() > 0) {
-			// Ensure we only get the <test>-><platform> node and not <test>-><disabled>-><platform> nodes
-                        for (int i = 0; i < platNodes.getLength(); i++) {
-                                Node platNode = platNodes.item(i);
-				if (platNode.getParentNode().isSameNode(testEle)) {
-					// Found <test>-><platform> node
-					ti.setPlatform(platNode.getTextContent().trim());
-					break;
-				}
-			}
+		String platform = getImmediateChildContent(testEle, "platform");
+		if (platform != null) {
+			ti.setPlatform(platform);
 		}
 
-		NodeList preqNodes = testEle.getElementsByTagName("platformRequirements");
-		if (preqNodes.getLength() > 0) {
-			ti.setPlatformRequirements(preqNodes.item(0).getTextContent().trim());
+		String preq = getImmediateChildContent(testEle, "platformRequirements");
+		if (preq != null) {
+			ti.setPlatformRequirements(preq);
 		}
 
 		List<String> variations = new ArrayList<String>();
@@ -151,18 +154,6 @@ public class TestInfoParser {
 				capabilities.put(colonSplit[0], colonSplit[1]);
 			}
 			ti.setCapabilities(capabilities);
-		}
-
-		NodeList aotNodes = testEle.getElementsByTagName("aot");
-		if (arg.getTestFlag().contains("aot")) {
-			// aot defaults to "applicable" when testFlag contains AOT
-			if (aotNodes.getLength() == 0 || aotNodes.item(0).getTextContent().trim().equals("applicable")) {
-				ti.setAotOptions("$(AOT_OPTIONS) ");
-			} else if (aotNodes.item(0).getTextContent().trim().equals("explicit")) {
-				// When test tagged with AOT explicit, its test command has AOT options and runs
-				// multiple times explicitly
-				ti.setIterations(1);
-			}
 		}
 
 		parseDisableInfo(ti);
@@ -247,6 +238,17 @@ public class TestInfoParser {
 			}
 		}
 		return rt;
+	}
+
+	private String getImmediateChildContent(Element ele, String name) {
+		NodeList nl = ele.getElementsByTagName(name);
+		for (int i = 0; i < nl.getLength(); i++) {
+			Node node = nl.item(i);
+			if (node.getParentNode().isSameNode(ele)) {
+				return node.getTextContent().trim();
+			}
+		}
+		return null;
 	}
 
 	private void getElements(List<String> list, String parentTag, String childTag, List<String> all, String testName) {
