@@ -135,7 +135,7 @@ public class JavaInfo {
             return "adoptopenjdk";
         } else if (vendorLC.contains("eclipse")) {
             return "eclipse";
-        } else if (vendorLC.contains("ibm")) {
+        } else if (vendorLC.contains("ibm") || vendorLC.contains("international business machines corporation")) {
             return "ibm";
         } else if (vendorLC.contains("alibaba")) {
             return "alibaba";
