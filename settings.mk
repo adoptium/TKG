@@ -60,6 +60,13 @@ else
 export TEST_JDK_HOME := $(subst \,/,$(TEST_JDK_HOME))
 endif
 
+ifndef JRE_IMAGE
+	ifneq (,$(findstring j2sdk-image,$(TEST_JDK_HOME)))
+	JRE_ROOT := $(TEST_JDK_HOME)
+	export JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
+	endif
+endif
+
 ifndef SPEC
 $(error Please provide SPEC that matches the current platform (e.g. SPEC=linux_x86-64))
 else
@@ -158,6 +165,9 @@ $(info DEFAULT_EXCLUDE is set to $(DEFAULT_EXCLUDE))
 endif
 
 JAVA_COMMAND:=$(Q)$(TEST_JDK_HOME)$(D)bin$(D)java$(Q)
+ifdef JRE_IMAGE
+   JRE_COMMAND:=$(Q)$(JRE_IMAGE)$(D)bin$(D)java$(Q)
+endif
 
 #######################################
 # common dir and jars
