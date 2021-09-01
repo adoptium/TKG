@@ -21,21 +21,8 @@
         <xs:element type="xs:string" name="include" minOccurs="0"/>
         <xs:element name="test" maxOccurs="unbounded" minOccurs="1">
           <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-              <xs:element name="disabled">
-                <xs:complexType>
-                  <xs:all>
-                    <xs:element type="xs:string" name="comment" maxOccurs="1" minOccurs="1"/>
-                    <xs:element type="xs:string" name="variation" maxOccurs="1" minOccurs="0"/>
-                    <xs:element type="xs:string" name="version" maxOccurs="1" minOccurs="0"/>
-                    <xs:element type="xs:string" name="impl" maxOccurs="1" minOccurs="0"/>
-                    <xs:element type="xs:string" name="vendor" maxOccurs="1" minOccurs="0"/>
-                    <xs:element type="xs:string" name="platform" maxOccurs="1" minOccurs="0"/>
-                    <xs:element type="xs:string" name="plat" maxOccurs="1" minOccurs="0"/>
-                  </xs:all>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="disables" >
+            <xs:all>
+              <xs:element name="disables" maxOccurs="1" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="disable" maxOccurs="unbounded" minOccurs="1">
@@ -54,62 +41,62 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element type="xs:string" name="testCaseName"/>
-              <xs:element name="variations" >
+              <xs:element type="xs:string" name="testCaseName" maxOccurs="1" minOccurs="1"/>
+              <xs:element name="variations" maxOccurs="1" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element type="xs:string" name="variation" maxOccurs="unbounded" minOccurs="1"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element type="xs:string" name="command"/>
-              <xs:element type="xs:string" name="capabilities"/>
-              <xs:element type="xs:string" name="platformRequirements"/>
-              <xs:element type="xs:string" name="platform"/>
-              <xs:element type="xs:string" name="aot"/>
-              <xs:element name="levels">
+              <xs:element type="xs:string" name="command" maxOccurs="1" minOccurs="1"/>
+              <xs:element type="xs:string" name="capabilities" maxOccurs="1" minOccurs="0"/>
+              <xs:element type="xs:string" name="platformRequirements" maxOccurs="1" minOccurs="0"/>
+              <xs:element type="xs:string" name="platform" maxOccurs="1" minOccurs="0"/>
+              <xs:element type="xs:string" name="aot" maxOccurs="1" minOccurs="0"/>
+              <xs:element name="levels" maxOccurs="1" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element type="xs:string" name="level" maxOccurs="unbounded" minOccurs="1"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element name="groups">
+              <xs:element name="groups" maxOccurs="1" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element type="xs:string" name="group" maxOccurs="unbounded" minOccurs="1"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element name="types">
+              <xs:element name="types" maxOccurs="1" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element type="xs:string" name="type" maxOccurs="unbounded" minOccurs="1"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element name="impls">
+              <xs:element name="impls" maxOccurs="1" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element type="xs:string" name="impl" maxOccurs="unbounded" minOccurs="1"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element name="vendors">
+              <xs:element name="vendors" maxOccurs="1" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element type="xs:string" name="vendor" maxOccurs="unbounded" minOccurs="1"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element name="versions">
+              <xs:element name="versions" maxOccurs="1" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element type="xs:string" name="version" maxOccurs="unbounded" minOccurs="1"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-            </xs:choice>
+            </xs:all>
           </xs:complexType>
         </xs:element>
       </xs:sequence>
