@@ -56,13 +56,13 @@ endif
 # compile test materials
 #######################################
 compile: envDetect
+	$(MAKE) -f clean.mk cleanBuild
 	$(MAKE) -f compile.mk compile
 
 #######################################
 # If AUTO_DETECT is turned on, compile and execute envDetector in build_envInfo.xml.
 #######################################
 envDetect: compileTools
-
 	${TEST_JDK_HOME}$(D)bin$(D)java -cp .$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector
 
 #######################################
@@ -71,7 +71,7 @@ envDetect: compileTools
 include moveDmp.mk
 COMPILE_TOOLS_CMD=ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME) -DTEST_ROOT=$(TEST_ROOT)
 
-compileTools: 
+compileTools:
 	$(RM) -r $(COMPILATION_OUTPUT); \
 	$(MKTREE) $(COMPILATION_OUTPUT); \
 	($(COMPILE_TOOLS_CMD) 2>&1; echo $$? ) | tee $(Q)$(COMPILATION_LOG)$(Q); \
