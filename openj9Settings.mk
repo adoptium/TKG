@@ -57,7 +57,7 @@ endif
 # if JCL_VERSION is current check for default locations for native test libs
 # otherwise, native test libs are under NATIVE_TEST_LIBS
 ifneq (, $(findstring current, $(JCL_VERSION)))
-	ifneq (, $(findstring 8, $(JDK_VERSION)))
+	ifeq (8, $(JDK_VERSION))
 		ifneq (,$(findstring win,$(SPEC)))
 			JAVA_SHARED_LIBRARIES_DIR:=$(TEST_JRE_BIN)$(D)$(VM_SUBDIR)
 			J9VM_PATH=$(TEST_JRE_BIN)$(D)j9vm
@@ -77,7 +77,7 @@ ifneq (, $(findstring current, $(JCL_VERSION)))
 		ADD_JVM_LIB_DIR_TO_LIBPATH:=export LIBPATH=$(Q)$(LIBPATH)$(P)$(TEST_JDK_LIB_DIR)$(D)$(VM_SUBDIR)$(P)$(JAVA_SHARED_LIBRARIES_DIR)$(P)$(TEST_JDK_BIN)$(D)j9vm$(Q);
 	endif
 else
-	ifneq (, $(findstring 8, $(JDK_VERSION)))
+	ifeq (8, $(JDK_VERSION))
 		ifneq (,$(findstring win,$(SPEC)))
 			VM_SUBDIR_PATH=$(TEST_JRE_BIN)$(D)$(VM_SUBDIR)
 			J9VM_PATH=$(TEST_JRE_BIN)$(D)j9vm
