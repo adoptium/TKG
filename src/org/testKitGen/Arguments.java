@@ -17,7 +17,8 @@ package org.testKitGen;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
-
+import java.util.Arrays;
+import java.util.List;
 public class Arguments {
 	enum Mode { 
 		GEN_TESTS, GEN_PARALLEL_LIST, CLEAN;
@@ -118,8 +119,8 @@ public class Arguments {
 		return iterations;
 	}
 
-	public String getTestFlag() {
-		return testFlag;
+	public List<String> getTestFlag() {
+		return Arrays.asList(testFlag.split(","));
 	}
 
 	public Integer getNumOfMachines() {
