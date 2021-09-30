@@ -30,6 +30,7 @@ machineConfigure.mk
 tempTestTargetResult
 failedtargets.mk
 autoGenEnv.mk
+buildInfo.mk
 SHA.txt
 
 .DS_Store

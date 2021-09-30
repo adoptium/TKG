@@ -34,6 +34,12 @@
 		<then>
 			<var name="build.list" value= "*/build.xml" />
 		</then>
+		<elseif>
+			<equals arg1="${BUILD_LIST}" arg2="NULL"/>
+			<then>
+				<var name="build.list" value= "NULL" />
+			</then>
+		</elseif>
 		<else>
 			<var name="build.list" value="TestConfig/build.xml" />
 			<for list="${BUILD_LIST}" param="builddir">

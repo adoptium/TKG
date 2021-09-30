@@ -33,19 +33,26 @@ ifndef TEST_ROOT
 	TEST_ROOT := $(shell pwd)$(D)..
 endif
 
+_TESTTARGET = $(firstword $(MAKECMDGOALS))
+TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
+
 #######################################
 # run test
 #######################################
-_TESTTARGET = $(firstword $(MAKECMDGOALS))
-TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
 ifneq (compile, $(_TESTTARGET))
 ifneq (clean, $(_TESTTARGET))
 ifneq (test, $(_TESTTARGET))
 ifneq (genParallelList, $(_TESTTARGET))
 ifneq (_failed, $(_TESTTARGET))
+ifneq ($(DYNAMIC_COMPILE), true)
 $(_TESTTARGET):
 	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=tests TESTTARGET=$(TESTTARGET) TESTLIST=$(TESTLIST)
 	$(MAKE) -f runtest.mk $(_TESTTARGET)
+else
+$(_TESTTARGET): compile
+	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=tests TESTTARGET=$(TESTTARGET) TESTLIST=$(TESTLIST)
+	$(MAKE) -f runtest.mk $(_TESTTARGET)
+endif
 endif
 endif
 endif
@@ -55,7 +62,7 @@ endif
 #######################################
 # compile test materials
 #######################################
-compile: envDetect
+compile: buildListGen
 	$(MAKE) -f clean.mk cleanBuild
 	$(MAKE) -f compile.mk compile
 
@@ -64,6 +71,18 @@ compile: envDetect
 #######################################
 envDetect: compileTools
 	${TEST_JDK_HOME}$(D)bin$(D)java -cp .$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector
+
+#######################################
+# Generate refined BUILD_LIST.
+#######################################
+buildListGen: envDetect
+ifeq ($(DYNAMIC_COMPILE), true)
+	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=buildList TESTTARGET=$(TESTTARGET) TESTLIST=$(TESTLIST)
+endif
+
+.PHONY: buildListGen
+
+.NOTPARALLEL: buildListGen
 
 #######################################
 # compile tools

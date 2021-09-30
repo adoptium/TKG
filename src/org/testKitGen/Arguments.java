@@ -20,7 +20,7 @@ import java.util.Properties;
 
 public class Arguments {
 	enum Mode { 
-		GEN_TESTS, GEN_PARALLEL_LIST, CLEAN;
+		GEN_TESTS, GEN_PARALLEL_LIST, GEN_BUILD_LIST, CLEAN;
 	}
 	private static Arguments instance;
 	private Mode mode = Mode.GEN_TESTS;
@@ -43,9 +43,11 @@ public class Arguments {
 	private static final String usage = "Usage:\n"
 			+ "    java TestKitGen --mode=[tests|parallelList] --spec=[linux_x86-64] --jdkVersion=[8|9|...] --impl=[openj9|ibm|hotspot|sap] [options]\n\n"
 			+ "Options:\n" + "    --spec=<spec>           Spec that the build will run on\n"
-			+ "    --mode=<string>           Specify running mode, available modes are tests, parallelList or clean\n"
+			+ "    --mode=<string>           Specify running mode, available modes are tests, parallelList, buildList or clean\n"
 			+ "                              tests is to generate test make files\n"
-			+ "                              parallelList is generate parallel list file\n"
+			+ "                              parallelList is to generate parallel list file\n"
+			+ "                              buildList is to generate build list file\n"
+			+ "                              clean is to remove generated files\n"
 			+ "                              Defaults to tests\n"
 			+ "    --jdkVersion=<version>    JDK version that the build will run on, e.g. 8, 9, 10, etc.\n"
 			+ "    --impl=<implementation>   Java implementation, e.g. openj9, ibm, hotspot, sap\n"
@@ -163,6 +165,8 @@ public class Arguments {
 					mode = Mode.GEN_TESTS;
 				} else if (modeStr.equals("parallellist")) {
 					mode = Mode.GEN_PARALLEL_LIST;
+				} else if (modeStr.equals("buildlist")) {
+					mode = Mode.GEN_BUILD_LIST;
 				} else if (modeStr.equals("clean")) {
 					mode = Mode.CLEAN;
 				} else {
