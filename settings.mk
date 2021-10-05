@@ -327,7 +327,7 @@ FAILEDTARGETS = $(TEST_ROOT)$(D)TKG$(D)failedtargets.mk
 # result Summary
 #######################################
 TEMPRESULTFILE=$(TESTOUTPUT)$(D)TestTargetResult
-TAPRESULTFILE=$(TESTOUTPUT)$(D)TestTargetResult.tap
+TAPRESULTFILE=$(TESTOUTPUT)$(D)Test_openjdk$(JDK_VERSION)_$(JDK_IMPL)_$(TESTTARGET)_$(SPEC).tap
 PLATFROMFILE=$(TEST_ROOT)$(D)TKG$(D)resources$(D)buildPlatformMap.properties
 
 ifndef DIAGNOSTICLEVEL
