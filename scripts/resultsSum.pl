@@ -31,6 +31,7 @@ my $jdkVendor = "";
 my $buildList = "";
 my $spec = "";
 my $customTarget = "";
+my $testTarget = "";
 
 for (my $i = 0; $i < scalar(@ARGV); $i++) {
 	my $arg = $ARGV[$i];
@@ -56,6 +57,8 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 		($spec) = $arg =~ /^\-\-spec=(.*)/;
 	} elsif ($arg =~ /^\-\-customTarget=/) {
 		($customTarget) = $arg =~ /^\-\-customTarget=(.*)/;
+	} elsif ($arg =~ /^\-\-testTarget=/) {
+		($testTarget) = $arg =~ /^\-\-testTarget=(.*)/;
 	}
 }
 
@@ -207,6 +210,21 @@ sub resultReporter {
 	print "   SKIPPED: $numOfSkipped";
 	print "\n";
 	if ($numOfTotal > 0) {
+		# set tap file name if not given
+		my @splitTapFile = split('/', $tapFile);
+		my $userTapInput = $splitTapFile[-1];
+		if ($userTapInput eq ' ') {
+			$tapFile =~ s/\s+$//; 
+			my $platform = "";
+			if (exists $spec2platform->{$spec}) {
+				$platform  = $spec2platform->{$spec};
+			}
+			if (index($testTarget, "testList") != -1) {
+    			$testTarget = 'testList';
+			} 
+			$tapFile .= "Test_openjdk$jdkVersion\_$jdkImpl\_$testTarget\_$platform.tap";
+		}
+
 		#generate tap output
 		my $dir = dirname($tapFile);
 		if (!(-e $dir and -d $dir)) {
