@@ -31,6 +31,7 @@ def main():
     ap.add_argument("-i", "--impl", required=False, help="java impl")
     ap.add_argument("-vd", "--vendor", required=False, help="java vendor")
     ap.add_argument("-p", "--plat", required=False, help="platform")
+    ap.add_argument("-fg", "--testflag", required=False, help="testflag")
     ap.add_argument("-c", "--comment", required=False, help="comment")
     ap.add_argument("-cp", "--copyright", required=False, default="false", help="update copyright date")
     run(vars(ap.parse_args()))
@@ -103,6 +104,10 @@ def addDisabled(files, args):
                 platEle = etree.Element("platform")
                 platEle.text = args["plat"]
                 disable.append(platEle)
+            if "testflag" in args:
+                testflagEle = etree.Element("testflag")
+                testflagEle.text = args["testflag"]
+                disable.append(testflagEle)
             disables = test[0].find("disables")
             if not disables:
                 disables = etree.Element("disables")
