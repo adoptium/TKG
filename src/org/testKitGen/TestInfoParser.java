@@ -185,9 +185,6 @@ public class TestInfoParser {
 		NodeList disables = testEle.getElementsByTagName("disables");
 		if (disables.getLength() > 0) {
 			disabledNodes = ((Element) disables.item(0)).getElementsByTagName("disable");
-		} else {
-			//TODO: temporarily support disabled
-			disabledNodes = testEle.getElementsByTagName("disabled");
 		}
 		if (disabledNodes == null || disabledNodes.getLength() == 0) return;
 		for (int i = 0; i < disabledNodes.getLength(); i++) {
