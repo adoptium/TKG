@@ -23,6 +23,8 @@ require "moveDmp.pl";
 my $resultFile;
 my $failuremkarg;
 my $tapFile;
+my $tapPath;
+my $tapName;
 my $platFile;
 my $diagnostic = 'failure';
 my $jdkVersion = "";
@@ -39,8 +41,10 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 		($failuremkarg) = $arg =~ /^\-\-failuremk=(.*)/;
 	} elsif ($arg =~ /^\-\-resultFile=/) {
 		($resultFile) = $arg =~ /^\-\-resultFile=(.*)/;
-	} elsif ($arg =~ /^\-\-tapFile=/) {
-		($tapFile) = $arg =~ /^\-\-tapFile=(.*)/;
+	} elsif ($arg =~ /^\-\-tapPath=/) {
+		($tapPath) = $arg =~ /^\-\-tapPath=(.*)/;
+	} elsif ($arg =~ /^\-\-tapName=/) {
+		($tapName) = $arg =~ /^\-\-tapName=(.*)/;
 	} elsif ($arg =~ /^\-\-platFile=/) {
 		($platFile) = $arg =~ /^\-\-platFile=(.*)/;
 	} elsif ($arg =~ /^\-\-diagnostic=/) {
@@ -211,10 +215,7 @@ sub resultReporter {
 	print "\n";
 	if ($numOfTotal > 0) {
 		# set tap file name if not given
-		my @splitTapFile = split('/', $tapFile);
-		my $userTapInput = $splitTapFile[-1];
-		if ($userTapInput eq ' ') {
-			$tapFile =~ s/\s+$//; 
+		if ($tapName eq '') {
 			my $platform = "";
 			if (exists $spec2platform->{$spec}) {
 				$platform  = $spec2platform->{$spec};
@@ -222,9 +223,9 @@ sub resultReporter {
 			if (index($testTarget, "testList") != -1) {
     			$testTarget = 'testList';
 			} 
-			$tapFile .= "Test_openjdk$jdkVersion\_$jdkImpl\_$testTarget\_$platform.tap";
+			$tapName = "Test_openjdk$jdkVersion\_$jdkImpl\_$testTarget\_$platform.tap";
 		}
-
+		$tapFile = $tapPath.$tapName;
 		#generate tap output
 		my $dir = dirname($tapFile);
 		if (!(-e $dir and -d $dir)) {
