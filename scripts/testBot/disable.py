@@ -47,6 +47,8 @@ def main():
                     newArgs["ver"] = m.group(1)
                 elif m := re.match(r"plat=(.*)", op):
                     newArgs["plat"] = m.group(1)
+                elif m := re.match(r"testflag=(.*)", op):
+                    newArgs["testflag"] = m.group(1)
                 else:
                     print(f"unrecognized argument: {op}")
                     sys.exit(-1)
