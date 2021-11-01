@@ -23,6 +23,8 @@ require "moveDmp.pl";
 my $resultFile;
 my $failuremkarg;
 my $tapFile;
+my $tapPath;
+my $tapName;
 my $platFile;
 my $diagnostic = 'failure';
 my $jdkVersion = "";
@@ -31,6 +33,7 @@ my $jdkVendor = "";
 my $buildList = "";
 my $spec = "";
 my $customTarget = "";
+my $testTarget = "";
 
 for (my $i = 0; $i < scalar(@ARGV); $i++) {
 	my $arg = $ARGV[$i];
@@ -38,8 +41,10 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 		($failuremkarg) = $arg =~ /^\-\-failuremk=(.*)/;
 	} elsif ($arg =~ /^\-\-resultFile=/) {
 		($resultFile) = $arg =~ /^\-\-resultFile=(.*)/;
-	} elsif ($arg =~ /^\-\-tapFile=/) {
-		($tapFile) = $arg =~ /^\-\-tapFile=(.*)/;
+	} elsif ($arg =~ /^\-\-tapPath=/) {
+		($tapPath) = $arg =~ /^\-\-tapPath=(.*)/;
+	} elsif ($arg =~ /^\-\-tapName=/) {
+		($tapName) = $arg =~ /^\-\-tapName=(.*)/;
 	} elsif ($arg =~ /^\-\-platFile=/) {
 		($platFile) = $arg =~ /^\-\-platFile=(.*)/;
 	} elsif ($arg =~ /^\-\-diagnostic=/) {
@@ -56,6 +61,8 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 		($spec) = $arg =~ /^\-\-spec=(.*)/;
 	} elsif ($arg =~ /^\-\-customTarget=/) {
 		($customTarget) = $arg =~ /^\-\-customTarget=(.*)/;
+	} elsif ($arg =~ /^\-\-testTarget=/) {
+		($testTarget) = $arg =~ /^\-\-testTarget=(.*)/;
 	}
 }
 
@@ -207,6 +214,18 @@ sub resultReporter {
 	print "   SKIPPED: $numOfSkipped";
 	print "\n";
 	if ($numOfTotal > 0) {
+		# set tap file name if not given
+		if ($tapName eq '') {
+			my $platform = "";
+			if (exists $spec2platform->{$spec}) {
+				$platform  = $spec2platform->{$spec};
+			}
+			if (index($testTarget, "testList") != -1) {
+    			$testTarget = 'testList';
+			} 
+			$tapName = "Test_openjdk$jdkVersion\_$jdkImpl\_$testTarget\_$platform.tap";
+		}
+		$tapFile = $tapPath.$tapName;
 		#generate tap output
 		my $dir = dirname($tapFile);
 		if (!(-e $dir and -d $dir)) {
