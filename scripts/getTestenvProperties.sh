@@ -15,6 +15,7 @@
 REPO_DIR=""
 OUTPUT_FILE="../testenv.properties"
 REPO_NAME=""
+REPO_SHA=""
 
 
 usage ()
@@ -41,6 +42,9 @@ parseCommandLineArgs()
 			"--repo_name" | "-n" )
 				REPO_NAME="$1"; shift;;
 
+			"--repo_sha" | "-s" )
+				REPO_SHA="$1"; shift;;
+
 			"--help" | "-h" )
 				usage; exit 0;;
 
@@ -61,10 +65,18 @@ getTestenvProperties() {
 		touch $OUTPUT_FILE
 	fi
 
+
 	cd $REPO_DIR
+
+	# If the SHA was not passed in, get it from
+	# the repository directly
+	if [ -z $REPO_SHA]; then
+		$REPO_SHA="$(git rev-parse HEAD)"
+	fi
+
 	# append the info into $OUTPUT_FILE
 	{	echo "${REPO_NAME}_REPO=$(git remote show origin -n | grep -Po '(?<=Fetch URL: ).*')";
-		echo "${REPO_NAME}_BRANCH=$(git rev-parse HEAD)";
+		echo "${REPO_NAME}_BRANCH=${REPO_SHA}";
 	}  2>&1 | tee -a $OUTPUT_FILE
 }
 
