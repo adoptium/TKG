@@ -125,58 +125,70 @@ sub checkLog {
 
 sub moveTDUMPS {
 	my ($file, $moveLocation) = @_;
-	my @dumplist = ();
-	# Use a hash to ensure that each dump is only dealt with once
+	if(!$file) {return;}
+
 	my %parsedNames = ();
-	if ($^O ne 'os390') {
-		if($file) {
-			while ($file =~ /System dump written to (.*)/g) {
-				my $curCorePath = $1;
-				$curCorePath =~ s/\r//g;
-				my $curCoreAbsPath = "";
-				my $moveLocationAbs = "";
-				if($^O =~ /cygwin/) {
-					$curCoreAbsPath = qx(cygpath -u '$curCorePath');
-					$moveLocationAbs = $moveLocation;
-					$moveLocation = qx(cygpath -w '$moveLocation');
+	
+	my $dumpType = qr/(System|Java|Snap|JIT|Heap)/;
+	if ($^O eq 'os390') {
+		# Use different logic to handle zos system dump
+		$dumpType = qr/(Java|Snap|JIT|Heap)/;
+	}
+	while ($file =~ /${dumpType} dump written to (.*)/g) {
+		my $curCorePath = $2;
+		$curCorePath =~ s/\r//g;
+		my $curCoreAbsPath = "";
+		my $moveLocationAbs = "";
+		if($^O =~ /cygwin/) {
+			$curCoreAbsPath = qx(cygpath -u '$curCorePath');
+			$moveLocationAbs = $moveLocation;
+			$moveLocation = qx(cygpath -w '$moveLocation');
+		} else {
+			$curCoreAbsPath = Cwd::abs_path( $curCorePath );
+			$moveLocationAbs = Cwd::abs_path( $moveLocation );
+		}
+		my $curCoreName = basename($curCoreAbsPath);
+		if(!exists $parsedNames{$curCoreName}) {
+			# handle each core only once
+			$parsedNames{$curCoreName} = 1;
+			# If the core is not in the preferred location, move it to $moveLocation
+			if($curCoreAbsPath !~  $moveLocationAbs) {
+				qx(mv '${curCorePath}' ${moveLocationAbs});
+				my $moveResult = $?;
+				$moveResult = $moveResult >> 8 unless ($moveResult == -1);
+				if($moveResult == 0) {
+					logMsg("Successfully moved core file $curCoreName to $moveLocation");
 				} else {
-					$curCoreAbsPath = Cwd::abs_path( $curCorePath );
-					$moveLocationAbs = Cwd::abs_path( $moveLocation );
-				}
-				my $curCoreName = basename($curCoreAbsPath);
-				if(!exists $parsedNames{$curCoreName}) {
-					# handle each core only once
-					$parsedNames{$curCoreName} = 1;
-					# If the core is not in the preferred location, move it to $moveLocation
-					if($curCoreAbsPath !~  $moveLocationAbs) {
-						qx(mv '${curCorePath}' ${moveLocationAbs});
-						my $moveResult = $?;
-						$moveResult = $moveResult >> 8 unless ($moveResult == -1);
-						if($moveResult == 0) {
-							logMsg("Successfully moved core file $curCoreName to $moveLocation");
-						} else {
-							logMsg("Failed to move core file from $curCorePath to $moveLocation");
-						}
-					}
+					logMsg("Failed to move core file from $curCorePath to $moveLocation");
 				}
 			}
 		}
-		return;
 	}
+
+	if ($^O eq 'os390') {
+		moveSysDumpforZOS($file, $moveLocation);
+	}
+}
+
+sub moveSysDumpforZOS {
+	my ($file, $moveLocation) = @_;
+
+	my @dumplist = ();
+	# Use a hash to ensure that each dump is only dealt with once
+	my %parsedNames = ();
 	
-	if ($file) {
-		while ($file =~ /IEATDUMP success for DSN='(.*)'/g) {
-			$parsedNames{$1} = 1;
-		}
-		# A partial dump has been created, even though it is a failure, dump still occurred and needs moving
-		while ($file =~ /IEATDUMP failure for DSN='(.*)' RC=0x00000004 RSN=0x00000000/g) {
-			$parsedNames{$1} = 1;
-		}
-		# Dump failed due to no space left on the machine, so print out warning message
-		while ($file =~ /IEATDUMP failure for DSN='(.*)' RC=0x00000008 RSN=0x00000026/g) {
-			logMsg("ERROR: TDUMP failed due to no space left on machine. $1 cannot be found.");
-		}
+	while ($file =~ /IEATDUMP success for DSN='(.*)'/g) {
+		$parsedNames{$1} = 1;
 	}
+	# A partial dump has been created, even though it is a failure, dump still occurred and needs moving
+	while ($file =~ /IEATDUMP failure for DSN='(.*)' RC=0x00000004 RSN=0x00000000/g) {
+		$parsedNames{$1} = 1;
+	}
+	# Dump failed due to no space left on the machine, so print out warning message
+	while ($file =~ /IEATDUMP failure for DSN='(.*)' RC=0x00000008 RSN=0x00000026/g) {
+		logMsg("ERROR: TDUMP failed due to no space left on machine. $1 cannot be found.");
+	}
+
 	push(@dumplist, keys(%parsedNames));
 	if (!@dumplist) {
 		# Nothing to do
