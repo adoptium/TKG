@@ -69,7 +69,7 @@
 				<arg line="${TEST_ROOT}/TKG/scripts/getTestenvProperties.sh" />
 				<arg line="--repo_dir @{repoDir}" />
 				<arg line="--repo_name @{repoName}" />
-				<arg line="--output_file ${TEST_ROOT}/TKG/testenv.properties" />
+				<arg line="--output_file ${TEST_ROOT}/testenv/testenv.properties" />
 			</exec>
 		</sequential>
 	</macrodef>
