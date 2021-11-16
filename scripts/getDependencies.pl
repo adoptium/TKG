@@ -138,9 +138,9 @@ my %base = (
 	},
 	jtreg_6_1_1 => {
 		url => 'https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-6.1+1.tar.gz',
-		fname => 'jtreg-6.1+1.tar.gz',
+		fname => 'jtreg_6_1_1.tar.gz',
 		shaurl => 'https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-6.1+1.tar.gz.sha256sum.txt',
-		shafn => 'jtreg-6.1+1.tar.gz.sha256sum.txt',
+		shafn => 'jtreg_6_1_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
 	jtreg_5_1_b01 => {
