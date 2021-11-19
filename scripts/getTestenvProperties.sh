@@ -68,14 +68,11 @@ getTestenvProperties() {
 
 	cd $REPO_DIR
 
-	echo "REPO_SHA=${REPO_SHA} T"
 	# If the SHA was not passed in, get it from
 	# the repository directly
 	if [ -z "$REPO_SHA"]; then
-		$REPO_SHA="$(git rev-parse HEAD)"
+		REPO_SHA="$(git rev-parse HEAD)"
 	fi
-
-	echo "REPO_SHA=${REPO_SHA}"
 
 	# append the info into $OUTPUT_FILE
 	{	echo "${REPO_NAME}_REPO=$(git remote show origin -n | grep -Po '(?<=Fetch URL: ).*')";
