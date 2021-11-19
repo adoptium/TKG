@@ -74,22 +74,6 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="set-property">
-		<attribute name="name" />
-		<attribute name="if-property-isset" />
-		<attribute name="value" default="${@{if-property-isset}}" />
-		<sequential>
-			<condition property="@{name}" value="@{value}">
-				<and>
-					<isset property="@{if-property-isset}" />
-					<not>
-						<equals arg1="${@{if-property-isset}}" arg2="" />
-					</not>
-				</and>
-			</condition>
-		</sequential>
-	</macrodef>
-
 	<target name="build" depends="stage_test_material" description="using ${JDK_VERSION} to compile the source ">
 		<subant target="">
 			<property name="build.dir" value="subant1.build" />
