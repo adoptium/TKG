@@ -64,6 +64,7 @@
 
 	<macrodef name="addTestenvProperties">
 		<attribute name="repoDir" default="." />
+		<attribute name="repoName" default="" />
 		<sequential>
 			<exec executable="bash" failonerror="true">
 				<arg line="${TEST_ROOT}/TKG/scripts/getTestenvProperties.sh" />
