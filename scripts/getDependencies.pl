@@ -136,6 +136,13 @@ my %base = (
 		shafn => 'jtreg_6_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
+	jtreg_6_1_1 => {
+		url => 'https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-6.1+1.tar.gz',
+		fname => 'jtreg_6_1_1.tar.gz',
+		shaurl => 'https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-6.1+1.tar.gz.sha256sum.txt',
+		shafn => 'jtreg_6_1_1.tar.gz.sha256sum.txt',
+		shaalg => '256'
+	},
 	jtreg_5_1_b01 => {
 		url => 'https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg5.1-b01.tar.gz',
 		fname => 'jtreg_5_1_b01.tar.gz',
@@ -143,6 +150,7 @@ my %base = (
 		shafn => 'jtreg_5_1_b01.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
+	
 	jython => {
 		url => 'https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
 		fname => 'jython-standalone.jar',
