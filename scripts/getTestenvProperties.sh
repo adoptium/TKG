@@ -59,29 +59,25 @@ parseCommandLineArgs()
 }
 
 getTestenvProperties() {
-	if [[ "$USE_TESTENV_PROPERTIES" != true  ]]; then
-		echo "Check sha in $REPO_DIR and store the info in $OUTPUT_FILE"
-		if [ ! -e ${OUTPUT_FILE} ]; then
-			echo "touch $OUTPUT_FILE"
-			touch $OUTPUT_FILE
-		fi
-
-
-		cd $REPO_DIR
-
-		# If the SHA was not passed in, get it from
-		# the repository directly
-		if [ -z "$REPO_SHA"]; then
-			REPO_SHA="$(git rev-parse HEAD)"
-		fi
-
-		# append the info into $OUTPUT_FILE
-		{	echo "${REPO_NAME}_REPO=$(git remote show origin -n | grep -Po '(?<=Fetch URL: ).*')";
-			echo "${REPO_NAME}_BRANCH=${REPO_SHA}";
-		}  2>&1 | tee -a $OUTPUT_FILE
-	else
-		echo "USE_TESTENV_PROPERTIES was set, not writing to testenv.properties"
+	echo "Check sha in $REPO_DIR and store the info in $OUTPUT_FILE"
+	if [ ! -e ${OUTPUT_FILE} ]; then
+		echo "touch $OUTPUT_FILE"
+		touch $OUTPUT_FILE
 	fi
+
+
+	cd $REPO_DIR
+
+	# If the SHA was not passed in, get it from
+	# the repository directly
+	if [ -z "$REPO_SHA"]; then
+		REPO_SHA="$(git rev-parse HEAD)"
+	fi
+
+	# append the info into $OUTPUT_FILE
+	{	echo "${REPO_NAME}_REPO=$(git remote show origin -n | grep -Po '(?<=Fetch URL: ).*')";
+		echo "${REPO_NAME}_BRANCH=${REPO_SHA}";
+	}  2>&1 | tee -a $OUTPUT_FILE
 }
 
 parseCommandLineArgs "$@"
