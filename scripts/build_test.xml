@@ -70,15 +70,15 @@
 			<if>
 				<isset property="env.USE_TESTENV_PROPERTIES" />
 				<then>
-					<echo message="USE_TESTENV_PROPERTIES is set, not writing testenv.properties"/>
-				</then>
-				<else>
 					<exec executable="bash" failonerror="true" if="env.USE_TESTENV_PROPERTIES">
 						<arg line="${TEST_ROOT}/TKG/scripts/getTestenvProperties.sh" />
 						<arg line="--repo_dir @{repoDir}" />
 						<arg line="--repo_name @{repoName}" />
 						<arg line="--output_file ${TEST_ROOT}/testenv/testenv.properties" />
 					</exec>
+				</then>
+				<else>
+					<echo message="USE_TESTENV_PROPERTIES is set, not writing testenv.properties"/>
 				</else>
 			</if>
 		</sequential>
