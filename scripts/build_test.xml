@@ -70,7 +70,7 @@
 			<if>
 				<isset property="env.USE_TESTENV_PROPERTIES" />
 				<then>
-					<exec executable="bash" failonerror="true" if="env.USE_TESTENV_PROPERTIES">
+					<exec executable="bash" failonerror="true">
 						<arg line="${TEST_ROOT}/TKG/scripts/getTestenvProperties.sh" />
 						<arg line="--repo_dir @{repoDir}" />
 						<arg line="--repo_name @{repoName}" />
