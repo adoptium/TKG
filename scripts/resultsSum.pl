@@ -250,6 +250,8 @@ sub resultReporter {
 		my $platformParam = "";
 		if (exists $spec2platform->{$spec}) {
 			$platformParam = "&PLATFORM=" . $spec2platform->{$spec};
+			# spec fileuses aarch32, but Grinder needs arm as the parameter
+			$platformParam =~ 's/aarch32_/arm_/';
 		}
 		my $customTargetParam = "";
 		if ($customTarget ne '') {
@@ -263,11 +265,31 @@ sub resultReporter {
 		if ($jdkVendor ne '') {
 			$vendorParam = "&JDK_VENDOR=" . $jdkVendor;
 		}
+		my $jenkinsParam = "";
+		if ($ENV{'JCK_GIT_REPO'} ne '') {
+			$jenkinsParam .= "&JCK_GIT_REPO="        . $ENV{'JCK_GIT_REPO'};
+		}
+		if ($ENV{'SDK_RESOURCE'} ne '') {
+			$jenkinsParam .= "&SDK_RESOURCE="        . $ENV{'SDK_RESOURCE'};
+		}
+		if ($ENV{'CUSTOMIZED_SDK_URL'} ne '') {
+			$jenkinsParam .= "&CUSTOMIZED_SDK_URL="  . $ENV{'CUSTOMIZED_SDK_URL'};
+		}
+		if ($ENV{'CUSTOMIZED_SDK_URL_CREDENTIAL_ID'} ne '') {
+			$jenkinsParam .= "&CUSTOMIZED_SDK_URL_CREDENTIAL_ID=" . $ENV{'CUSTOMIZED_SDK_URL_CREDENTIAL_ID'};
+		}
+		if ($ENV{'UPSTREAM_JOB_NAME'} ne '') {
+			$jenkinsParam .= "&UPSTREAM_JOB_NAME="   . $ENV{'UPSTREAM_JOB_NAME'};
+		}
+		if ($ENV{'UPSTREAM_JOB_NUMBER'} ne '') {
+			$jenkinsParam .= "&UPSTREAM_JOB_NUMBER=" . $ENV{'UPSTREAM_JOB_NUMBER'};
+		}
 
-		my $rebuildLinkBase = "parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$vendorParam$buildParam$platformParam$customTargetParam";
+		my $rebuildLinkBase = "parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$vendorParam$buildParam$platformParam$customTargetParam$jenkinsParam";
 		print "To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:\n";
 		print "<Jenkins URL>/$rebuildLinkBase&TARGET=<FAILED test target>\n\n";
 		print "For example, to rebuild the failed tests in <Jenkins URL>=${hudsonUrl}job/Grinder, use the following links:\n";
+
 		foreach my $failedTarget (@failed) {
 			print "${hudsonUrl}job/Grinder/$rebuildLinkBase&TARGET=$failedTarget\n";
 		}
