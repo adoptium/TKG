@@ -266,22 +266,22 @@ sub resultReporter {
 			$vendorParam = "&JDK_VENDOR=" . $jdkVendor;
 		}
 		my $jenkinsParam = "";
-		if ($ENV{'JCK_GIT_REPO'} ne '') {
+		if ( defined $ENV{'JCK_GIT_REPO'} ) {
 			$jenkinsParam .= "&JCK_GIT_REPO="        . $ENV{'JCK_GIT_REPO'};
 		}
-		if ($ENV{'SDK_RESOURCE'} ne '') {
+		if ( defined $ENV{'SDK_RESOURCE'} ) {
 			$jenkinsParam .= "&SDK_RESOURCE="        . $ENV{'SDK_RESOURCE'};
 		}
-		if ($ENV{'CUSTOMIZED_SDK_URL'} ne '') {
+		if ( defined $ENV{'CUSTOMIZED_SDK_URL'} ) {
 			$jenkinsParam .= "&CUSTOMIZED_SDK_URL="  . $ENV{'CUSTOMIZED_SDK_URL'};
 		}
-		if ($ENV{'CUSTOMIZED_SDK_URL_CREDENTIAL_ID'} ne '') {
+		if ( defined $ENV{'CUSTOMIZED_SDK_URL_CREDENTIAL_ID'} ) {
 			$jenkinsParam .= "&CUSTOMIZED_SDK_URL_CREDENTIAL_ID=" . $ENV{'CUSTOMIZED_SDK_URL_CREDENTIAL_ID'};
 		}
-		if ($ENV{'UPSTREAM_JOB_NAME'} ne '') {
+		if ( defined $ENV{'UPSTREAM_JOB_NAME'} ) {
 			$jenkinsParam .= "&UPSTREAM_JOB_NAME="   . $ENV{'UPSTREAM_JOB_NAME'};
 		}
-		if ($ENV{'UPSTREAM_JOB_NUMBER'} ne '') {
+		if ( defined $ENV{'UPSTREAM_JOB_NUMBER'} ) {
 			$jenkinsParam .= "&UPSTREAM_JOB_NUMBER=" . $ENV{'UPSTREAM_JOB_NUMBER'};
 		}
 
