@@ -62,6 +62,19 @@
 		</sequential>
 	</macrodef>
 
+	<macrodef name="addTestenvProperties">
+		<attribute name="repoDir" default="." />
+		<attribute name="repoName" default="" />
+		<sequential>
+			<exec executable="bash" failonerror="true">
+				<arg line="${TEST_ROOT}/TKG/scripts/getTestenvProperties.sh" />
+				<arg line="--repo_dir @{repoDir}" />
+				<arg line="--repo_name @{repoName}" />
+				<arg line="--output_file ${TEST_ROOT}/testenv/testenv.properties" />
+			</exec>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="set-property">
 		<attribute name="name" />
 		<attribute name="if-property-isset" />
