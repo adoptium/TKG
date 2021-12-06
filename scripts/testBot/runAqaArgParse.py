@@ -59,6 +59,8 @@ def main():
     # Custom repo options which may be enabled/disabled in the `runAqaConfig.json` file.
     with open('main/.github/workflows/runAqaConfig.json') as f:
         config = json.load(f)
+        if 'workflow_repo' in config:
+            parser.add_argument('--workflow_repo', default=[config['workflow_repo']], nargs='+')
         if config['custom_openjdk_testrepo']:
             parser.add_argument('--openjdk_testrepo', default=['adoptium/aqa-tests:master'], nargs='+')
         if config['custom_openj9_repo']:
@@ -86,6 +88,7 @@ Click the above link to view the documentation for the Run AQA GitHub Workflow''
     del args['help']
 
     # Map grinder platform names to github runner names
+    args['jdk_platform'] = args['platform'].copy()
     args['platform'] = map_platforms(args['platform'])
 
     # Underscore the targets if necessary
@@ -111,6 +114,10 @@ Click the above link to view the documentation for the Run AQA GitHub Workflow''
         print('::error ::{}'.format(err_msg))
         sys.stderr.write(err_msg)
         exit(2)
+
+    # Add default customized_sdk_url for openj9 workflow when sdk_resource is nightly
+    if 'workflow_repo' in args and 'eclipse-openj9/openj9' in args['workflow_repo'] and 'nightly' in args['sdk_resource'] and args['customized_sdk_url'] == ['None'] and 'openj9' in args['jdk_impl']:
+        args['customized_sdk_url'] = [f'https://openj9-artifactory.osuosl.org/artifactory/ci-openj9/Build_JDK{args["jdk_version"][0]}_{args["jdk_platform"][0]}_Nightly/']
 
     # Output the arguments
     print('::set-output name=build_parameters::{}'.format(json.dumps(args)))
