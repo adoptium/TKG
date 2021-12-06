@@ -75,9 +75,15 @@ getTestenvProperties() {
 			REPO_SHA="$(git rev-parse HEAD)"
 		fi
 
+		branch="${REPO_NAME}_BRANCH"
+		# for openj9, we need to use OPENJ9_SHA for now, not OPENJ9_BRANCH
+		if [ $REPO_NAME == "OPENJ9" ]; then
+			branch="${REPO_NAME}_SHA"
+		fi
+
 		# append the info into $OUTPUT_FILE
 		{	echo "${REPO_NAME}_REPO=$(git remote show origin -n | grep -Po '(?<=Fetch URL: ).*')";
-			echo "${REPO_NAME}_BRANCH=${REPO_SHA}";
+			echo "${branch}=${REPO_SHA}";
 		}  2>&1 | tee -a $OUTPUT_FILE
 	else
 		echo "USE_TESTENV_PROPERTIES was set, not writing to testenv.properties"
