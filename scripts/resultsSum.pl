@@ -250,8 +250,6 @@ sub resultReporter {
 		my $platformParam = "";
 		if (exists $spec2platform->{$spec}) {
 			$platformParam = "&PLATFORM=" . $spec2platform->{$spec};
-			# spec fileuses aarch32, but Grinder needs arm as the parameter
-			$platformParam =~ 's/aarch32_/arm_/';
 		}
 		my $customTargetParam = "";
 		if ($customTarget ne '') {
