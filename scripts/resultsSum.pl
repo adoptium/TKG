@@ -263,6 +263,8 @@ sub resultReporter {
 		if ($jdkVendor ne '') {
 			$vendorParam = "&JDK_VENDOR=" . $jdkVendor;
 		}
+		# TODO: Revisit this and make it more generic and allow all potentially
+		#       applicaable Grinder job paramers to be made availablea
 		my $jenkinsParam = "";
 		if ( defined $ENV{'JCK_GIT_REPO'} ) {
 			$jenkinsParam .= "&JCK_GIT_REPO="        . $ENV{'JCK_GIT_REPO'};
