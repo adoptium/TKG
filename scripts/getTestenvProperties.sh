@@ -91,7 +91,8 @@ getTestenvProperties() {
 		fi
 
 		# append the info into $OUTPUT_FILE
-		{	echo "${REPO_NAME}_REPO=$(git remote show origin -n | grep -Po '(?<=Fetch URL: ).*')";
+		{
+			echo "${REPO_NAME}_REPO=$(git remote show origin -n | awk '/Fetch URL:/{print $3}')";
 			echo "${branch}=${REPO_SHA}";
 		}  2>&1 | tee -a $OUTPUT_FILE
 	else
