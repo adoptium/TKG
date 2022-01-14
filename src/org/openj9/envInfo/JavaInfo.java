@@ -83,7 +83,7 @@ public class JavaInfo {
         if (spec.contains("ppc") && osArch.contains("le")) {
             spec += "_le";
         }
-        
+
         return spec;
     }
 
@@ -177,6 +177,19 @@ public class JavaInfo {
             System.out.println("Cannot determine System.getProperty('java.version')=" + javaVersion + "\n");
         }
         return rt;
+    }
+
+    public boolean isCRIUCapable() {
+        String isCRIUCapable = System.getProperty("org.eclipse.openj9.criu.isCRIUCapable");
+        if ((isCRIUCapable != null) && isCRIUCapable.equals("true")) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getTestFlag() {
+        String testFlag = isCRIUCapable() ? "CRIU" : "";
+        return testFlag;
     }
 
 }
