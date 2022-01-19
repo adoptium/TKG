@@ -93,6 +93,8 @@ public class MkGen {
 						+ (var.getJvmOptions().isEmpty() ? "" : (var.getJvmOptions() + " ")) + "$(EXTRA_OPTIONS)\n");
 
 				f.write(testTargetName + ": TEST_GROUP=" + testInfo.getLevelStr() + "\n");
+				f.write(testTargetName + ": TEST_ITERATIONS=" + testInfo.getIterations() + "\n");
+
 				f.write(testTargetName + ":\n");
 				f.write(indent + "@echo \"\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				f.write(indent
