@@ -55,18 +55,15 @@ def main():
     parser.add_argument('--platform', default=['x86-64_linux'], nargs='+')
     parser.add_argument('--jdk_version', default=['8'], nargs='+')
     parser.add_argument('--jdk_impl', default=['openj9'], choices=['hotspot', 'openj9'], nargs='+')
-
+    parser.add_argument('--openjdk_testrepo', default=['adoptium/aqa-tests:master'], nargs='+')
+    parser.add_argument('--openj9_repo', default=['eclipse-openj9/openj9:master'], nargs='+')
+    parser.add_argument('--tkg_repo', default=['adoptium/TKG:master'], nargs='+')
+    
     # Custom repo options which may be enabled/disabled in the `runAqaConfig.json` file.
     with open('main/.github/workflows/runAqaConfig.json') as f:
         config = json.load(f)
         if 'workflow_repo' in config:
             parser.add_argument('--workflow_repo', default=[config['workflow_repo']], nargs='+')
-        if config['custom_openjdk_testrepo']:
-            parser.add_argument('--openjdk_testrepo', default=['adoptium/aqa-tests:master'], nargs='+')
-        if config['custom_openj9_repo']:
-            parser.add_argument('--openj9_repo', default=['eclipse-openj9/openj9:master'], nargs='+')
-        if config['custom_tkg_repo']:
-            parser.add_argument('--tkg_repo', default=['adoptium/TKG:master'], nargs='+')
 
     args = vars(parser.parse_args(raw_args))
     # All args are lists of strings
