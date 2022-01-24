@@ -126,10 +126,21 @@ else
 	ADD_JVM_LIB_DIR_TO_LIBPATH:=export $(TEST_LIB_PATH);
 endif
 
+#######################################
+# In JDK18+, java.security.manager == null behaves as -Djava.security.manager=disallow.
+# In JDK17-, java.security.manager == null behaves as -Djava.security.manager=allow.
+# For OpenJ9 tests to work as expected, -Djava.security.manager=allow behaviour is
+# needed in JDK18+.
+#######################################
+ifeq (18,$(word 1,$(sort 18 $(JDK_VERSION))))
+	EXTRA_OPTIONS += -Djava.security.manager=allow
+endif
+
 ifneq ($(DEBUG),)
 $(info JAVA_SHARED_LIBRARIES_DIR is set to $(JAVA_SHARED_LIBRARIES_DIR))
 $(info VM_SUBDIR is set to $(VM_SUBDIR))
 $(info ADD_JVM_LIB_DIR_TO_LIBPATH is set to $(ADD_JVM_LIB_DIR_TO_LIBPATH))
+$(info EXTRA_OPTIONS is set to $(EXTRA_OPTIONS))
 endif
 
 #######################################
