@@ -26,7 +26,7 @@ TEST_JDK_BIN:=$(TEST_JDK_HOME)$(D)bin
 TEST_JDK_LIB_DIR:=$(TEST_JDK_BIN)$(D)..$(D)lib
 
 VM_SUBDIR=default
-ifneq (,$(findstring cmprssptrs,$(SPEC)))
+ifneq (,$(findstring _cmprssptrs,$(SPEC)))
 VM_SUBDIR=compressedrefs
 endif
 
