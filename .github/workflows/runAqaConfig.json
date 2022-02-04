@@ -1,6 +1,3 @@
 {
-    "workflow_repo": "adoptium/TKG",
-    "custom_openjdk_testrepo": true,
-    "custom_openj9_repo": true,
-    "custom_tkg_repo": false
+	"workflow_repo": "adoptium/TKG"
 }
