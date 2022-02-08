@@ -14,6 +14,10 @@
 
 package org.openj9.envInfo;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+
 public class JavaInfo {
 
     public String getSPEC(String javaImplInfo) {
@@ -25,6 +29,10 @@ public class JavaInfo {
         System.out.println("System.getProperty('java.fullversion')=" + fullversion + "\n");
         String spec = "";
         if (osName.contains("linux")) {
+            Path alpine = Paths.get("/etc/alpine-release");
+			if (Files.exists(alpine)) {
+				spec = "linux_x86-64";
+			}
             spec = "linux";
         } else if (osName.contains("win")) {
             spec = "win";
