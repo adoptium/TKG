@@ -192,4 +192,14 @@ public class JavaInfo {
         return testFlag;
     }
 
+    public String getReleaseInfo() {
+        String rt = "";
+        CmdExecutor ce = CmdExecutor.getInstance();
+        String exe = System.getProperty("java.home") + "/release";
+        String release = ce.execute(new String[] {"cat", exe});
+        if (release != "") {
+            return release;
+        }
+        return rt;
+    }
 }
