@@ -30,10 +30,11 @@ public class JavaInfo {
         String spec = "";
         if (osName.contains("linux")) {
             Path alpine = Paths.get("/etc/alpine-release");
-			if (Files.exists(alpine)) {
-				spec = "alpine-linux";
-			}
-            spec = "linux";
+            if (Files.exists(alpine)) {
+                spec = "alpine-linux_x86-64";
+            } else {
+                spec = "linux";
+            }
         } else if (osName.contains("win")) {
             spec = "win";
         } else if (osName.contains("mac")) {
