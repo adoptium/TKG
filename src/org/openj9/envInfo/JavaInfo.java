@@ -155,4 +155,18 @@ public class JavaInfo {
         }
     }
 
+    public String getJavaVersion() {
+        String rt = "";
+        CmdExecutor ce = CmdExecutor.getInstance();
+        String exeVer = System.getProperty("java.home") + "/bin/java -version";
+        String javaVersion = ce.execute(new String[] {exeVer});
+        if (javaVersion.contains(System.getProperty("java.version"))) {
+            // TODO: Parsing on the result
+            rt = javaVersion;
+        } else {
+            System.out.println("Cannot determine System.getProperty('java.version')=" + javaVersion + "\n");
+        }
+        return rt;
+    }
+
 }
