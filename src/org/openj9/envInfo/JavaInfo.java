@@ -84,6 +84,10 @@ public class JavaInfo {
             spec += "_le";
         }
 
+        if ((osArch.contains("s390")) && (javaImplInfo.equals("ibm") || javaImplInfo.equals("openj9"))) {
+            spec += zartemis();
+        }
+
         return spec;
     }
 
@@ -99,6 +103,23 @@ public class JavaInfo {
                 rt = "_cmprssptrs";
             } else {
                 rt = "_nocmprssptrs";
+            }
+        }
+        return rt;
+    }
+
+    private String zartemis() {
+        String rt = "";
+        if (System.getProperty("os.arch").toLowerCase().contains("s390")) {
+            // Linux
+            String modelCmd = "cat /proc/cpuinfo | grep machine | head -n 1 | awk '{print $NF}'";
+            if (System.getProperty("os.name").toLowerCase().contains("z/os")) {
+                modelCmd = "uname -Iarns | awk '{print $NF}'";
+            }
+            CmdExecutor ce = CmdExecutor.getInstance();
+            String modelCode = ce.execute(new String[] {"bash", "-c", modelCmd});
+            if (modelCode.contains("3931")) {
+                rt = "_zt";
             }
         }
         return rt;

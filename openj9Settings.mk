@@ -50,6 +50,10 @@ else ifneq (,$(findstring aarch64,$(SPEC)))
 	ARCH_DIR=aarch64
 endif
 
+ifneq (,$(findstring _zt,$(SPEC)))
+	export TR_Options=enableZNext
+endif
+
 ifndef NATIVE_TEST_LIBS
 	NATIVE_TEST_LIBS=$(TEST_JDK_HOME)$(D)..$(D)native-test-libs$(D)
 endif
@@ -130,6 +134,9 @@ ifneq ($(DEBUG),)
 $(info JAVA_SHARED_LIBRARIES_DIR is set to $(JAVA_SHARED_LIBRARIES_DIR))
 $(info VM_SUBDIR is set to $(VM_SUBDIR))
 $(info ADD_JVM_LIB_DIR_TO_LIBPATH is set to $(ADD_JVM_LIB_DIR_TO_LIBPATH))
+ifneq (,$(findstring _zt,$(SPEC)))
+$(info TR_Options is set to $(TR_Options))
+endif
 endif
 
 #######################################
