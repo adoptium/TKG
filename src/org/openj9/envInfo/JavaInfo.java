@@ -14,6 +14,10 @@
 
 package org.openj9.envInfo;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+
 public class JavaInfo {
 
     public String getSPEC(String javaImplInfo) {
@@ -25,7 +29,12 @@ public class JavaInfo {
         System.out.println("System.getProperty('java.fullversion')=" + fullversion + "\n");
         String spec = "";
         if (osName.contains("linux")) {
-            spec = "linux";
+            Path alpine = Paths.get("/etc/alpine-release");
+            if (Files.exists(alpine)) {
+                spec = "alpine-linux";
+            } else {
+                spec = "linux";
+            }
         } else if (osName.contains("win")) {
             spec = "win";
         } else if (osName.contains("mac")) {
@@ -165,4 +174,19 @@ public class JavaInfo {
         }
         return rt;
     }
+
+    public String getJavaVersion() {
+        String rt = "";
+        CmdExecutor ce = CmdExecutor.getInstance();
+        String exeVer = System.getProperty("java.home") + "/bin/java -version";
+        String javaVersion = ce.execute(new String[] {exeVer});
+        if (javaVersion.contains(System.getProperty("java.version"))) {
+            // TODO: Parsing on the result
+            rt = javaVersion;
+        } else {
+            System.out.println("Cannot determine System.getProperty('java.version')=" + javaVersion + "\n");
+        }
+        return rt;
+    }
+
 }

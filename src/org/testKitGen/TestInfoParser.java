@@ -16,8 +16,10 @@ package org.testKitGen;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.w3c.dom.Element;
@@ -69,22 +71,45 @@ public class TestInfoParser {
 		}
 		if (!isValidVersion) return null;
 
-		String aot = getImmediateChildContent(testEle, "aot");
-		boolean isValidAot = true;
-		if (arg.getTestFlag().contains("aot")) {
-			if ((aot != null) && aot.equals("nonapplicable")) {
-				// Do not generate make target if the test is AOT not applicable when test flag is set to AOT
-				isValidAot = false;
-			} else if ((aot != null) && aot.equals("explicit")) {
-				// When test tagged with AOT explicit, its test command has AOT options and runs
-				// multiple times explicitly
-				ti.setIterations(1);
-			} else if ((aot == null) || aot.equals("applicable")) {
-				// aot defaults to "applicable" when testFlag contains AOT
-				ti.setAotOptions("$(AOT_OPTIONS) ");
+		List<String> features = new ArrayList<String>();
+		getElements(features, "features", "feature", null, ti.getTestCaseName());
+		// defaults to applicable for all features
+		if (features.size() == 0) {
+			features.add("all:applicable");
+		}
+		for (String ft : features) {
+			if (!ft.contains(":")) {
+				ft += ":applicable";
+			}
+			String[] featElements = ft.split(":");
+			ti.addFeature(featElements[0].toLowerCase(), featElements[1].toLowerCase());
+		}
+		Set<String> testFlags = new HashSet<>(arg.getTestFlag());
+		for (Map.Entry<String,String> entry : ti.getFeatures().entrySet()) {
+			if (entry.getValue().equalsIgnoreCase("required")) {
+				if (!testFlags.contains(entry.getKey())) {
+					return null;
+				} else if (entry.getKey().equalsIgnoreCase("aot")) {
+					ti.setAotOptions("$(AOT_OPTIONS) ");
+				}
+			} else if (entry.getValue().equalsIgnoreCase("applicable")) {
+				if (testFlags.contains("aot") && (entry.getKey().equalsIgnoreCase("aot") || entry.getKey().equalsIgnoreCase("all"))) {
+					ti.setAotOptions("$(AOT_OPTIONS) ");
+				}
+			} else if (entry.getValue().equalsIgnoreCase("nonapplicable")) {
+				// Do not generate make target if the test is not applicable for one feature defined in TEST_FLAG
+				if (testFlags.contains(entry.getKey())) {
+					return null;
+				}
+			} else if (entry.getValue().equalsIgnoreCase("explicit")) {
+				if (testFlags.contains("aot") && entry.getKey().equalsIgnoreCase("aot")) {
+					// When test tagged with AOT explicit, its test runs explicitly without any special treatment
+					ti.setIterations(1);
+				}
+			} else {
+				System.err.println("Error: Please provide a valid feature parameter in test " + ti.getTestCaseName() + ". The valid string is <feature_name>:[required|applicable|nonapplicable|explicit].");
 			}
 		}
-		if (!isValidAot) return null;
 
 		String platform = getImmediateChildContent(testEle, "platform");
 		if (platform != null) {

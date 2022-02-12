@@ -29,6 +29,7 @@ public class TestInfo {
 	private String aotOptions;
 	private int iterations;
 	private String levelStr;
+	private Map<String, String> features;
 	private List<String> levels;
 	private List<String> groups;
 	private List<String> types;
@@ -45,6 +46,7 @@ public class TestInfo {
 		this.iterations = Integer.parseInt(arg.getIterations());
 		this.capabilities = new HashMap<String, String>();
 		this.levelStr = "";
+		this.features = new HashMap<String, String>();
 		this.levels = new ArrayList<String>();
 		this.groups = new ArrayList<String>();
 		this.types = new ArrayList<String>();
@@ -120,6 +122,14 @@ public class TestInfo {
 
 	public void setLevelStr(String levelStr) {
 		this.levelStr = levelStr;
+	}
+
+	public Map<String, String> getFeatures() {
+		return this.features;
+	}
+
+	public void addFeature(String key, String value) {
+		this.features.put(key, value);
 	}
 
 	public List<String> getLevels() {
