@@ -82,7 +82,11 @@ public class EnvDetector {
 			output.close();
 			output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log")));
 			output.write(JavaVersionValue);
+<<<<<<< HEAD
 			output.write(ReleaseInfo); // TOOD: Add to "AQACert.log" file when rebase
+=======
+			output.write(ReleaseInfo);
+>>>>>>> fix indentation
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
