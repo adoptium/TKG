@@ -80,7 +80,7 @@ public class EnvDetector {
       
 			output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log")));
 			output.write(JavaVersionValue);
-      output.write(ReleaseInfo);
+			output.write(ReleaseInfo);
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
