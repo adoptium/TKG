@@ -168,9 +168,10 @@ public class JavaInfo {
         String rt = "";
         CmdExecutor ce = CmdExecutor.getInstance();
         String exe = System.getProperty("java.home") + "/release";
-        String release = ce.execute(new String[] {"cat", exe});
-        if (release != "") {
-            return release;
+        String release = "/release";
+        String releaseInfo = ce.execute(new String[] {"cat", exe, release});
+        if (releaseInfo != "") {
+            return releaseInfo;
         }
         return rt;
     }
