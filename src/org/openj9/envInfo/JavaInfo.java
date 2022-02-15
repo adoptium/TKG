@@ -195,7 +195,7 @@ public class JavaInfo {
     public String getReleaseInfo() {
         String rt = "";
         CmdExecutor ce = CmdExecutor.getInstance();
-        String exe = System.getProperty("java.home") + "/build" + "/release";
+        String exe = System.getProperty("java.home") + "/build/release";
         String releaseInfo = ce.execute(new String[] {"cat", exe});
         if (releaseInfo != "") {
             return releaseInfo;
