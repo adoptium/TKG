@@ -160,7 +160,7 @@ public class JavaInfo {
         CmdExecutor ce = CmdExecutor.getInstance();
         String exe = System.getProperty("java.home") + "/bin/java";
         String ver = "-version";
-        String javaVersion = ce.execute(new String[] {exe + ver});
+        String javaVersion = ce.execute(new String[] {exe, ver});
         if (javaVersion.contains(System.getProperty("java.version"))) {
             // TODO: Parsing on the result
             rt = javaVersion;
