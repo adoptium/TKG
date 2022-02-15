@@ -158,8 +158,9 @@ public class JavaInfo {
     public String getJavaVersion() {
         String rt = "";
         CmdExecutor ce = CmdExecutor.getInstance();
-        String exeVer = System.getProperty("java.home") + "/bin/java -version";
-        String javaVersion = ce.execute(new String[] {exeVer});
+        String exe = System.getProperty("java.home") + "/bin/java";
+        String ver = "-version";
+        String javaVersion = ce.execute(new String[] {exe + ver});
         if (javaVersion.contains(System.getProperty("java.version"))) {
             // TODO: Parsing on the result
             rt = javaVersion;
