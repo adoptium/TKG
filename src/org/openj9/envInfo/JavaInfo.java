@@ -169,6 +169,11 @@ public class JavaInfo {
         CmdExecutor ce = CmdExecutor.getInstance();
         String exe = System.getProperty("java.home") + "/build/release";
         String releaseInfo = ce.execute(new String[] {"cat", exe});
+        System.out.println(releaseInfo);
+
+        CmdExecutor ce1 = CmdExecutor.getInstance();
+        String exe1 = System.getProperty("java.home");
+        releaseInfo = ce1.execute(new String[] {"ls", exe1});
         if (releaseInfo != "") {
             return releaseInfo;
         }
