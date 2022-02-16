@@ -283,6 +283,8 @@ setup_%: testEnvSetup
 	fi
 	@$(ECHO) set JAVA_HOME to $(JAVA_HOME)
 	@$(ECHO) set SPEC to $(SPEC)
+	@$(ECHO) set TEST_FLAG to $(TEST_FLAG)
+
 	@$(MKTREE) $(Q)$(TESTOUTPUT)$(Q)
 	@$(ECHO) Running $(TESTTARGET) ...
 	@if [ $(TOTALCOUNT) -ne 0 ]; then \

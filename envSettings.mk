@@ -48,6 +48,13 @@ ifneq ($(AUTO_DETECT), false)
             $(error DETECTED_JDK_VENDOR value is $(DETECTED_JDK_VENDOR), settled JDK_VENDOR value is $(JDK_VENDOR). JDK_VENDOR value does not match. Please reset or unset JDK_VENDOR)
         endif
     endif
+
+    ifndef TEST_FLAG
+        export TEST_FLAG:=$(DETECTED_TEST_FLAG)
+    else
+        export TEST_FLAG:=$(TEST_FLAG),$(DETECTED_TEST_FLAG)
+    endif
+
 else
     $(info AUTO_DETECT is set to false)
     ifndef SPEC
