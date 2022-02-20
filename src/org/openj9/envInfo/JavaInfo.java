@@ -164,6 +164,25 @@ public class JavaInfo {
         }
     }
 
+    public String getReleaseInfo() {
+        String rt = "";
+        CmdExecutor ce = CmdExecutor.getInstance();
+        String releaseInfo = System.getProperty("java.home") + "release";
+        Path releasePath = Paths.get(releaseInfo);
+        if (Files.exists(releasePath)) {
+            rt = ce.execute(new String[] {"cat", releaseInfo});
+        }
+        return rt;
+    }
+
+    public String getJavaHomeFilesInfo() {
+        String rt = "";
+        CmdExecutor ce = CmdExecutor.getInstance();
+        String javaHome = System.getProperty("java.home");
+        rt = ce.execute(new String[] {"ls", javaHome});
+        return rt;
+    }
+
     public String getJavaVersion() {
         String rt = "";
         CmdExecutor ce = CmdExecutor.getInstance();
@@ -175,17 +194,6 @@ public class JavaInfo {
             rt = javaVersion;
         } else {
             System.out.println("Cannot determine System.getProperty('java.version')=" + javaVersion + "\n");
-        }
-        return rt;
-    }
-    
-    public String getReleaseInfo() {
-        String rt = "";
-        CmdExecutor ce = CmdExecutor.getInstance();
-        String releaseInfo = System.getProperty("java.home") + "/build/release";
-        Path releasePath = Paths.get(releaseInfo);
-        if (Files.exists(releasePath)) {
-            rt = ce.execute(new String[] {"cat", releaseInfo});
         }
         return rt;
     }

@@ -54,7 +54,6 @@ public class EnvDetector {
 		String testFlag = envDetection.getTestFlag();
 		int javaVersionInfo = envDetection.getJDKVersion();
 		String releaseInfo = envDetection.getReleaseInfo();
-
 		if (SPECInfo == null || javaVersionInfo == -1 || javaImplInfo == null) {
 			System.exit(1);
 		}
@@ -64,6 +63,9 @@ public class EnvDetector {
 		String JDKVENDORvalue = "DETECTED_JDK_VENDOR=" + vendorInfo + "\n";
 		String JavaVersionValue = "DETECTED_JAVA_VERSION=" + javaVersion + "\n";
 	     String ReleaseValue = "DETECTED_RELASE_INFO=" + releaseInfo + "\n";
+
+		//TEST, will be deleted later for merge
+		String JavahomeInfo = "JavahomeInfo=" + javahomeInfo + "\n";
 
 		/**
 		 * autoGenEnv.mk file will be created to store auto detected java info.
