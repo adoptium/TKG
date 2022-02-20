@@ -53,6 +53,7 @@ public class EnvDetector {
 		String javaVersion = envDetection.getJavaVersion();
 		int javaVersionInfo = envDetection.getJDKVersion();
 		String releaseInfo = envDetection.getReleaseInfo();
+		String javahomeInfo = envDetection.getJavaHomeFilesInfo();
 		if (SPECInfo == null || javaVersionInfo == -1 || javaImplInfo == null) {
 			System.exit(1);
 		}
@@ -62,6 +63,9 @@ public class EnvDetector {
 		String JDKVENDORvalue = "DETECTED_JDK_VENDOR=" + vendorInfo + "\n";
 		String ReleaseInfo = "DETECTED_RELASE_INFO=" + releaseInfo + "\n";
 		String JavaVersionValue = "DETECTED_JAVA_VERSION=" + javaVersion + "\n";
+
+		//TEST, will be deleted later for merge
+		String JavahomeInfo = "JavahomeInfo=" + javahomeInfo + "\n";
 
 		/**
 		 * autoGenEnv.mk file will be created to store auto detected java info.
@@ -80,6 +84,7 @@ public class EnvDetector {
 			output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log")));
 			output.write(JavaVersionValue);
 			output.write(ReleaseInfo);
+			output.write(JavahomeInfo);
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();

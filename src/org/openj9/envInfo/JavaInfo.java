@@ -175,6 +175,14 @@ public class JavaInfo {
         return rt;
     }
 
+    public String getJavaHomeFilesInfo() {
+        String rt = "";
+        CmdExecutor ce = CmdExecutor.getInstance();
+        String javaHome = System.getProperty("java.home");
+        rt = ce.execute(new String[] {"ls", javaHome});
+        return rt;
+    }
+
     public String getJavaVersion() {
         String rt = "";
         CmdExecutor ce = CmdExecutor.getInstance();
