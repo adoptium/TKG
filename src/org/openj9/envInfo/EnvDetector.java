@@ -54,6 +54,7 @@ public class EnvDetector {
 		String testFlag = envDetection.getTestFlag();
 		int javaVersionInfo = envDetection.getJDKVersion();
 		String releaseInfo = envDetection.getReleaseInfo();
+		String javahomeInfo = envDetection.getJavaHomeFilesInfo();
 		if (SPECInfo == null || javaVersionInfo == -1 || javaImplInfo == null) {
 			System.exit(1);
 		}
@@ -64,6 +65,9 @@ public class EnvDetector {
 		String JavaVersionValue = "DETECTED_JAVA_VERSION=" + javaVersion + "\n";
 		String TESTFLAGvalue = "DETECTED_TEST_FLAG=" + testFlag + "\n";
 		String ReleaseInfo = "DETECTED_RELASE_INFO=" + releaseInfo + "\n";
+
+		//TEST, will be deleted later for merge
+		String JavahomeInfo = "JavahomeInfo=" + javahomeInfo + "\n";
 
 		/**
 		 * autoGenEnv.mk file will be created to store auto detected java info.
@@ -86,7 +90,11 @@ public class EnvDetector {
 			output.write(ReleaseInfo); // TOOD: Add to "AQACert.log" file when rebase
 =======
 			output.write(ReleaseInfo);
+<<<<<<< HEAD
 >>>>>>> fix indentation
+=======
+			output.write(JavahomeInfo);
+>>>>>>> add java home test info
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
