@@ -202,12 +202,14 @@ public class MkGen {
 
 	private void writeTargets() {
 		try (FileWriter f = new FileWriter(makeFile, true)) {
+			f.write("-include testVars.mk" + "\n\n");
+
 			if (!pli.getIncludeList().isEmpty()) {
 				for (String include : pli.getIncludeList()) {
 					f.write("-include " + include + "\n\n");
 				}
 			}
-	
+
 			List<String> testsInPlaylist = new ArrayList<String>();
 			for (TestInfo testInfo : pli.getTestInfoList()) {
 				writeSingleTest(testsInPlaylist, testInfo, f);
