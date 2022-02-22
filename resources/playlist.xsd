@@ -18,7 +18,7 @@
   <xs:element name="playlist">
     <xs:complexType>
       <xs:sequence>
-        <xs:element type="xs:string" name="include" minOccurs="0"/>
+        <xs:element type="xs:string" name="include"  maxOccurs="unbounded" minOccurs="0"/>
         <xs:element name="test" maxOccurs="unbounded" minOccurs="1">
           <xs:complexType>
             <xs:all>

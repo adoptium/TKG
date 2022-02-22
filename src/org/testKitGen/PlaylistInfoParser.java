@@ -110,7 +110,7 @@ public class PlaylistInfoParser {
 				if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element currentElement = ((Element) currentNode);
 					if (currentElement.getNodeName().equals("include")) {
-						pli.setInclude(currentElement.getTextContent());
+						pli.addInclude(currentElement.getTextContent());
 					} else if (currentElement.getNodeName().equals("test")) {
 						TestInfoParser parser = new TestInfoParser(arg, md, currentElement);
 						TestInfo ti = parser.parse();
