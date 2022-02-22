@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import javax.xml.XMLConstants;
@@ -112,16 +111,13 @@ public class PlaylistInfoParser {
 					if (currentElement.getNodeName().equals("include")) {
 						pli.setInclude(currentElement.getTextContent());
 					} else if (currentElement.getNodeName().equals("test")) {
-						TestInfoParser parser = new TestInfoParser(arg, md, currentElement);
+						TestInfoParser parser = new TestInfoParser(arg, md, currentElement, tt);
 						TestInfo ti = parser.parse();
 						if (ti != null) {
-							boolean filterResult = tt.filterTestInfo(ti);
-							if (filterResult) {
-								testInfoList.add(ti);
-								TestInfo.countTests(ti, tt);
-								if (bl != null) {
-									bl.add(playlistXML);
-								}
+							testInfoList.add(ti);
+							TestInfo.countTests(ti, tt);
+							if (bl != null) {
+								bl.add(playlistXML);
 							}
 						}
 					}

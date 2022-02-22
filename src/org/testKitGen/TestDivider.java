@@ -127,7 +127,7 @@ public class TestDivider {
 		String group = "";
 		if (tt.isCategory()) {
 			for (String g : Constants.ALLGROUPS) {
-				if (tt.getCategorySet().contains(g)) {
+				if (tt.getTestCategory().getCategorySet().contains(g)) {
 					if (group.equals("")) {
 						group = g;
 					} else {
@@ -144,7 +144,7 @@ public class TestDivider {
 		String level = "";
 		if (tt.isCategory()) {
 			for (String l : Constants.ALLLEVELS) {
-				if (tt.getCategorySet().contains(l)) {
+				if (tt.getTestCategory().getCategorySet().contains(l)) {
 					if (level.equals("")) {
 						level = l;
 					} else {
@@ -261,13 +261,6 @@ public class TestDivider {
 			(a, b) -> a.getValue() == b.getValue() ? b.getKey().compareTo(a.getKey()) : b.getValue().compareTo(a.getValue())
 		);
 
-		if (tt.isDisabled() || tt.isEchoDisabled()) {
-			// TRSS does not contain test duration for running disabled test at this moment
-			System.out.println("Warning: Test duration data cannot be found for executing disabled target.");
-			printDefaultTime();
-			return durationQueue;
-		}
-
 		List<String> allTests = new ArrayList<String>();
 		allTests.addAll(testsToExecute);
 		allTests.addAll(testsToDisplay);
@@ -333,6 +326,7 @@ public class TestDivider {
 			}
 		}
 		System.out.println("====================================================================================");
+
 		return durationQueue;
 	}
 

@@ -13,6 +13,7 @@
 *******************************************************************************/
 package org.testKitGen;
 
+import java.util.Map;
 public class MainRunner {
 
 	private MainRunner() {
@@ -36,6 +37,19 @@ public class MainRunner {
 			} else if (argInfo.getMode() == Arguments.Mode.GEN_BUILD_LIST) {
 				genBuildList(argInfo, md, tt, bl);
 			}
+			if (!tt.isCategory()) {
+				String testsNotFound = "";
+				String separator = "";
+				for (Map.Entry<String, Boolean> entry : tt.getTestList().getTestMap().entrySet()) {
+					if (!entry.getValue()) {
+						testsNotFound += separator + entry.getKey();
+						separator = ", ";
+					}
+				}
+				if (!testsNotFound.isEmpty()) {
+					System.out.println("Warning: cannot find the following tests: " + testsNotFound + " (note: group target such as sanity are not accepted inside testList)\n");
+				}
+			}
 		}
 	}
 
@@ -43,9 +57,6 @@ public class MainRunner {
 		System.out.println("Starting to generate test make files.\n");
 		DirectoryWalker dw = new DirectoryWalker(argInfo, new TestGenVisitor(argInfo, md, tt), bl);
 		dw.traverse();
-		if (!tt.getTestSet().isEmpty()) {
-			System.out.println("Warning: cannot find the following tests " + tt.getTestSet().toString().replaceAll("\\s+","") + " in TESTLIST\n");
-		}
 		UtilsGen ug = new UtilsGen(argInfo, md);
 		ug.generateFile();
 		System.out.println("Make files are generated successfully.\n");

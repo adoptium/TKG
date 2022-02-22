@@ -77,7 +77,7 @@ public class MkGen {
 			String testTargetName = var.getSubTestName();
 			String indent = "\t";
 
-			if (tt.isExecutedTarget(var)) {
+			if (var.getStatus() == Variation.PrintStatus.PRINT_CMD) {
 				if (!testInfo.getCapabilities().isEmpty()) {
 					List<String> capabilityReqs_HashKeys = new ArrayList<>(testInfo.getCapabilities().keySet());
 					Collections.sort(capabilityReqs_HashKeys);
@@ -171,7 +171,7 @@ public class MkGen {
 
 				f.write("\n.PHONY: " + testTargetName + "\n\n");
 
-			} else if (var.isDisabled()) {
+			} else if (var.getStatus() == Variation.PrintStatus.PRINT_DISABLED) {
 				String printName = testTargetName;
 				testTargetName = "echo.disabled." + testTargetName;
 				f.write(testTargetName + ":\n");
@@ -196,7 +196,9 @@ public class MkGen {
 						+ " Finish Time: \" . localtime() . \" Epoch Time (ms): \" . int (gettimeofday * 1000) . \"\\n\"' | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q)\n");
 				f.write("\n.PHONY: " + testTargetName + "\n\n");
 			}
-			testsInPlaylist.add(testTargetName);
+			if (var.getStatus() != Variation.PrintStatus.DO_NOT_PRINT) {
+				testsInPlaylist.add(testTargetName);
+			}
 		}
 	}
 
