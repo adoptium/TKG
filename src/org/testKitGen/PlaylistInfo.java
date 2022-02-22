@@ -18,19 +18,19 @@ import java.util.List;
 
 public class PlaylistInfo {
 	private List<TestInfo> testInfoList;
-	private String include;
+	private List<String> includeList;
 
 	public PlaylistInfo() {
-		this.include = null;
+		this.includeList = new ArrayList<String>();
 		this.testInfoList = new ArrayList<TestInfo>();
 	}
 
-	public String getInclude() {
-		return include;
+	public List<String> getIncludeList() {
+		return includeList;
 	}
 
-	public void setInclude(String include) {
-		this.include = include;
+	public void addInclude(String include) {
+		this.includeList.add(include);
 	}
 
 	public List<TestInfo> getTestInfoList() {
