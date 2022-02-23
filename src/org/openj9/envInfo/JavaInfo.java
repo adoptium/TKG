@@ -210,4 +210,5 @@ public class JavaInfo {
         String testFlag = isCRIUCapable() ? "CRIU" : "";
         return testFlag;
     }
+
 }
