@@ -194,7 +194,6 @@ public class JavaInfo {
         rt = rt + ce.execute(new String[] {"echo", "%CD%"});
         return rt;
     }
-    'echo %CD%' 
 
     public String getJavaVersion() {
         String rt = "";
