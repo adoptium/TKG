@@ -167,7 +167,7 @@ public class JavaInfo {
     public String getReleaseInfo() {
         String rt = "";
         CmdExecutor ce = CmdExecutor.getInstance();
-        String releaseInfo = System.getProperty("java.home") + "/build/release";
+        String releaseInfo = System.getProperty("java.home") + "/release";
         Path releasePath = Paths.get(releaseInfo);
         if (Files.exists(releasePath)) {
             rt = ce.execute(new String[] {"cat", releaseInfo});
