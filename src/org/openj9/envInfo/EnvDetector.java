@@ -62,9 +62,13 @@ public class EnvDetector {
 		String JDKVERSIONvalue = "DETECTED_JDK_VERSION=" + javaVersionInfo + "\n";
 		String JDKIMPLvalue = "DETECTED_JDK_IMPL=" + javaImplInfo + "\n";
 		String JDKVENDORvalue = "DETECTED_JDK_VENDOR=" + vendorInfo + "\n";
+		String ReleaseInfo = "DETECTED_RELASE_INFO=" + releaseInfo + "\n";
 		String JavaVersionValue = "DETECTED_JAVA_VERSION=" + javaVersion + "\n";
 		String TESTFLAGvalue = "DETECTED_TEST_FLAG=" + testFlag + "\n";
 		String ReleaseInfo = "DETECTED_RELASE_INFO=" + releaseInfo + "\n";
+
+		//TEST, will be deleted later for merge
+		String JavahomeInfo = "JavahomeInfo=" + javahomeInfo + "\n";
 
 		//TEST, will be deleted later for merge
 		String JavahomeInfo = "JavahomeInfo=" + javahomeInfo + "\n";
@@ -87,6 +91,7 @@ public class EnvDetector {
 			output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log")));
 			output.write(JavaVersionValue);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			output.write(ReleaseInfo); // TOOD: Add to "AQACert.log" file when rebase
 =======
 			output.write(ReleaseInfo);
@@ -95,6 +100,10 @@ public class EnvDetector {
 =======
 			output.write(JavahomeInfo);
 >>>>>>> add java home test info
+=======
+			output.write(ReleaseInfo);
+			output.write(JavahomeInfo);
+>>>>>>> a393188246c1a87ae8a5345decf2c5f29b4c0aeb
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
