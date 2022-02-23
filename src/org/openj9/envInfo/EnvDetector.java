@@ -65,9 +65,6 @@ public class EnvDetector {
 		String ReleaseValue = "DETECTED_RELASE_INFO=" + releaseInfo + "\n";
 		String TESTFLAGvalue = "DETECTED_TEST_FLAG=" + testFlag + "\n";
 
-		//TEST, will be deleted later for merge
-		String JavahomeInfo = "JavahomeInfo=" + javahomeInfo + "\n";
-
 		/**
 		 * autoGenEnv.mk file will be created to store auto detected java info.
 		 */
