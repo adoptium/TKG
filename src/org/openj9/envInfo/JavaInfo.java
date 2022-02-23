@@ -175,6 +175,7 @@ public class JavaInfo {
         return rt;
     }
 
+    // TEST ONLY, will be removed before merging
     public String getJavaHomeFilesInfo() {
         String rt = "";
         CmdExecutor ce = CmdExecutor.getInstance();
@@ -182,6 +183,18 @@ public class JavaInfo {
         rt = ce.execute(new String[] {"ls", javaHome});
         return rt;
     }
+
+    public String getJavaHomeDir() {
+        String rt = "";
+        CmdExecutor ce = CmdExecutor.getInstance();
+        rt = rt + ce.execute(new String[] {"echo", "%CD%"}) + "\n";
+
+        String javaHome = System.getProperty("java.home");
+        ce.execute(new String[] {"cd", javaHome});
+        rt = rt + ce.execute(new String[] {"echo", "%CD%"});
+        return rt;
+    }
+    'echo %CD%' 
 
     public String getJavaVersion() {
         String rt = "";
