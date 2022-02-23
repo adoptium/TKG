@@ -81,14 +81,14 @@ public class EnvDetector {
 			output.write(JDKVERSIONvalue);
 			output.write(JDKIMPLvalue);
 			output.write(JDKVENDORvalue);
-               output.write(TESTFLAGvalue);
+			output.write(TESTFLAGvalue);
 			output.close();
 			output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log")));
 			output.write(JavaVersionValue);
 			output.write(ReleaseValue);
 
 			//TEST, will be deleted later before merging
-		     String javahomeInfo = envDetection.getJavaHomeFilesInfo();
+			String javahomeInfo = envDetection.getJavaHomeFilesInfo();
 			String JavaHomeValue = "DETECTED_JAVAHOME_DIR=" + javahomeInfo + "\n";
 			output.write(JavaHomeValue);
 			output.close();
