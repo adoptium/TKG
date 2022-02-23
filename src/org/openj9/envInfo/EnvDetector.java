@@ -86,11 +86,8 @@ public class EnvDetector {
 
 			//TEST, will be deleted later before merging
 			String javahomeInfo = envDetection.getJavaHomeFilesInfo();
-			String javahomeDir = envDetection.getJavaHomeDir();
 			String JavaHomeValue = "DETECTED_JAVAHOME_FILES=" + javahomeInfo + "\n";
-			String JavaHomeDirValue = "DETECTED_JAVAHOME_DIR=" + javahomeDir + "\n";
 			output.write(JavaHomeValue);
-			output.write(JavaHomeDirValue);
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();

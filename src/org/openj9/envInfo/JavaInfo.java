@@ -184,17 +184,6 @@ public class JavaInfo {
         return rt;
     }
 
-    public String getJavaHomeDir() {
-        String rt = "";
-        CmdExecutor ce = CmdExecutor.getInstance();
-        rt = rt + ce.execute(new String[] {"pwd"}) + "\n";
-
-        String javaHome = System.getProperty("java.home");
-        ce.execute(new String[] {"cd", javaHome});
-        rt = rt + ce.execute(new String[] {"pwd"});
-        return rt;
-    }
-
     public String getJavaVersion() {
         String rt = "";
         CmdExecutor ce = CmdExecutor.getInstance();
