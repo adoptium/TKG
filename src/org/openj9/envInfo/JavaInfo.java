@@ -197,4 +197,17 @@ public class JavaInfo {
         }
         return rt;
     }
+
+    public boolean isCRIUCapable() {
+        String isCRIUCapable = System.getProperty("org.eclipse.openj9.criu.isCRIUCapable");
+        if ((isCRIUCapable != null) && isCRIUCapable.equals("true")) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getTestFlag() {
+        String testFlag = isCRIUCapable() ? "CRIU" : "";
+        return testFlag;
+    }
 }

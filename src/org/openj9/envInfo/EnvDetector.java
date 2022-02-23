@@ -62,11 +62,8 @@ public class EnvDetector {
 		String JDKIMPLvalue = "DETECTED_JDK_IMPL=" + javaImplInfo + "\n";
 		String JDKVENDORvalue = "DETECTED_JDK_VENDOR=" + vendorInfo + "\n";
 		String JavaVersionValue = "DETECTED_JAVA_VERSION=" + javaVersion + "\n";
-<<<<<<< HEAD
 	     String ReleaseValue = "DETECTED_RELASE_INFO=" + releaseInfo + "\n";
-=======
 		String TESTFLAGvalue = "DETECTED_TEST_FLAG=" + testFlag + "\n";
->>>>>>> rebase conflict
 
 		//TEST, will be deleted later for merge
 		String JavahomeInfo = "JavahomeInfo=" + javahomeInfo + "\n";
@@ -84,7 +81,7 @@ public class EnvDetector {
 			output.write(JDKVERSIONvalue);
 			output.write(JDKIMPLvalue);
 			output.write(JDKVENDORvalue);
-
+               output.write(TESTFLAGvalue);
 			output.close();
 			output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log")));
 			output.write(JavaVersionValue);
