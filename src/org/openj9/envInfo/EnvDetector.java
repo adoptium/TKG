@@ -93,7 +93,7 @@ public class EnvDetector {
 			String JavaHomeValue = "DETECTED_JAVAHOME_FILES=" + javahomeInfo + "\n";
 			String JavaHomeDirValue = "DETECTED_JAVAHOME_DIR=" + javahomeDir + "\n";
 			output.write(JavaHomeValue);
-			output.write(JavaHomeDirValue;
+			output.write(JavaHomeDirValue);
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
