@@ -178,27 +178,14 @@ public class JavaInfo {
         }
         return rt;
     }
-
-    public boolean isCRIUCapable() {
-        String isCRIUCapable = System.getProperty("org.eclipse.openj9.criu.isCRIUCapable");
-        if ((isCRIUCapable != null) && isCRIUCapable.equals("true")) {
-            return true;
-        }
-        return false;
-    }
-
-    public String getTestFlag() {
-        String testFlag = isCRIUCapable() ? "CRIU" : "";
-        return testFlag;
-    }
-
+    
     public String getReleaseInfo() {
         String rt = "";
         CmdExecutor ce = CmdExecutor.getInstance();
-        String releaseInfo = System.getProperty("java.home") + "/release";
-        Path releasePath = Paths.get(releaseInfo);
-        if (Files.exists(releasePath)) {
-            rt = ce.execute(new String[] {"cat", releaseInfo});
+        String exe = System.getProperty("java.home") + "/release";
+        String release = ce.execute(new String[] {"cat", exe});
+        if (release != "") {
+            return release;
         }
         return rt;
     }
