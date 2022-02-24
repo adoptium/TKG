@@ -83,11 +83,6 @@ public class EnvDetector {
 			output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log")));
 			output.write(JavaVersionValue);
 			output.write(ReleaseValue);
-
-			//TEST, will be deleted later before merging
-			String javahomeInfo = envDetection.getJavaHomeFilesInfo();
-			String JavaHomeValue = "DETECTED_JAVAHOME_FILES=" + javahomeInfo + "\n";
-			output.write(JavaHomeValue);
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -176,16 +176,6 @@ public class JavaInfo {
         return rt;
     }
 
-    // TEST ONLY, will be removed before merging
-    public String getJavaHomeFilesInfo() {
-        String rt = "";
-        CmdExecutor ce = CmdExecutor.getInstance();
-        String javaHome = System.getProperty("java.home");
-        rt = ce.execute(new String[] {"ls", javaHome});
-        rt = rt + javaHome;
-        return rt;
-    }
-
     public String getJavaVersion() {
         String rt = "";
         CmdExecutor ce = CmdExecutor.getInstance();
