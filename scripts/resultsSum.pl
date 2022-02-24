@@ -232,6 +232,8 @@ sub resultReporter {
 			make_path($dir);
 		}
 		open(my $fhOut, '>', $tapFile) or die "Cannot open file $tapFile!";
+		my $timeStamp = gmtime();
+		print $fhOut "# Timestamp: " . $timeStamp . " UTC \n";
 		print $fhOut "1.." . $numOfTotal . "\n";
 		print $fhOut $tapString;
 		close $fhOut;
