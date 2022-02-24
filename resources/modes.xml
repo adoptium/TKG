@@ -1810,6 +1810,15 @@
 			</setting>
 		</settings>
 	</mode>
+	<mode number="189">
+		<description>JIT tune throughput</description>
+		<settings>
+			<setting type="either">
+				<clArg>-Xtune:throughput</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xtune:throughput"/>
+			</setting>
+		</settings>
+	</mode>
 	<!-- -Large page modes -->
 	<mode number="190">
 		<description>JIT on, gencon gc, large pages</description>
