@@ -62,7 +62,7 @@ public class EnvDetector {
 		String JDKIMPLvalue = "DETECTED_JDK_IMPL=" + javaImplInfo + "\n";
 		String JDKVENDORvalue = "DETECTED_JDK_VENDOR=" + vendorInfo + "\n";
 		String JavaVersionValue = "DETECTED_JAVA_VERSION=" + javaVersion + "\n";
-		String ReleaseValue = "DETECTED_RELASE_INFO=" + releaseInfo + "\n";
+		String ReleaseValue = "DETECTED_RELEASE_INFO=" + releaseInfo + "\n";
 		String TESTFLAGvalue = "DETECTED_TEST_FLAG=" + testFlag + "\n";
 
 		/**
