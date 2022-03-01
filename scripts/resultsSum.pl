@@ -258,6 +258,7 @@ sub resultReporter {
 		my $hudsonUrl = $ENV{'HUDSON_URL'};
 		if ((!defined $hudsonUrl) || ($hudsonUrl eq '')) {
 			$hudsonUrl = "https://ci.adoptopenjdk.net/";
+			# TODO
 		}
 		my $vendorParam =  "";
 		if ($jdkVendor ne '') {
