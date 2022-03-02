@@ -53,6 +53,7 @@ public class EnvDetector {
 		String javaVersion = envDetection.getJavaVersion();
 		String testFlag = envDetection.getTestFlag();
 		int javaVersionInfo = envDetection.getJDKVersion();
+		String releaseInfo = envDetection.getReleaseInfo();
 		if (SPECInfo == null || javaVersionInfo == -1 || javaImplInfo == null) {
 			System.exit(1);
 		}
@@ -61,6 +62,7 @@ public class EnvDetector {
 		String JDKIMPLvalue = "DETECTED_JDK_IMPL=" + javaImplInfo + "\n";
 		String JDKVENDORvalue = "DETECTED_JDK_VENDOR=" + vendorInfo + "\n";
 		String JavaVersionValue = "DETECTED_JAVA_VERSION=" + javaVersion + "\n";
+		String ReleaseValue = "DETECTED_RELEASE_INFO=" + releaseInfo + "\n";
 		String TESTFLAGvalue = "DETECTED_TEST_FLAG=" + testFlag + "\n";
 
 		/**
@@ -80,6 +82,7 @@ public class EnvDetector {
 			output.close();
 			output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log")));
 			output.write(JavaVersionValue);
+			output.write(ReleaseValue);
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
