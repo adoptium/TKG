@@ -85,7 +85,7 @@ public class JavaInfo {
         }
 
         if ((osArch.contains("s390")) && (javaImplInfo.equals("ibm") || javaImplInfo.equals("openj9"))) {
-            spec += zartemis();
+            spec += znext();
         }
 
         return spec;
@@ -108,7 +108,7 @@ public class JavaInfo {
         return rt;
     }
 
-    private String zartemis() {
+    private String znext() {
         String rt = "";
         if (System.getProperty("os.arch").toLowerCase().contains("s390")) {
             // Linux
@@ -119,6 +119,7 @@ public class JavaInfo {
             CmdExecutor ce = CmdExecutor.getInstance();
             String modelCode = ce.execute(new String[] {"bash", "-c", modelCmd});
             if (modelCode.contains("3931")) {
+                System.out.println("zNext architecture detected.\n");
                 rt = "_zt";
             }
         }
