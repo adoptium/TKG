@@ -60,10 +60,10 @@ def main():
     parser.add_argument('--tkg_repo', default=['adoptium/TKG:master'], nargs='+')
     
     # Custom repo options which may be enabled/disabled in the `runAqaConfig.json` file.
-    with open('main/.github/workflows/runAqaConfig.json') as f:
-        config = json.load(f)
-        if 'workflow_repo' in config:
-            parser.add_argument('--workflow_repo', default=[config['workflow_repo']], nargs='+')
+    # with open('main/.github/workflows/runAqaConfig.json') as f:
+    #     config = json.load(f)
+    #     if 'workflow_repo' in config:
+    #         parser.add_argument('--workflow_repo', default=[config['workflow_repo']], nargs='+')
 
     args = vars(parser.parse_args(raw_args))
     # All args are lists of strings
