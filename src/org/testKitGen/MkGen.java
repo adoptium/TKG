@@ -58,6 +58,7 @@ public class MkGen {
 			}
 
 			f.write(Constants.HEADERCOMMENTS + "\n");
+			f.write("-include testVars.mk\n\n");
 			f.write("D=/\n\n");
 			f.write("ifndef TEST_ROOT\n");
 			f.write("\tTEST_ROOT := " + arg.getProjectRootDir() + "\n");
@@ -202,8 +203,6 @@ public class MkGen {
 
 	private void writeTargets() {
 		try (FileWriter f = new FileWriter(makeFile, true)) {
-			f.write("-include testVars.mk" + "\n\n");
-
 			if (!pli.getIncludeList().isEmpty()) {
 				for (String include : pli.getIncludeList()) {
 					f.write("-include " + include + "\n\n");
