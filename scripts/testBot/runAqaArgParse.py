@@ -55,7 +55,7 @@ def main():
     parser.add_argument('--platform', default=['x86-64_linux'], nargs='+')
     parser.add_argument('--jdk_version', default=['8'], nargs='+')
     parser.add_argument('--jdk_impl', default=['openj9'], choices=['hotspot', 'openj9'], nargs='+')
-    parser.add_argument('--openjdk_testrepo', default=['adoptium/aqa-tests:master'], nargs='+')
+    parser.add_argument('--aqatest_repo', default=['adoptium/aqa-tests:master'], nargs='+')
     parser.add_argument('--openj9_repo', default=['eclipse-openj9/openj9:master'], nargs='+')
     parser.add_argument('--tkg_repo', default=['adoptium/TKG:master'], nargs='+')
     
