@@ -1,6 +1,6 @@
     - name: Checkout main TKG repo
       uses: actions/checkout@v2
-      with: **#update to your branch and repo**
+      with:
         repository: 'JeromeJu/TKG.git'
         ref: 'test_run_aqa'
         path: 'TKG'
