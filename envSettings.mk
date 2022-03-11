@@ -52,7 +52,9 @@ ifneq ($(AUTO_DETECT), false)
     ifndef TEST_FLAG
         export TEST_FLAG:=$(DETECTED_TEST_FLAG)
     else
-        export TEST_FLAG:=$(TEST_FLAG),$(DETECTED_TEST_FLAG)
+        ifdef DETECTED_TEST_FLAG
+            export TEST_FLAG:=$(TEST_FLAG),$(DETECTED_TEST_FLAG)
+        endif
     endif
 
 else
