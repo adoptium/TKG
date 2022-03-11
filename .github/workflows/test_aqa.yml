@@ -1,0 +1,11 @@
+    - name: Checkout main TKG repo
+      uses: actions/checkout@v2
+      with: **#update to your branch and repo**
+        repository: 'JeromeJu/TKG.git'
+        ref: 'test_run_aqa'
+        path: 'TKG'
+    - name: Parse parameters
+      env:
+        args: ${{ github.event.comment.body }}
+      run: python3 TKG/scripts/testBot/runAqaArgParse.py $args 2> log.txt
+      id: argparse
