@@ -2,6 +2,8 @@ import argparse
 import json
 import sys
 
+from pathlib import Path
+
 def map_platforms(platforms):
     """ Takes in a list of platforms and translates Grinder platorms to corresponding GitHub-hosted runners.
         This function both modifies and returns the 'platforms' argument.
@@ -60,10 +62,12 @@ def main():
     parser.add_argument('--tkg_repo', default=['adoptium/TKG:master'], nargs='+')
     
     # Custom repo options which may be enabled/disabled in the `runAqaConfig.json` file.
-    # with open('main/.github/workflows/runAqaConfig.json') as f:
-    #     config = json.load(f)
-    #     if 'workflow_repo' in config:
-    #         parser.add_argument('--workflow_repo', default=[config['workflow_repo']], nargs='+')
+    runaqa_config_json = Path('main/.github/workflows/runAqaConfig.json')
+    if runaqa_config_json.is_file():
+        with open(runaqa_config_json) as f:
+            config = json.load(f)
+            if 'workflow_repo' in config:
+                parser.add_argument('--workflow_repo', default=[config['workflow_repo']], nargs='+')
 
     args = vars(parser.parse_args(raw_args))
     # All args are lists of strings
