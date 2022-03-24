@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
+import com.sun.management.OperatingSystemMXBean;
 
 public class MachineInfo {
 	public static final String[] UNAME_CMD = new String[] {"uname", "-a"};
@@ -70,6 +71,7 @@ public class MachineInfo {
 		getSysInfo();
 		getPrerequisiteInfo();
 		getRuntimeInfo();
+		getPhysicalMemoryInfo();
 		getSpaceInfo();
 		validateInfo();
 	}
@@ -194,7 +196,11 @@ public class MachineInfo {
 	private void getRuntimeInfo() {
 		infoList.add(new Info("vmVendor", new String[] {"ManagementFactory.getRuntimeMXBean().getSpecVendor()"}, ManagementFactory.getRuntimeMXBean().getSpecVendor(), null));
 		infoList.add(new Info("vmVersion", new String[] {"ManagementFactory.getRuntimeMXBean().getVmVersion()"}, ManagementFactory.getRuntimeMXBean().getVmVersion(), null));
-		infoList.add(new Info("Total memory (bytes)", new String[] {"String.valueOf(Runtime.getRuntime().totalMemory())"}, String.valueOf(Runtime.getRuntime().totalMemory()), null));
-		infoList.add(new Info("Free memory (bytes)", new String[] {"String.valueOf(Runtime.getRuntime().freeMemory())"}, String.valueOf(Runtime.getRuntime().freeMemory()), null));
+	}
+	
+	private void getPhysicalMemoryInfo() {
+		OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+		infoList.add(new Info("Total Physical Memory Size", new String[] {"osBean.getTotalPhysicalMemorySize()"}, String.valueOf(osBean.getTotalPhysicalMemorySize()), null));
+		infoList.add(new Info("Free Physical Memory Size", new String[] {"osBean.getFreePhysicalMemorySize()"}, String.valueOf(osBean.getFreePhysicalMemorySize()), null));
 	}
 }
