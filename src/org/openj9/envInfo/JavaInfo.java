@@ -84,6 +84,10 @@ public class JavaInfo {
             spec += "_le";
         }
 
+        if ((osArch.contains("s390")) && (javaImplInfo.equals("ibm") || javaImplInfo.equals("openj9"))) {
+            spec += znext();
+        }
+
         return spec;
     }
 
@@ -99,6 +103,24 @@ public class JavaInfo {
                 rt = "_cmprssptrs";
             } else {
                 rt = "_nocmprssptrs";
+            }
+        }
+        return rt;
+    }
+
+    private String znext() {
+        String rt = "";
+        if (System.getProperty("os.arch").toLowerCase().contains("s390")) {
+            // Linux
+            String modelCmd = "cat /proc/cpuinfo | grep machine | head -n 1 | awk '{print $NF}'";
+            if (System.getProperty("os.name").toLowerCase().contains("z/os")) {
+                modelCmd = "uname -Iarns | awk '{print $NF}'";
+            }
+            CmdExecutor ce = CmdExecutor.getInstance();
+            String modelCode = ce.execute(new String[] {"bash", "-c", modelCmd});
+            if (modelCode.contains("3931")) {
+                System.out.println("zNext architecture detected.\n");
+                rt = "_zt";
             }
         }
         return rt;
@@ -162,6 +184,18 @@ public class JavaInfo {
             System.out.println("Warning: cannot determine vendor, use System.getProperty('java.vendor')=" + vendor + " directly.\n");
             return vendor;
         }
+    }
+
+    public String getReleaseInfo() {
+        String rt = "";
+        CmdExecutor ce = CmdExecutor.getInstance();
+        String testJDKHome = System.getenv("TEST_JDK_HOME");
+        String releaseInfo = testJDKHome + "/release";
+        Path releasePath = Paths.get(releaseInfo);
+        if (Files.exists(releasePath)) {
+            rt = ce.execute(new String[] {"cat", releaseInfo});
+        }
+        return rt;
     }
 
     public String getJavaVersion() {
