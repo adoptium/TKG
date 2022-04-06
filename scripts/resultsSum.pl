@@ -260,6 +260,11 @@ sub resultReporter {
 		my $hudsonUrl = $ENV{'HUDSON_URL'};
 		if ((!defined $hudsonUrl) || ($hudsonUrl eq '')) {
 			$hudsonUrl = "https://ci.adoptopenjdk.net/";
+			my $vendorParam =  "";
+			if ($jdkVendor ne '') {
+				$vendorParam = "&JDK_VENDOR=" . $jdkVendor;
+			}
+			my $rebuildLinkBase = "parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$vendorParam$buildParam$platformParam$customTargetParam$jenkinsParam";
 			print "To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:\n";
 			print "<Jenkins URL>/$rebuildLinkBase&TARGET=<FAILED test target>\n\n";
 			print "For example, to rebuild the failed tests in <Jenkins URL>=${hudsonUrl}job/Grinder, use the following links:\n";
@@ -273,10 +278,6 @@ sub resultReporter {
 				print "${hudsonUrl}job/Grinder/$rebuildLinkBase$failedList\n";
 			}
 			print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
-		}
-		my $vendorParam =  "";
-		if ($jdkVendor ne '') {
-			$vendorParam = "&JDK_VENDOR=" . $jdkVendor;
 		}
 	}
 	unlink($resultFile);
