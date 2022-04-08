@@ -260,47 +260,25 @@ sub resultReporter {
 		my $hudsonUrl = $ENV{'HUDSON_URL'};
 		if ((!defined $hudsonUrl) || ($hudsonUrl eq '')) {
 			$hudsonUrl = "https://ci.adoptopenjdk.net/";
-		}
-		my $vendorParam =  "";
-		if ($jdkVendor ne '') {
-			$vendorParam = "&JDK_VENDOR=" . $jdkVendor;
-		}
-		# TODO: Revisit this and make it more generic and allow all potentially
-		#       applicable Grinder job parameters to be made available
-		my $jenkinsParam = "";
-		if ( defined $ENV{'JCK_GIT_REPO'} ) {
-			$jenkinsParam .= "&JCK_GIT_REPO="        . $ENV{'JCK_GIT_REPO'};
-		}
-		if ( defined $ENV{'SDK_RESOURCE'} ) {
-			$jenkinsParam .= "&SDK_RESOURCE="        . $ENV{'SDK_RESOURCE'};
-		}
-		if ( defined $ENV{'CUSTOMIZED_SDK_URL'} ) {
-			$jenkinsParam .= "&CUSTOMIZED_SDK_URL="  . $ENV{'CUSTOMIZED_SDK_URL'};
-		}
-		if ( defined $ENV{'CUSTOMIZED_SDK_URL_CREDENTIAL_ID'} ) {
-			$jenkinsParam .= "&CUSTOMIZED_SDK_URL_CREDENTIAL_ID=" . $ENV{'CUSTOMIZED_SDK_URL_CREDENTIAL_ID'};
-		}
-		if ( defined $ENV{'UPSTREAM_JOB_NAME'} ) {
-			$jenkinsParam .= "&UPSTREAM_JOB_NAME="   . $ENV{'UPSTREAM_JOB_NAME'};
-		}
-		if ( defined $ENV{'UPSTREAM_JOB_NUMBER'} ) {
-			$jenkinsParam .= "&UPSTREAM_JOB_NUMBER=" . $ENV{'UPSTREAM_JOB_NUMBER'};
-		}
+			my $vendorParam =  "";
+			if ($jdkVendor ne '') {
+				$vendorParam = "&JDK_VENDOR=" . $jdkVendor;
+			}
+			my $rebuildLinkBase = "parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$vendorParam$buildParam$platformParam$customTargetParam";
+			print "To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:\n";
+			print "<Jenkins URL>/$rebuildLinkBase&TARGET=<FAILED test target>\n\n";
+			print "For example, to rebuild the failed tests in <Jenkins URL>=${hudsonUrl}job/Grinder, use the following links:\n";
 
-		my $rebuildLinkBase = "parambuild/?JDK_VERSION=$jdkVersion&JDK_IMPL=$jdkImpl$vendorParam$buildParam$platformParam$customTargetParam$jenkinsParam";
-		print "To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:\n";
-		print "<Jenkins URL>/$rebuildLinkBase&TARGET=<FAILED test target>\n\n";
-		print "For example, to rebuild the failed tests in <Jenkins URL>=${hudsonUrl}job/Grinder, use the following links:\n";
-
-		foreach my $failedTarget (@failed) {
-			print "${hudsonUrl}job/Grinder/$rebuildLinkBase&TARGET=$failedTarget\n";
+			foreach my $failedTarget (@failed) {
+				print "${hudsonUrl}job/Grinder/$rebuildLinkBase&TARGET=$failedTarget\n";
+			}
+			if ($numOfFailed > 1) {
+				my $failedList = "&TARGET=testList%20TESTLIST=" . join(",", @failed);
+				print "rebuild the failed tests in one link:\n";
+				print "${hudsonUrl}job/Grinder/$rebuildLinkBase$failedList\n";
+			}
+			print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 		}
-		if ($numOfFailed > 1) {
-			my $failedList = "&TARGET=testList%20TESTLIST=" . join(",", @failed);
-			print "rebuild the failed tests in one link:\n";
-			print "${hudsonUrl}job/Grinder/$rebuildLinkBase$failedList\n";
-		}
-		print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 	}
 	unlink($resultFile);
 
