@@ -18,12 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Variation {
+	enum PrintStatus {
+		PRINT_CMD, PRINT_DISABLED, DO_NOT_PRINT;
+	}
 	private String variation;
 	private String subTestName;
 	private String mode;
 	private String jvmOptions;
 	private boolean isValid;
 	private List<String> disabledReasons;
+	private PrintStatus status;
 
 	public Variation(String subTestName, String variation) {
 		this.subTestName = subTestName;
@@ -31,6 +35,7 @@ public class Variation {
 		this.isValid = true;
 		this.jvmOptions = "";
 		this.disabledReasons = new ArrayList<String>();
+		this.status = PrintStatus.DO_NOT_PRINT;
 	}
 
 	public String getVariation() {
@@ -75,5 +80,13 @@ public class Variation {
 
 	public boolean isDisabled() {
 		return getDisabledReasons().size() != 0;
+	}
+
+	public void setStatus(PrintStatus status) {
+		this.status = status;
+	}
+
+	public PrintStatus getStatus() {
+		return status;
 	}
 }

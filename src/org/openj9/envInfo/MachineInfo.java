@@ -16,11 +16,8 @@ package org.openj9.envInfo;
 
 import java.io.File;
 import java.nio.file.*;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.lang.management.ManagementFactory;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;

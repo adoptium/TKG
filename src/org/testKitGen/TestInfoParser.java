@@ -30,11 +30,13 @@ public class TestInfoParser {
 	private Arguments arg;
 	private ModesDictionary md;
 	private Element testEle;
+	private TestTarget tt;
 
-	public TestInfoParser(Arguments arg, ModesDictionary md, Element testEle) {
+	public TestInfoParser(Arguments arg, ModesDictionary md, Element testEle, TestTarget tt) {
 		this.arg = arg;
 		this.md = md;
 		this.testEle = testEle;
+		this.tt = tt;
 	}
 
 	public TestInfo parse() {
@@ -182,6 +184,10 @@ public class TestInfoParser {
 		}
 
 		parseDisableInfo(ti);
+		boolean filterResult = tt.filterTestInfo(ti);
+		if (!filterResult) {
+			ti = null;
+		}
 		return ti;
 	}
 
