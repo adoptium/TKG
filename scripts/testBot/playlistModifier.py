@@ -24,21 +24,15 @@ import datetime
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("-d", "--directory", required=True, help="directory to modify")
-    ap.add_argument("-f", "--file", required=True, help="regex file name to modify")
     ap.add_argument("-m", "--mode", required=True, help="operation mode, e.g., exclude")
-    ap.add_argument("-t", "--test", required=False, help="test name")
-    ap.add_argument("-v", "--ver", required=False, help="java version")
-    ap.add_argument("-i", "--impl", required=False, help="java impl")
-    ap.add_argument("-vd", "--vendor", required=False, help="java vendor")
-    ap.add_argument("-p", "--plat", required=False, help="platform")
-    ap.add_argument("-fg", "--testflag", required=False, help="testflag")
+    ap.add_argument("-t", "--tests", required=False, help="exclude test list")
     ap.add_argument("-c", "--comment", required=False, help="comment")
     ap.add_argument("-cp", "--copyright", required=False, default="false", help="update copyright date")
     run(vars(ap.parse_args()))
 
 def run(args):
-    print(f"- searching file {args['file']} in {args['directory']}")
-    files = find_files(args["file"], args['directory'])
+    print(f"- searching file playlist.xml in {args['directory']}")
+    files = find_files("playlist.xml", args['directory'])
     if not files:
         print(f"Could not find file {args['file']}!")
         sys.exit(-1)
@@ -46,10 +40,11 @@ def run(args):
     if (args["mode"] == "format"):
         formatter(files, args)
     if (args["mode"] == "exclude"):
-        updated = addDisabled(files, args)
-        if not updated:
-            print(f"Could not find test {args['test']}!")
-            sys.exit(-1)
+        for test in args["tests"]:
+            updated = addDisabled(files, test, args)
+            if not updated:
+                print(f"Could not find test {test['name']}!")
+                sys.exit(-1)
 
 def find_files(name, path):
     result = []
@@ -61,24 +56,24 @@ def find_files(name, path):
     print("\n")
     return result
 
-def addDisabled(files, args):
+def addDisabled(files, test, args):
     updated = False
-    testCaseName = args["test"]
-    match = re.match(r"^(\S+)_(\d+)$", args["test"])
+    testCaseName = test["name"]
+    match = re.match(r"^(\S+)_(\d+)$", testCaseName)
     nthVar = None
     if match:
         testCaseName = match.group(1)
         nthVar = int(match.group(2))
     for file in files:
         root = etree.parse(file)
-        test = root.xpath(f"./test/testCaseName[text()='{testCaseName}']/..")
-        if test:
+        testEle = root.xpath(f"./test/testCaseName[text()='{testCaseName}']/..")
+        if testEle:
             disable = etree.Element("disable")
             commentEle = etree.Element("comment")
             commentEle.text = args["comment"]
             disable.append(commentEle)
             if nthVar is not None:
-                var = test[0].find("variations")
+                var = testEle[0].find("variations")
                 if var is not None and nthVar < len(var):
                     disable.append(copy.deepcopy(var[nthVar]))
                 elif nthVar == 0:
@@ -88,31 +83,31 @@ def addDisabled(files, args):
                 else:
                     print(f"Could not find test case {testCaseName}_{nthVar} (i.e., the {nthVar + 1}th variation for test {testCaseName})!")
                     sys.exit(-1)
-            if "ver" in args:
+            if "ver" in test:
                 verEle = etree.Element("version")
-                verEle.text = args["ver"]
+                verEle.text = test["ver"]
                 disable.append(verEle)
-            if "impl" in args:
+            if "impl" in test:
                 implEle = etree.Element("impl")
-                implEle.text = args["impl"]
+                implEle.text = test["impl"]
                 disable.append(implEle)
-            if "vendor" in args:
+            if "vendor" in test:
                 vendorEle = etree.Element("vendor")
-                vendorEle.text = args["vendor"]
+                vendorEle.text = test["vendor"]
                 disable.append(vendorEle)
-            if "plat" in args:
+            if "plat" in test:
                 platEle = etree.Element("platform")
-                platEle.text = args["plat"]
+                platEle.text = test["plat"]
                 disable.append(platEle)
-            if "testflag" in args:
+            if "testflag" in test:
                 testflagEle = etree.Element("testflag")
-                testflagEle.text = args["testflag"]
+                testflagEle.text = test["testflag"]
                 disable.append(testflagEle)
-            disables = test[0].find("disables")
-            if not disables:
+            disables = testEle[0].find("disables")
+            if disables is None:
                 disables = etree.Element("disables")
             disables.append(disable)
-            testCaseName = test[0].find("testCaseName")
+            testCaseName = testEle[0].find("testCaseName")
             testCaseName.addnext(disables)
             updateCopyright(root, args)
             updateFile(file, root)

@@ -28,41 +28,42 @@ def main():
 
     newArgs = {
         "directory": args["directory"],
-        "copyright": args["copyright"]
+        "copyright": args["copyright"],
+        "comment": args["comment"]
     }
     message = args["message"].strip()
-    match = re.match(r"auto ([A-Za-z]+) test (\S+)(.*)", message)
+    match = re.match(r"auto ([A-Za-z]+) test (.*)", message)
+
     if match:
         print(f"{args['message']}\n")
-        if match.group(3):
-            options = shlex.split(match.group(3))
-            for op in options:
-                if m := re.match(r"file=(.*)", op):
-                    newArgs["file"] = m.group(1)
-                elif m := re.match(r"impl=(.*)", op):
-                    newArgs["impl"] = m.group(1)
-                elif m := re.match(r"vendor=(.*)", op):
-                    newArgs["vendor"] = m.group(1)
-                elif m := re.match(r"ver=(.*)", op):
-                    newArgs["ver"] = m.group(1)
-                elif m := re.match(r"plat=(.*)", op):
-                    newArgs["plat"] = m.group(1)
-                elif m := re.match(r"testflag=(.*)", op):
-                    newArgs["testflag"] = m.group(1)
+        statementlist = match.group(2).split(";")
+        tests = []
+        for statement in statementlist:
+            words = statement.strip().split(" ")
+            test = {}
+            for word in words:
+                if "=" not in word:
+                    test["name"] = word
+                elif m := re.match(r"impl=(.*)", word):
+                    test["impl"] = m.group(1)
+                elif m := re.match(r"vendor=(.*)", word):
+                    test["vendor"] = m.group(1)
+                elif m := re.match(r"ver=(.*)", word):
+                    test["ver"] = m.group(1)
+                elif m := re.match(r"plat=(.*)", word):
+                    test["plat"] = m.group(1)
+                elif m := re.match(r"testflag=(.*)", word):
+                    test["testflag"] = m.group(1)
                 else:
-                    print(f"unrecognized argument: {op}")
+                    print(f"unrecognized argument: {word}")
                     sys.exit(-1)
-        if ("file" not in newArgs):
-            newArgs["file"] = "playlist.xml"
-        if (newArgs["file"] == "playlist.xml"):
-            newArgs.update({
-                "mode": match.group(1),
-                "test": match.group(2),
-                "comment": args["comment"]
-            })
-            playlistModifier.run(newArgs)
-        else:
-            print("function not supported for now")
+            tests.append(test)
+        newArgs.update({
+            "mode": match.group(1),
+            "tests": tests,
+        })
+        playlistModifier.run(newArgs)
+
     else:
         print(f"unrecognized message: {args['message']}")
         sys.exit(-1)
