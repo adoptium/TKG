@@ -28,6 +28,7 @@ public class Variation {
 	private boolean isValid;
 	private List<String> disabledReasons;
 	private PrintStatus status;
+	private String prefix;
 
 	public Variation(String subTestName, String variation) {
 		this.subTestName = subTestName;
@@ -36,6 +37,7 @@ public class Variation {
 		this.jvmOptions = "";
 		this.disabledReasons = new ArrayList<String>();
 		this.status = PrintStatus.DO_NOT_PRINT;
+		this.prefix = "";
 	}
 
 	public String getVariation() {
@@ -88,5 +90,13 @@ public class Variation {
 
 	public PrintStatus getStatus() {
 		return status;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 }

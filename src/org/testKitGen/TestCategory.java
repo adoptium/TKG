@@ -67,12 +67,14 @@ public class TestCategory {
 					} else {
 						var.setStatus(Variation.PrintStatus.DO_NOT_PRINT);
 					}
+					var.setPrefix("disabled.");
 				} else if (prefix == Prefix.ECHODISABLED) {
 					if (var.isDisabled()) {
 						var.setStatus(Variation.PrintStatus.PRINT_DISABLED);
 					} else {
 						var.setStatus(Variation.PrintStatus.DO_NOT_PRINT);
 					}
+					var.setPrefix("echo.disabled.");
 				}
 			}
 		}
