@@ -15,8 +15,6 @@
 package org.testKitGen;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -62,6 +60,7 @@ public class TestList {
 					testMap.replace(echoDisabledName, true);
 					testMap.replace(echoDisabledSubName, true);
 				}
+				var.setPrefix("echo.disabled.");
 			}
 			String foundDisabled = matchTarget(testMap, disabledName, disabledSubName);
 			if (foundDisabled != null) {
@@ -70,6 +69,7 @@ public class TestList {
 					testMap.replace(disabledName, true);
 					testMap.replace(disabledSubName, true);
 				}
+				var.setPrefix("disabled.");
 			}
 			targetCheck(found, foundDisabled);
 			targetCheck(foundEchoDisabled, foundDisabled);
@@ -106,7 +106,3 @@ public class TestList {
 		}
 	}
 }
-
-
-
-

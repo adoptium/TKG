@@ -158,7 +158,7 @@ public class TestInfo {
 
 	public static void countTests(TestInfo ti, TestTarget tt) {
 		for (Variation var : ti.getVars()) {
-			String testName = var.getSubTestName();
+			String testName = var.getPrefix() + var.getSubTestName();
 			if (var.isValid() && (var.getStatus() == Variation.PrintStatus.PRINT_CMD)) {
 				testsToExecute.add(testName);
 			} else if (var.getStatus() != Variation.PrintStatus.DO_NOT_PRINT) {
