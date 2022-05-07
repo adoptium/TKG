@@ -115,8 +115,9 @@ public class PlaylistInfoParser {
 						TestInfo ti = parser.parse();
 						if (ti != null) {
 							testInfoList.add(ti);
+							int previousTestsToExecute = TestInfo.getTestsToExecute().size();
 							TestInfo.countTests(ti, tt);
-							if (bl != null) {
+							if ((previousTestsToExecute < TestInfo.getTestsToExecute().size()) && (bl != null)) {
 								bl.add(playlistXML);
 							}
 						}
