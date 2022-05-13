@@ -16,6 +16,8 @@ package org.openj9.envInfo;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.nio.file.Files;
 
 public class JavaInfo {
@@ -222,7 +224,21 @@ public class JavaInfo {
     }
 
     public String getTestFlag() {
-        String testFlag = isCRIUCapable() ? "CRIU" : "";
+        String testFlag = "";
+        List<String> detectedTfs = new ArrayList<String>();
+        if (isCRIUCapable()) {
+            detectedTfs.add("CRIU");
+        }
+        String envTf = System.getenv("TEST_FLAG");
+        if (envTf != null) {
+            testFlag = envTf;
+            envTf =  "," + envTf + ",";
+            for (String dtf : detectedTfs) {
+                if (!envTf.contains("," + dtf + ",")) {
+                    testFlag += "," + dtf;
+                }
+            }
+        }
         return testFlag;
     }
 
