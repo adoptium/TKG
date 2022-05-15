@@ -119,4 +119,16 @@
 
 		<chmod file="${ascii.test.dir}/*.mk" perm="755"/>
 	</target>
+
+	<macrodef name="getFileWithRetry">
+		<attribute name="file" />
+		<attribute name="command" />
+		<sequential>
+			<exec executable="bash" failonerror="true">
+				<arg line="${TEST_ROOT}/TKG/scripts/getFileWithRetry.sh" />
+				<arg line="--file @{file}" />
+				<arg line="--command @{command}" />
+			</exec>
+		</sequential>
+	</macrodef>
 </project>
