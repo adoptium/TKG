@@ -71,3 +71,4 @@ else
     endif
 endif
 
+export MALLOCOPTIONS=
