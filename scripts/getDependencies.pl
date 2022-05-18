@@ -155,6 +155,14 @@ my %base = (
 		url => 'https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
 		fname => 'jython-standalone.jar',
 		sha1 => '15592c29538abd36d15570eda9fa055ed1a618ba'
+	}, 
+	
+	jcstress => {
+		url => 'https://builds.shipilev.net/jcstress/jcstress-latest.jar',
+		fname => 'jcstress-latest.jar',
+		shaurl => 'https://builds.shipilev.net/jcstress/SHA1SUMS',
+		shafn => 'SHA1SUMS',
+		sha1 => '703854d4e6416076eab1648455d95176ebd49baf'
 	});
 
 my @dependencies = split(',', $dependencyList);
