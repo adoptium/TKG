@@ -230,13 +230,17 @@ public class JavaInfo {
             detectedTfs.add("CRIU");
         }
         String envTf = System.getenv("TEST_FLAG");
+        String paddedTf = null;
         if (envTf != null) {
             testFlag = envTf;
-            envTf =  "," + envTf + ",";
-            for (String dtf : detectedTfs) {
-                if (!envTf.contains("," + dtf + ",")) {
-                    testFlag += "," + dtf;
+            paddedTf =  "," + envTf + ",";
+        }
+        for (String dtf : detectedTfs) {
+            if ((paddedTf == null) || !paddedTf.contains("," + dtf + ",")) {
+                if (!testFlag.isEmpty()) {
+                    testFlag += ",";
                 }
+                testFlag += dtf;
             }
         }
         return testFlag;
