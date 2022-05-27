@@ -21,6 +21,7 @@ import java.util.List;
 import java.nio.file.Files;
 
 public class JavaInfo {
+    List<String> detectedTfs = new ArrayList<String>();
 
     public String getSPEC(String javaImplInfo) {
         String osName = System.getProperty("os.name").toLowerCase();
@@ -215,20 +216,24 @@ public class JavaInfo {
         return rt;
     }
 
-    public boolean isCRIUCapable() {
+    public void checkCRIU() {
         String isCRIUCapable = System.getProperty("org.eclipse.openj9.criu.isCRIUCapable");
         if ((isCRIUCapable != null) && isCRIUCapable.equals("true")) {
-            return true;
+            detectedTfs.add("CRIU");
         }
-        return false;
+    }
+
+    public void checkVTstandard() {
+        String version = getJavaVersion();
+        if (version.contains("vtstandard")) {
+            detectedTfs.add("VTSTANDARD");
+        }
     }
 
     public String getTestFlag() {
         String testFlag = "";
-        List<String> detectedTfs = new ArrayList<String>();
-        if (isCRIUCapable()) {
-            detectedTfs.add("CRIU");
-        }
+        checkCRIU();
+        checkVTstandard();
         String envTf = System.getenv("TEST_FLAG");
         String paddedTf = null;
         if (envTf != null) {
@@ -245,5 +250,4 @@ public class JavaInfo {
         }
         return testFlag;
     }
-
 }
