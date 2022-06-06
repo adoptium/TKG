@@ -183,6 +183,8 @@ public class JavaInfo {
             return "bellsoft";
         } else if (vendorLC.contains("oracle")) {
             return "oracle";
+        } else if (vendorLC.contains("red hat")) {
+            return "redhat";
         } else {
             System.out.println("Warning: cannot determine vendor, use System.getProperty('java.vendor')=" + vendor + " directly.\n");
             return vendor;
