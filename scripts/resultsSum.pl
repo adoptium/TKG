@@ -233,7 +233,7 @@ sub resultReporter {
 		}
 		open(my $fhOut, '>', $tapFile) or die "Cannot open file $tapFile!";
 		my $timeStamp = gmtime();
-		print $fhOut "# java version: " . $ENV{'JDK_VERSION'} . "\n";
+		print $fhOut "# java version: " . $jdkVersion . "\n";
 		print $fhOut "# Timestamp: " . $timeStamp . " UTC \n";
 		print $fhOut "1.." . $numOfTotal . "\n";
 		print $fhOut $tapString;
