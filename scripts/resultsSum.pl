@@ -235,7 +235,7 @@ sub resultReporter {
 		my $timeStamp = gmtime();
 		#generate java version, make oneline in format
 		my $javaVersion = `java -version 2>&1`;
-		$javaVersion =~ tr/\n/\t/;
+		$javaVersion =~ s/\n/\n# /g;
 		print $fhOut "# " . $javaVersion . "\n";
 		print $fhOut "# Timestamp: " . $timeStamp . " UTC \n";
 		print $fhOut "1.." . $numOfTotal . "\n";
