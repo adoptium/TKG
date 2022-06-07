@@ -234,7 +234,7 @@ sub resultReporter {
 		open(my $fhOut, '>', $tapFile) or die "Cannot open file $tapFile!";
 		my $timeStamp = gmtime();
 		#generate java version, make oneline in format
-		my $javaVersion = `java -version 2>&1`;
+		my $javaVersion = `$ENV{'TEST_JDK_HOME'}/bin/java -version 2>&1`;
 		$javaVersion =~ s/\n/\n# /g;
 		print $fhOut "# " . $javaVersion . "\n";
 		print $fhOut "# Timestamp: " . $timeStamp . " UTC \n";
