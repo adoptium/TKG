@@ -123,11 +123,12 @@
 	<macrodef name="getFileWithRetry">
 		<attribute name="file" />
 		<attribute name="command" />
+		<attribute name="dest" default="." />
 		<sequential>
-			<exec executable="bash" failonerror="true">
+			<exec executable="bash" failonerror="true" dir="@{dest}">
 				<arg line="${TEST_ROOT}/TKG/scripts/getFileWithRetry.sh" />
 				<arg line="--file @{file}" />
-				<arg line="--command @{command}" />
+				<arg line="--command &quot;@{command}&quot;" />
 			</exec>
 		</sequential>
 	</macrodef>
