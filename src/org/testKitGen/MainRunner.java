@@ -47,7 +47,8 @@ public class MainRunner {
 					}
 				}
 				if (!testsNotFound.isEmpty()) {
-					System.out.println("Warning: cannot find the following tests: " + testsNotFound + " (note: group target such as sanity are not accepted inside testList)\n");
+					System.err.println("Error: cannot find the following tests: " + testsNotFound + " (note: group target such as sanity is not accepted inside testList)\n");
+					System.exit(1);
 				}
 			}
 		}
