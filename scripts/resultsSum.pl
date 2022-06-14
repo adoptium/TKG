@@ -234,16 +234,17 @@ sub resultReporter {
 		open(my $fhOut, '>', $tapFile) or die "Cannot open file $tapFile!";
 		my $timeStamp = gmtime();
 
-		#generate java version, make oneline in format
-		my $javaVersion = `$ENV{'TEST_JDK_HOME'}/bin/java -version 2>&1`;
-		$javaVersion =~ s/\n/\n# /g;
-		print $fhOut "# " . $javaVersion . "\n";
+		#add AQACert.log content in TAP file
+		my $AQACert = $tapPath."../AQACert.log";
+		my $AQACertContent = `cat $AQACert`;
+		$AQACertContent =~ s/\n/\n# /g;
+		print $fhOut "# AQACert.log content: \n# " . $AQACertContent . "\n";
 
-		#generate SHA content to TAP file
+		#add SHA.txt content in TAP file
 		my $SHAFile = $tapPath."../SHA.txt";
 		my $SHAContent = `cat $SHAFile`;
 		$SHAContent =~ s/\n/\n# /g;
-		print $fhOut "# SHA on test env.: \n# " . $SHAContent . "\n";
+		print $fhOut "#SHA.txt content: \n# " . $SHAContent . "\n";
 
 		print $fhOut "# Timestamp: " . $timeStamp . " UTC \n";
 		print $fhOut "1.." . $numOfTotal . "\n";
