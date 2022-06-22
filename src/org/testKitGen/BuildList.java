@@ -44,12 +44,24 @@ public class BuildList {
 		}
 	}
 
-	public boolean contains(String dir) {
+	public boolean isRelated(String dir) {
 		if (originalSet.isEmpty()) {
 			return true;
 		}
 		for (String buildPath : originalSet) {
 			if (dir.equals(buildPath) || dir.equals("") || dir.contains(buildPath + "/") || buildPath.contains(dir + "/")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean contains(String dir) {
+		if (originalSet.isEmpty()) {
+			return true;
+		}
+		for (String buildPath : originalSet) {
+			if (dir.equals(buildPath) || dir.contains(buildPath + "/")) {
 				return true;
 			}
 		}
