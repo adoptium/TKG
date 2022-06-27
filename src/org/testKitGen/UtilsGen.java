@@ -34,7 +34,7 @@ public class UtilsGen {
 			f.write(Constants.HEADERCOMMENTS);
 			f.write("TOTALCOUNT := " + TestInfo.numOfTests() + "\n");
 			f.write("PLATFORM=\n");
-			String plat = md.getPlat(arg.getSpec());
+			String plat = md.getPlat();
 			if (!plat.isEmpty()) {
 				f.write("ifeq" + " ($(SPEC)," + arg.getSpec() + ")\n\tPLATFORM=" + plat + "\nendif\n\n");
 			}
