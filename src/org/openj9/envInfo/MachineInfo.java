@@ -16,7 +16,8 @@ package org.openj9.envInfo;
 
 import java.io.File;
 import java.nio.file.*;
-import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.lang.management.ManagementFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +28,7 @@ public class MachineInfo {
 	public static final String[] UNAME_CMD = new String[] {"uname", "-a"};
 	public static final String[] SYS_ARCH_CMD = new String[] {"uname", "-m"};
 	public static final String[] PROC_ARCH_CMD = new String[] {"uname", "-p"};
+	public static final String[] MICRO_ARCH_CMD = new String[] {"bash", "-c", "cat /proc/cpuinfo | grep 'model name' | uniq"};
 	public static final String[] ULIMIT_CMD = new String[] {"bash", "-c", "ulimit -a"};
 
 	public static final String[] INSTALLED_MEM_CMD = new String[] {"bash", "-c", "grep MemTotal /proc/meminfo | awk '{print $2}"};
@@ -58,13 +60,21 @@ public class MachineInfo {
 	public static final String[] ACTIVE_JAVA_PROCESSES_CMD = new String[] {"bash", "-c", "ps -ef | grep -i [j]ava"};
 
 
-	private List<Info> infoList;
+	private Map<String, Info> infoMap;
 	
 	public MachineInfo() {
-		this.infoList = new ArrayList<Info>();
+		this.infoMap = new HashMap<String, Info>();
 	}
 
-	public void getInfo() {
+	public Map<String, Info> getInfoMap() {
+		return infoMap;
+	}
+
+	private void putInfo(Info info) {
+		infoMap.put(info.name, info);
+	}
+
+	public void checkInfo() {
 		getSysInfo();
 		getPrerequisiteInfo();
 		getRuntimeInfo();
@@ -76,13 +86,15 @@ public class MachineInfo {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		String newline = "";
-		for (Info info : infoList) {
+		for (Map.Entry<String, Info> pair : infoMap.entrySet()) {
+			String name = pair.getKey();
+			Info info = pair.getValue();
 			String output = info.output != null ? info.output : "";
 			if (output.contains("\n")) {
 				output = "\n" + output;
 				output = output.replaceAll("(?m)\\n", "\n\t");
 			}
-			sb.append(newline).append(info.name).append(" : ").append(output);
+			sb.append(newline).append(name).append(" : ").append(output);
 			newline = "\n";
 		}
 		return sb.toString();
@@ -146,7 +158,7 @@ public class MachineInfo {
 
 	private void validateInfo() {
 		boolean valid = true;
-		for (Info info : infoList) {
+		for (Info info : infoMap.values()) {
 			if (info.req != null) {
 				String version = parseInfo(info.output);
 				valid &= validateVersion(info.name, version, info.req);
@@ -159,45 +171,51 @@ public class MachineInfo {
 
 	private void getSysInfo() {
 		CmdExecutor ce = CmdExecutor.getInstance();
-		infoList.add(new Info("uname", UNAME_CMD, ce.execute(UNAME_CMD), null));
+		putInfo(new Info("uname", UNAME_CMD, ce.execute(UNAME_CMD), null));
 		if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-			infoList.add(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD_MAC), null));
+			putInfo(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD_MAC), null));
 		} else if (System.getProperty("os.name").toLowerCase().contains("sunos")) {
-			infoList.add(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD_SOLARIS), null));
+			putInfo(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD_SOLARIS), null));
 		} else {
-			infoList.add(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD), null));
+			putInfo(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD), null));
 		}
-		infoList.add(new Info("sysArch", SYS_ARCH_CMD, ce.execute(SYS_ARCH_CMD), null));
-		infoList.add(new Info("procArch", PROC_ARCH_CMD, ce.execute(PROC_ARCH_CMD), null));
-		infoList.add(new Info("sysOS", SYS_OS_CMD, ce.execute(SYS_OS_CMD), null));
-		infoList.add(new Info("ulimit", ULIMIT_CMD, ce.execute(ULIMIT_CMD), null));
+		putInfo(new Info("sysArch", SYS_ARCH_CMD, ce.execute(SYS_ARCH_CMD), null));
+		putInfo(new Info("procArch", PROC_ARCH_CMD, ce.execute(PROC_ARCH_CMD), null));
+		String microArchOutput = ce.execute(MICRO_ARCH_CMD);
+		String microArch = "";
+		if (microArchOutput.toLowerCase().contains("skylake")) {
+			microArch = "skylake";
+		}
+		putInfo(new Info("microArch", MICRO_ARCH_CMD, microArch, null));
+		putInfo(new Info("sysOS", SYS_OS_CMD, ce.execute(SYS_OS_CMD), null));
+		putInfo(new Info("ulimit", ULIMIT_CMD, ce.execute(ULIMIT_CMD), null));
 	}
 	
 	private void getPrerequisiteInfo() {
 		CmdExecutor ce = CmdExecutor.getInstance();
-		infoList.add(new Info("antVersion", ANT_VERSION_CMD, ce.execute(ANT_VERSION_CMD), "1.9.6"));
+		putInfo(new Info("antVersion", ANT_VERSION_CMD, ce.execute(ANT_VERSION_CMD), "1.9.6"));
 		/* required version is 4.1, but some exception applies, do not verify for now*/
-		infoList.add(new Info("makeVersion", MAKE_VERSION_CMD, ce.execute(MAKE_VERSION_CMD), null));
-		infoList.add(new Info("perlVersion", PERL_VERSION_CMD, ce.execute(PERL_VERSION_CMD), "5.10.1"));
-		infoList.add(new Info("curlVersion", CURL_VERSION_CMD, ce.execute(CURL_VERSION_CMD), "7.20.0"));
+		putInfo(new Info("makeVersion", MAKE_VERSION_CMD, ce.execute(MAKE_VERSION_CMD), null));
+		putInfo(new Info("perlVersion", PERL_VERSION_CMD, ce.execute(PERL_VERSION_CMD), "5.10.1"));
+		putInfo(new Info("curlVersion", CURL_VERSION_CMD, ce.execute(CURL_VERSION_CMD), "7.20.0"));
 	}
 
 	private void getSpaceInfo() {
 		File file = Paths.get("").toAbsolutePath().toFile();
-		infoList.add(new Info("File path", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getAbsolutePath()"}, file.getAbsolutePath(), null));
-		infoList.add(new Info("Total space (bytes)", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getTotalSpace()"}, String.valueOf(file.getTotalSpace()), null));
-		infoList.add(new Info("Free space (bytes)", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getFreeSpace()"}, String.valueOf(file.getFreeSpace()), null));
-		infoList.add(new Info("Usable space (bytes)", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getUsableSpace()"}, String.valueOf(file.getUsableSpace()), null));
+		putInfo(new Info("File path", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getAbsolutePath()"}, file.getAbsolutePath(), null));
+		putInfo(new Info("Total space (bytes)", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getTotalSpace()"}, String.valueOf(file.getTotalSpace()), null));
+		putInfo(new Info("Free space (bytes)", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getFreeSpace()"}, String.valueOf(file.getFreeSpace()), null));
+		putInfo(new Info("Usable space (bytes)", new String[] {"Paths.get(\"\").toAbsolutePath().toFile().getUsableSpace()"}, String.valueOf(file.getUsableSpace()), null));
 	}
 
 	private void getRuntimeInfo() {
-		infoList.add(new Info("vmVendor", new String[] {"ManagementFactory.getRuntimeMXBean().getSpecVendor()"}, ManagementFactory.getRuntimeMXBean().getSpecVendor(), null));
-		infoList.add(new Info("vmVersion", new String[] {"ManagementFactory.getRuntimeMXBean().getVmVersion()"}, ManagementFactory.getRuntimeMXBean().getVmVersion(), null));
+		putInfo(new Info("vmVendor", new String[] {"ManagementFactory.getRuntimeMXBean().getSpecVendor()"}, ManagementFactory.getRuntimeMXBean().getSpecVendor(), null));
+		putInfo(new Info("vmVersion", new String[] {"ManagementFactory.getRuntimeMXBean().getVmVersion()"}, ManagementFactory.getRuntimeMXBean().getVmVersion(), null));
 	}
 	
 	private void getPhysicalMemoryInfo() {
 		OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-		infoList.add(new Info("Total Physical Memory Size", new String[] {"osBean.getTotalPhysicalMemorySize()"}, String.valueOf(osBean.getTotalPhysicalMemorySize()), null));
-		infoList.add(new Info("Free Physical Memory Size", new String[] {"osBean.getFreePhysicalMemorySize()"}, String.valueOf(osBean.getFreePhysicalMemorySize()), null));
+		putInfo(new Info("Total Physical Memory Size", new String[] {"osBean.getTotalPhysicalMemorySize()"}, String.valueOf(osBean.getTotalPhysicalMemorySize()), null));
+		putInfo(new Info("Free Physical Memory Size", new String[] {"osBean.getFreePhysicalMemorySize()"}, String.valueOf(osBean.getFreePhysicalMemorySize()), null));
 	}
 }

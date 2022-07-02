@@ -22,20 +22,23 @@ import java.io.BufferedWriter;
 public class EnvDetector {
 	static boolean isMachineInfo = false;
 	static boolean isJavaInfo = false;
+	static MachineInfo machineInfo = null;
 
 	public static void main(String[] args) {
 		parseArgs(args);
 	}
 
 	private static void parseArgs(String[] args) {
+		machineInfo = new MachineInfo();
+		machineInfo.checkInfo();
 		if (args.length == 0) {
+			printMachineInfo();
 			getJavaInfo();
-			getMachineInfo();
 		}
 		for (int i = 0; i < args.length; i++) {
 			String option = args[i].toLowerCase();
 			if (option.equals("machineinfo")) {
-				getMachineInfo();
+				printMachineInfo();
 			} else if (option.equals("javainfo")) {
 				getJavaInfo();
 			}
@@ -46,6 +49,7 @@ public class EnvDetector {
 	 * getJavaInfo() is used for AUTO_DETECT
 	 */
 	private static void getJavaInfo() {
+
 		JavaInfo envDetection = new JavaInfo();
 		String javaImplInfo = envDetection.getJDKImpl();
 		String vendorInfo = envDetection.getJDKVendor();
@@ -54,9 +58,11 @@ public class EnvDetector {
 		String testFlag = envDetection.getTestFlag();
 		int javaVersionInfo = envDetection.getJDKVersion();
 		String releaseInfo = envDetection.getReleaseInfo();
+		String microArch = machineInfo.getInfoMap().get("microArch").output;
 		if (SPECInfo == null || javaVersionInfo == -1 || javaImplInfo == null) {
 			System.exit(1);
 		}
+		String MICROARCHvalue = "DETECTED_MICRO_ARCH=" + microArch + "\n";
 		String SPECvalue = "DETECTED_SPEC=" + SPECInfo + "\n";
 		String JDKVERSIONvalue = "DETECTED_JDK_VERSION=" + javaVersionInfo + "\n";
 		String JDKIMPLvalue = "DETECTED_JDK_IMPL=" + javaImplInfo + "\n";
@@ -75,6 +81,7 @@ public class EnvDetector {
 			output.write("# This is an auto generated file. Please do NOT modify!\n");
 			output.write("########################################################\n");
 			output.write(SPECvalue);
+			output.write(MICROARCHvalue);
 			output.write(JDKVERSIONvalue);
 			output.write(JDKIMPLvalue);
 			output.write(JDKVENDORvalue);
@@ -89,9 +96,7 @@ public class EnvDetector {
 		}
 	}
 
-	private static void getMachineInfo() {
-		MachineInfo machineInfo = new MachineInfo();
-		machineInfo.getInfo();
+	private static void printMachineInfo() {
 		System.out.println("****************************** MACHINE INFO ******************************");
 		System.out.println(machineInfo);
 		System.out.println("**************************************************************************\n");
