@@ -38,7 +38,7 @@ public class DirectoryWalker {
 			absoluteDir = absoluteDir + '/' + currentDir;
 		}
 
-		if (!bl.contains(currentDir)) {
+		if (!bl.isRelated(currentDir)) {
 			return false;
 		}
 
@@ -49,7 +49,7 @@ public class DirectoryWalker {
 		List<String> subDirsWithTest = new ArrayList<String>();
 		for (File entry : dir) {
 			File file = new File(absoluteDir + '/' + entry.getName());
-			if (file.isFile() && entry.getName().equals(Constants.PLAYLIST)) {
+			if (bl.contains(currentDir) && file.isFile() && entry.getName().equals(Constants.PLAYLIST)) {
 				playlistXML = file;
 			} else if (file.isDirectory()) {
 				dirList.add(entry.getName());
