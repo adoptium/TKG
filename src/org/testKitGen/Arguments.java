@@ -151,7 +151,13 @@ public class Arguments {
 			Properties platProp = new Properties();
 			platProp.load(platReader);
 			plat = platProp.getProperty(spec);
+			if (plat == null) {
+				System.err.println("Error: Please update file " + Constants.BUILDPLAT_JSON + "! Add entry for " + spec + ".");
+				System.exit(1);
+			}
 		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
 		return plat;
 	}
