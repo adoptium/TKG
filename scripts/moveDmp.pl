@@ -36,7 +36,7 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 
 if ($path && $testRoot) {
 	my $location = dirname($path);
-	if($^O =~ /cygwin/) {
+	if($^O =~ /cygwin/ || $^O =~ /msys/) {
 		my $cygPath = qx(cygpath -u '$path');
 		$location = dirname($cygPath);
 	}
@@ -139,7 +139,7 @@ sub moveTDUMPS {
 		$curCorePath =~ s/\r//g;
 		my $curCoreAbsPath = "";
 		my $moveLocationAbs = "";
-		if($^O =~ /cygwin/) {
+		if($^O =~ /cygwin/ || $^O =~ /msys/) {
 			$curCoreAbsPath = qx(cygpath -u '$curCorePath');
 			$moveLocationAbs = $moveLocation;
 			$moveLocation = qx(cygpath -w '$moveLocation');

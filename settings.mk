@@ -111,7 +111,7 @@ endif
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
 ifndef CYGWIN
 	OSTYPE?=$(shell echo $$OSTYPE)
-	ifeq ($(OSTYPE),cygwin)
+	ifeq ($(OSTYPE),$(filter $(OSTYPE), cygwin msys))
 			CYGWIN:=1
 	else
 		CYGWIN:=0
