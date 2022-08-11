@@ -322,10 +322,7 @@ public class TestInfoParser {
 		if (matcher.matches()) {
 			mode = matcher.group(1).trim();
 			String clArgs = md.getClArgs(mode);
-			List<String> invalidSpecs = md.getInvalidSpecs(mode);
-			if (invalidSpecs.contains(arg.getSpec())) {
-				isValid = false;
-			}
+			isValid = md.isValidMode(mode);
 			jvmOptions = jvmOptions.replace("Mode" + mode, clArgs);
 		}
 		jvmOptions = jvmOptions.trim();

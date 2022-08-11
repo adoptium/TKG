@@ -40,6 +40,7 @@ public class ModesDictionary {
 	private Map<String, String> spec2platMap;
 	private Map<String, List<String>> invalidSpecsMap;
 	private Map<String, String> clArgsMap;
+	private String spec;
 
 	public ModesDictionary(Arguments arg) {
 		this.arg = arg;
@@ -73,6 +74,23 @@ public class ModesDictionary {
 				sb.append(clArgsNodes.item(j).getTextContent().trim()).append(" ");
 			}
 			clArgsMap.put(mode.getAttribute("number"), sb.toString().trim());
+		}
+	}
+
+	private void setSpec() {
+		String originalSpec = arg.getSpec();
+		if (spec2platMap.containsKey(originalSpec)) {
+			spec = originalSpec;
+		} else {
+			System.out.println("\nWarning: cannot find spec in " + Constants.OTTAWACSV + ".");
+			if (originalSpec.contains("64")) {
+				spec = "default-64";
+				System.out.print("\tDetected 64 in spec. ");
+			} else {
+				spec = "default-none64";
+				System.out.print("\tDidn't detect 64 in spec. ");
+			}
+			System.out.println("Use spec: " + spec + " to match mode.\n");
 		}
 	}
 
@@ -127,7 +145,7 @@ public class ModesDictionary {
 			}
 			line = reader.readLine();
 		}
-
+		setSpec();
 	}
 
 	public String getClArgs(String mode) {
@@ -140,22 +158,20 @@ public class ModesDictionary {
 		return rt;
 	}
 
-	public List<String> getInvalidSpecs(String mode) {
-		List<String> rt = new ArrayList<String>();
+	public boolean isValidMode(String mode) {
+		boolean rt = true;
 		// It is normal that certain mode cannot be found in ottawa.csv, in which case
 		// it means no invalid specs
 		if (invalidSpecsMap.containsKey(mode)) {
-			rt = invalidSpecsMap.get(mode);
+			rt = !invalidSpecsMap.get(mode).contains(spec);
 		}
 		return rt;
 	}
 
-	public String getPlat(String spec) {
+	public String getPlat() {
 		String rt = "";
 		if (spec2platMap.containsKey(spec)) {
 			rt = spec2platMap.get(spec);
-		} else {
-			System.out.println("\nWarning: cannot find spec in " + Constants.OTTAWACSV + ".");
 		}
 		return rt;
 	}
