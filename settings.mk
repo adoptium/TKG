@@ -111,6 +111,7 @@ endif
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
 ifndef CYGWIN
 	OSTYPE?=$(shell echo $$OSTYPE)
+$(info OSTYPE is $(OSTYPE))
 	ifeq ($(OSTYPE),$(filter $(OSTYPE), cygwin msys))
 			CYGWIN:=1
 	else
@@ -118,10 +119,12 @@ ifndef CYGWIN
 	endif
 endif
 
+$(info CYGWIN is $(CYGWIN))
 ifeq ($(CYGWIN),1)
 	TEST_ROOT := $(shell cygpath -w $(TEST_ROOT))
 endif
 TEST_ROOT := $(subst \,/,$(TEST_ROOT))
+$(info TEST_ROOT is $(TEST_ROOT))
 
 ifndef BUILD_ROOT
 BUILD_ROOT := $(TEST_ROOT)$(D)..$(D)jvmtest
