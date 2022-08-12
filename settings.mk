@@ -111,9 +111,10 @@ endif
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
 ifndef CYGWIN
 	OSTYPE?=$(shell echo $$OSTYPE)
-$(info OSTYPE is $(OSTYPE))
-	ifeq ($(OSTYPE),$(filter $(OSTYPE), cygwin msys))
-			CYGWIN:=1
+	ifeq ($(strip $(OSTYPE)), cygwin)
+		CYGWIN:=1
+	else ifeq ($(strip $(OSTYPE)), msys)
+		CYGWIN:=1
 	else
 		CYGWIN:=0
 	endif
@@ -226,7 +227,6 @@ TEST_SETUP=@echo "Nothing to be done for setup."
 ifeq ($(JDK_IMPL), $(filter $(JDK_IMPL),openj9 ibm))
 	TEST_SETUP=$(JAVA_COMMAND) -Xshareclasses:destroyAll; $(JAVA_COMMAND) -Xshareclasses:groupAccess,destroyAll; echo "cache cleanup done"
 endif
-
 #######################################
 # TEST_TEARDOWN
 #######################################
