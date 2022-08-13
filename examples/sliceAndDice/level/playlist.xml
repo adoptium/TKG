@@ -36,4 +36,22 @@
 			<level>extended</level>
 		</levels>
 	</test>
+
+	<test>
+		<testCaseName>testDev</testCaseName>
+		<command>echo "dev"; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+	</test>
+
+	<test>
+		<testCaseName>testSpecial</testCaseName>
+		<command>echo "special"; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+	</test>
 </playlist>

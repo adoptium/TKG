@@ -22,20 +22,18 @@ MAKE_CLEAN = "make clean"
 MAKE_COMPILE = "make compile"
 DYNAMIC_COMPILE = "export DYNAMIC_COMPILE=true"
 EXPORT_BUILDLIST = "export BUILD_LIST"
+ALL_TESTS = ["base","level","hierarchy"]
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("-t", "--test", required=False, default="all", help="test case")
+    ap.add_argument('-l','--testList', nargs='+', required=False, default=ALL_TESTS, help="space separated test list")
     args = vars(ap.parse_args())
-    test = args['test']
+    testList = args['testList']
 
     rt = True
-    if test == 'base' or test == 'all':
-        rt &= test_base()
-    if test == 'level' or test == 'all':
-        rt &= test_level()
-    if test == 'hierarchy' or test == 'all':
-        rt &= test_hierarchy()
+
+    for test in testList:
+        rt &= globals()[f"test_{test}"]()
 
     if rt:
         print("ALL TESTS PASSED")
@@ -64,6 +62,7 @@ def test_level():
     printTestheader("level")
 
     buildList = "TKG/examples/sliceAndDice/level"
+
     command = "make _sanity"
     print(f"\t{command}")
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
@@ -74,15 +73,24 @@ def test_level():
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
     rt = checkResult(result, {'testDefault_0', 'testExtended_0'}, set(), set(), set())
 
+    command = "make _dev"
+    print(f"\t{command}")
+    result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
+    rt = checkResult(result, {'testDev_0'}, set(), set(), set())
+    
+    command = "make _special"
+    print(f"\t{command}")
+    result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
+    rt = checkResult(result, {'testSpecial_0'}, set(), set(), set())
+
     command = "make _all"
     print(f"\t{command}")
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
-    rt = checkResult(result, {'testSanity_0', 'testDefault_0', 'testExtended_0'}, set(), set(), set())
+    rt = checkResult(result, {'testSanity_0', 'testDefault_0', 'testExtended_0', 'testDev_0', 'testSpecial_0'}, set(), set(), set())
     return rt
 
 def test_dynamic_compile():
     print("dynamic compile")
-
 
 def test_hierarchy():
     rt = True
