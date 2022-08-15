@@ -38,7 +38,7 @@ public final class Constants {
 	public static final List<String> ALLGROUPS = Arrays.asList("functional", "openjdk", "external", "perf", "jck",
 			"system");
 	public static final List<String> ALLIMPLS = Arrays.asList("openj9", "ibm", "hotspot", "sap");
-	public static final List<String> ALLLEVELS = Arrays.asList("sanity", "extended", "special");
+	public static final List<String> ALLLEVELS = Arrays.asList("sanity", "extended", "special", "dev");
 	public static final List<String> ALLTYPES = Arrays.asList("regular", "native");
 	public static final Set<String> INGORESPECS = Arrays
 			.asList("linux_x86-32_hrt", "linux_x86-64_cmprssptrs_gcnext", "linux_ppc_purec", "linux_ppc-64_purec",
