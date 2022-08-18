@@ -23,6 +23,8 @@ HOTSPOT_IMPLS=$(or hotspot,sap)
 ifneq ($(AUTO_DETECT), false) 
     export SPEC:=$(DETECTED_SPEC)
 
+    export MICROARCH:=$(DETECTED_MICRO_ARCH)
+
     ifndef JDK_VERSION
         export JDK_VERSION:=$(DETECTED_JDK_VERSION)
     else
@@ -56,6 +58,10 @@ else
     ifndef SPEC
         export SPEC:=$(DETECTED_SPEC)
         $(info Warning: No SPEC has been exported. Use auto detected SPEC=$(SPEC).)
+    endif
+    ifndef MICROARCH
+        export MICROARCH:=$(DETECTED_MICROARCH)
+        $(info Warning: No MICROARCH has been exported. Use auto detected MICROARCH=$(MICROARCH).)
     endif
     ifndef JDK_VERSION
         export JDK_VERSION:=$(DETECTED_JDK_VERSION)

@@ -42,7 +42,7 @@ autoconfig:
 	perl scripts$(D)configure.pl
 
 autogen: autoconfig
-	${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE) --spec=$(SPEC) --jdkVersion=$(JDK_VERSION) --impl=$(JDK_IMPL) --vendor=$(Q)$(JDK_VENDOR)$(Q) --buildList=${BUILD_LIST} --iterations=$(TEST_ITERATIONS) --testFlag=$(TEST_FLAG) --testTarget=$(TESTTARGET) --testList=$(TESTLIST) --numOfMachines=$(NUM_MACHINES) --testTime=$(TEST_TIME) --TRSSURL=$(TRSS_URL) $(OPTS)
+	${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE) --spec=$(SPEC) --microArch=$(MICROARCH) --jdkVersion=$(JDK_VERSION) --impl=$(JDK_IMPL) --vendor=$(Q)$(JDK_VENDOR)$(Q) --buildList=${BUILD_LIST} --iterations=$(TEST_ITERATIONS) --testFlag=$(TEST_FLAG) --testTarget=$(TESTTARGET) --testList=$(TESTLIST) --numOfMachines=$(NUM_MACHINES) --testTime=$(TEST_TIME) --TRSSURL=$(TRSS_URL) $(OPTS)
 
 AUTOGEN_FILES = $(wildcard $(CURRENT_DIR)$(D)jvmTest.mk)
 AUTOGEN_FILES += $(wildcard $(CURRENT_DIR)$(D)machineConfigure.mk)

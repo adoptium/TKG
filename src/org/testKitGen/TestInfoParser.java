@@ -359,6 +359,12 @@ public class TestInfoParser {
 						return false;
 					}
 				} else {
+					if (prSplitOnDot[0].contains("arch") && (prSplitOnDot.length == 3)) {
+						String microArch = prSplitOnDot[2];
+						if (!microArch.equals(arg.getMicroArch())) {
+							return false;
+						}
+					}
 					if (!fullSpec.contains(prSplitOnDot[1])) {
 						return false;
 					}
