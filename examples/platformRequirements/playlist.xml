@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+	<test>
+		<testCaseName>test_arch_x86</testCaseName>
+		<command>echo "test arch.x86"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>arch.x86</platformRequirements>
+	</test>
+
+	<test>
+		<testCaseName>test_arch_x86_390</testCaseName>
+		<command>echo "test arch.x86 or arch.390"; \
+	$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>arch.x86</platformRequirements>
+			<platformRequirements>arch.390</platformRequirements>
+		</platformRequirementsList>
+	</test>
+	<test>
+		<testCaseName>test_arch_nonx86</testCaseName>
+		<command>echo "test ^arch.x86"; \
+	$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>^arch.x86</platformRequirements>
+		</platformRequirementsList>
+	</test>
+
+	<test>
+		<testCaseName>test_bits_64</testCaseName>
+		<command>echo "test bits.64"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>bits.64</platformRequirements>
+	</test>
+
+	<test>
+		<testCaseName>test_os_osx</testCaseName>
+		<command>echo "test os.osx"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.osx</platformRequirements>
+	</test>
+
+	<test>
+		<testCaseName>test_osx_x86-64</testCaseName>
+		<command>echo "test osx_x86-64"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.osx,bits.64,arch.x86</platformRequirements>
+	</test>
+
+		<test>
+		<testCaseName>test_os_osx</testCaseName>
+		<command>echo "test os.osx"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.osx</platformRequirements>
+	</test>
+
+		<test>
+		<testCaseName>test_osx_x86-64_win_x86_aix_ppc-64</testCaseName>
+		<command>echo "test osx_x86-64 or win_x86 or aix_ppc-64"; \
+	$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>os.osx,bits.64,arch.x86</platformRequirements>
+			<platformRequirements>os.win,bits.32,arch.x86</platformRequirements>
+			<platformRequirements>os.aix,arch.ppc,bits.64</platformRequirements>
+		</platformRequirementsList>
+	</test>
+</playlist>

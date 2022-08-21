@@ -70,7 +70,7 @@ public class Arguments {
 			+ "                              If testTime and numOfMachines are not provided, default numOfMachines will be used\n"
 			+ "    --TRSSURL=<serverURL>     Specify the TRSS server URL for mode parallelList\n"
 			+ "                              Defaults to " + Constants.TRSS_URL + "\n"
-			+ "    --microArch=<microArch>   Specify micro-architeture\n"
+			+ "    --microArch=<microArch>   Specify micro-architecture\n"
 			+ "                              Defaults to  \"\"\n";
 			
 

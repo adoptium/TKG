@@ -22,7 +22,7 @@ MAKE_CLEAN = "make clean"
 MAKE_COMPILE = "make compile"
 DYNAMIC_COMPILE = "export DYNAMIC_COMPILE=true"
 EXPORT_BUILDLIST = "export BUILD_LIST"
-ALL_TESTS = ["base","level","hierarchy"]
+ALL_TESTS = ["base","level","hierarchy","platformRequirements"]
 
 def main():
     ap = argparse.ArgumentParser()
@@ -33,7 +33,8 @@ def main():
     rt = True
 
     for test in testList:
-        rt &= globals()[f"test_{test}"]()
+        if f"test_{test}" in globals():
+            rt &= globals()[f"test_{test}"]()
 
     if rt:
         print("ALL TESTS PASSED")
@@ -113,6 +114,62 @@ def test_hierarchy():
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
     rt &= checkResult(result, {'test_a2_b2_0', 'test_a2_b2_c2_0', 'test_a3_f3_0'}, set(), set(), set())
 
+    return rt
+
+def test_platformRequirements():
+    rt = True
+    printTestheader("platformRequirements")
+
+    buildList = "TKG/examples/platformRequirements"
+    command = "make _all"
+    print(f"\t{command}")
+    result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
+
+    stdout = result.stdout.decode()
+    specStr = re.search(r"set SPEC to (.*)", stdout)
+
+    if specStr is not None:
+        spec = specStr.group(1)
+    else:
+        printError("Could not parse spec from output.")
+        return False
+
+    passed = set()
+    skipped = set()
+
+    if 'x86' in spec:
+        passed.add('test_arch_x86_0')
+        skipped.add('test_arch_nonx86_0')
+    else:
+        passed.add('test_arch_nonx86_0')
+        skipped.add('test_arch_x86_0')
+
+    if '64' in spec:
+        passed.add('test_bits_64_0')
+    else:
+        skipped.add('test_bits_64_0')
+
+    if 'osx' in spec:
+        passed.add('test_os_osx_0')
+    else:
+        skipped.add('test_os_osx_0')
+
+    if 'osx_x86-64' == spec:
+        passed.add('test_osx_x86-64_0')
+    else:
+        skipped.add('test_osx_x86-64_0')
+
+    if 'x86' in spec or '390' in spec:
+        passed.add('test_arch_x86_390_0')
+    else:
+        skipped.add('test_arch_x86_390_0')
+
+    if 'osx_x86-64' == spec or 'win_x86' == spec or 'aix_ppc-64' == spec:
+        passed.add('test_osx_x86-64_win_x86_aix_ppc-64_0')
+    else:
+        skipped.add('test_osx_x86-64_win_x86_aix_ppc-64_0')
+
+    rt &= checkResult(result, passed, set(), set(), skipped)
     return rt
 
 def printTestheader(msg):
