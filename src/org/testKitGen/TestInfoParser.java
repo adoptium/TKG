@@ -119,21 +119,23 @@ public class TestInfoParser {
 		}
 
 		String preq = getImmediateChildContent(testEle, "platformRequirements");
-		if (preq != null) {
-			ti.setPlatformRequirements(preq);
+		if ((preq != null) && (!preq.isEmpty())) {
+			ti.addPlatformRequirements(preq);
 		}
+
+		getElements(ti.getPlatformRequirementsList(), "platformRequirementsList", "platformRequirements", null, ti.getTestCaseName());
 
 		List<String> variations = new ArrayList<String>();
 		getElements(variations, "variations", "variation", null, ti.getTestCaseName());
 		List<Variation> listOfVars = new ArrayList<Variation>();
 		for (int i = 0; i < variations.size(); i++) {
 			String subTestName = ti.getTestCaseName() + "_" + i;
-			Variation var = parseVariation(subTestName, variations.get(i), ti.getPlatform(), ti.getPlatformRequirements());
+			Variation var = parseVariation(subTestName, variations.get(i), ti.getPlatform(), ti.getPlatformRequirementsList());
 			listOfVars.add(var);
 		}
 		if (variations.size() == 0) {
 			String subTestName = ti.getTestCaseName() + "_0";
-			Variation var = parseVariation(subTestName, "NoOptions", ti.getPlatform(), ti.getPlatformRequirements());
+			Variation var = parseVariation(subTestName, "NoOptions", ti.getPlatform(), ti.getPlatformRequirementsList());
 			listOfVars.add(var);
 		}
 		ti.setVars(listOfVars);
@@ -286,6 +288,11 @@ public class TestInfoParser {
 			for (int i = 0; i < children.getLength(); i++) {
 				Node child = children.item(i);
 				String value = child.getTextContent().trim();
+				if (value.isEmpty()) {
+					System.out.println("Warning: The " + childTag + ": " + value + " for test " + testName
+					+ " is empty, please remove it.");
+					continue;
+				}
 				if ((all != null) && (!all.contains(value))) {
 					System.err.println("Error: The " + childTag + ": " + value + " for test " + testName
 							+ " is not valid, the valid " + childTag + " strings are " + joinStrList(all) + ".");
@@ -307,7 +314,7 @@ public class TestInfoParser {
 		return sb.toString();
 	}
 
-	private Variation parseVariation(String subTestName, String variation, String platform, String platformRequirements) {
+	private Variation parseVariation(String subTestName, String variation, String platform, List<String> platformRequirementsList) {
 		Variation var = new Variation(subTestName, variation);
 
 		String jvmOptions = " " + variation + " ";
@@ -327,8 +334,7 @@ public class TestInfoParser {
 		}
 		jvmOptions = jvmOptions.trim();
 		isValid &= checkPlat(platform);
-		//TODO: remove platformRequirements
-		isValid &= checkPlatformReq(platformRequirements);
+		isValid &= checkPlatformReq(platformRequirementsList);
 
 		var.setJvmOptions(jvmOptions);
 		var.setMode(mode);
@@ -336,41 +342,49 @@ public class TestInfoParser {
 		return var;
 	}
 
-	private boolean checkPlatformReq(String platformRequirements) {
-		if ((platformRequirements != null) && (!platformRequirements.trim().isEmpty())) {
-			for (String pr : platformRequirements.split("\\s*,\\s*")) {
-				pr = pr.trim();
-				String[] prSplitOnDot = pr.split("\\.");
-				String spec = arg.getSpec();
-				String fullSpec = spec;
+	private boolean checkPlatformReq(List<String> platformRequirementsList) {
+		boolean isValid = true;
+		if (!platformRequirementsList.isEmpty()) {
+			for (String prs : platformRequirementsList) {
+				isValid = true;
+				for (String pr : prs.split("\\s*,\\s*")) {
+					pr = pr.trim();
+					String[] prSplitOnDot = pr.split("\\.");
+					String spec = arg.getSpec();
+					String fullSpec = spec;
 
-				// Special case 32/31-bit specs which do not have 32 or 31 in the name (i.e.
-				// aix_ppc)
-				if (!spec.contains("-64")) {
-					if (spec.contains("390")) {
-						fullSpec = spec + "-31";
-					} else {
-						fullSpec = spec + "-32";
-					}
-				}
-
-				if (prSplitOnDot[0].charAt(0) == '^') {
-					if (fullSpec.contains(prSplitOnDot[1])) {
-						return false;
-					}
-				} else {
-					if (prSplitOnDot[0].contains("arch") && (prSplitOnDot.length == 3)) {
-						String microArch = prSplitOnDot[2];
-						if (!microArch.equals(arg.getMicroArch())) {
-							return false;
+					// Special case 32/31-bit specs which do not have 32 or 31 in the name (i.e.
+					// aix_ppc)
+					if (!spec.contains("-64")) {
+						if (spec.contains("390")) {
+							fullSpec = spec + "-31";
+						} else {
+							fullSpec = spec + "-32";
 						}
 					}
-					if (!fullSpec.contains(prSplitOnDot[1])) {
-						return false;
+
+					if (prSplitOnDot[0].charAt(0) == '^') {
+						if (fullSpec.contains(prSplitOnDot[1])) {
+							isValid = false;
+							break;
+						}
+					} else {
+						if (prSplitOnDot[0].contains("arch") && (prSplitOnDot.length == 3)) {
+							String microArch = prSplitOnDot[2];
+							if (!microArch.equals(arg.getMicroArch())) {
+								isValid = false;
+								break;
+							}
+						}
+						if (!fullSpec.contains(prSplitOnDot[1])) {
+							isValid = false;
+							break;
+						}
 					}
 				}
+				if (isValid) break;
 			}
 		}
-		return true;
+		return isValid;
 	}
 }

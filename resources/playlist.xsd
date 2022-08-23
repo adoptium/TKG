@@ -52,6 +52,13 @@
               <xs:element type="xs:string" name="command" maxOccurs="1" minOccurs="1"/>
               <xs:element type="xs:string" name="capabilities" maxOccurs="1" minOccurs="0"/>
               <xs:element type="xs:string" name="platformRequirements" maxOccurs="1" minOccurs="0"/>
+              <xs:element name="platformRequirementsList" maxOccurs="1" minOccurs="0">
+               <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="platformRequirements" maxOccurs="unbounded" minOccurs="1"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
               <xs:element type="xs:string" name="platform" maxOccurs="1" minOccurs="0"/>
               <xs:element type="xs:string" name="aot" maxOccurs="1" minOccurs="0"/>
               <xs:element name="features" maxOccurs="1" minOccurs="0">

@@ -156,10 +156,10 @@ public class MkGen {
 						}
 					}
 				} else {
-					if (testInfo.getPlatformRequirements() != null) {
+					if (!testInfo.getPlatformRequirementsList().isEmpty()) {
 						f.write(indent
 								+ "@echo \"Skipped due to jvm options ($(JVM_OPTIONS)) and/or platform requirements ("
-								+ testInfo.getPlatformRequirements()
+								+ testInfo.getPlatformRequirementsList()
 								+ ") => $(TEST_SKIP_STATUS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 					} else {
 						f.write(indent

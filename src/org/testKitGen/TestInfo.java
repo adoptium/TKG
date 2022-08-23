@@ -23,7 +23,7 @@ public class TestInfo {
 	private String testCaseName;
 	private String command;
 	private String platform;
-	private String platformRequirements;
+	private List<String> platformRequirementsList;
 	private List<Variation> vars;
 	private Map<String, String> capabilities;
 	private String aotOptions;
@@ -40,7 +40,7 @@ public class TestInfo {
 		this.testCaseName = null;
 		this.command = null;
 		this.platform = null;
-		this.platformRequirements = null;
+		this.platformRequirementsList = new ArrayList<String>();
 		this.vars = new ArrayList<Variation>();
 		this.aotOptions = "";
 		this.iterations = Integer.parseInt(arg.getIterations());
@@ -84,12 +84,12 @@ public class TestInfo {
 		this.platform = platform;
 	}
 
-	public String getPlatformRequirements() {
-		return this.platformRequirements;
+	public List<String> getPlatformRequirementsList() {
+		return this.platformRequirementsList;
 	}
 
-	public void setPlatformRequirements(String platformRequirements) {
-		this.platformRequirements = platformRequirements;
+	public void addPlatformRequirements(String platformRequirements) {
+		this.platformRequirementsList.add(platformRequirements);
 	}
 
 	public Map<String, String> getCapabilities() {
