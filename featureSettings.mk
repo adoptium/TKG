@@ -12,16 +12,16 @@
 # limitations under the License.
 ##############################################################################
 
-ifneq (,$(findstring AOT,$(TEST_FLAG)))
-export TR_silentEnv=1
-export TR_Options=forceAOT
-export TR_OptionsAOT=forceAOT
-AOT_OPTIONS = -Xshareclasses:name=test_aot -Xscmx400M -Xscmaxaot256m
-ifndef TEST_ITERATIONS
-TEST_ITERATIONS = 2
-endif
+ifndef TKG_ITERATIONS
+	export TKG_ITERATIONS=1
 endif
 
-ifndef TEST_ITERATIONS
-TEST_ITERATIONS = 1
+ifneq (,$(findstring AOT,$(TEST_FLAG)))
+	export TR_silentEnv=1
+	export TR_Options=forceAOT
+	export TR_OptionsAOT=forceAOT
+	AOT_OPTIONS = -Xshareclasses:name=test_aot -Xscmx400M -Xscmaxaot256m
+	ifndef AOT_ITERATIONS
+		export AOT_ITERATIONS=2
+	endif
 endif

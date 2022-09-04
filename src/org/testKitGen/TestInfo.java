@@ -43,7 +43,7 @@ public class TestInfo {
 		this.platformRequirementsList = new ArrayList<String>();
 		this.vars = new ArrayList<Variation>();
 		this.aotOptions = "";
-		this.iterations = Integer.parseInt(arg.getIterations());
+		this.iterations = arg.getIterations();
 		this.capabilities = new HashMap<String, String>();
 		this.levelStr = "";
 		this.features = new HashMap<String, String>();
