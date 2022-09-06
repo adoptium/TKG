@@ -38,6 +38,7 @@ public class MachineInfo {
 	public static final String[] CPU_CORES_CMD_SOLARIS = new String[] {"bash", "-c", "psrinfo | wc -l"};
 	public static final String[] NUMA_CMD = new String[] {"bash", "-c", "numactl --show | grep 'No NUMA support available on this system"};
 	public static final String[] SYS_VIRT_CMD = new String[] {""};
+	public static final String[] CHECK_DOCKER_CMD = new String[] {"bash", "-c", "if grep -sq 'docker\\|lxc' /proc/1/cgroup; then echo 'running on docker'; else echo 'not on docker'; fi"};
 
 	// Software
 	public static final String[] SYS_OS_CMD = new String[] {"uname", "-s"};
@@ -189,6 +190,7 @@ public class MachineInfo {
 		putInfo(new Info("microArch", MICRO_ARCH_CMD, microArch, null));
 		putInfo(new Info("sysOS", SYS_OS_CMD, ce.execute(SYS_OS_CMD), null));
 		putInfo(new Info("ulimit", ULIMIT_CMD, ce.execute(ULIMIT_CMD), null));
+		putInfo(new Info("docker", CHECK_DOCKER_CMD, ce.execute(CHECK_DOCKER_CMD), null));
 	}
 	
 	private void getPrerequisiteInfo() {
