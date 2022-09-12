@@ -111,16 +111,20 @@ sub resultReporter {
 			if ($result =~ /===============================================\n/) {
 				my $output = "    output:\n      |\n";
 				$output .= '        ' . $result;
-				my $testName = '';
+				$result = <$fhIn>;
+				$result =~ s/\r//g;
+				$result =~ /Running test (.*) \.\.\.\n/;
+				my $testName = $1;
+				if (!$testName) {
+					next;
+				}
 				my $startTime = 0;
 				my $endTime = 0;
 				while ( $result = <$fhIn> ) {
 					# remove extra carriage return
 					$result =~ s/\r//g;
 					$output .= '        ' . $result;
-					if ($result =~ /Running test (.*) \.\.\.\n/) {
-						$testName = $1;
-					} elsif ($result =~ /^\Q$testName\E Start Time: .* Epoch Time \(ms\): (.*)\n/) {
+					if ($result =~ /^\Q$testName\E Start Time: .* Epoch Time \(ms\): (.*)\n/) {
 						$startTime = $1;
 					} elsif ($result =~ /^\Q$testName\E Finish Time: .* Epoch Time \(ms\): (.*)\n/) {
 						$endTime = $1;
