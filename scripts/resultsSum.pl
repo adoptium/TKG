@@ -247,6 +247,12 @@ sub resultReporter {
 		print $fhOut "#SHA.txt content: \n# " . $SHAContent . "\n";
 
 		print $fhOut "# Timestamp: " . $timeStamp . " UTC \n";
+
+		#add customTarget to TAP file
+  		if ($customTarget ne '') {
+  			print $fhOut "# CUSTOM_TARGET: " . "${customTarget}" . "\n";
+  		}
+		
 		print $fhOut "1.." . $numOfTotal . "\n";
 		print $fhOut $tapString;
 		close $fhOut;
