@@ -250,7 +250,7 @@ sub resultReporter {
 
 		#add customTarget to TAP file
   		if ($customTarget ne '') {
-  			print $fhOut "# custom target: " . "${customTarget}" . "\n";
+  			print $fhOut "# CUSTOM_TARGET: " . "${customTarget}" . "\n";
   		}
 		
 		print $fhOut "1.." . $numOfTotal . "\n";
