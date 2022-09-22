@@ -168,8 +168,7 @@ my %base = (
 		url => 'https://builds.shipilev.net/jcstress/jcstress-latest.jar',
 		fname => 'jcstress-latest.jar',
 		shaurl => 'https://builds.shipilev.net/jcstress/SHA1SUMS',
-		shafn => 'SHA1SUMS',
-		sha1 => '703854d4e6416076eab1648455d95176ebd49baf'
+		shafn => 'SHA1SUMS'
 	});
 
 my @dependencies = split(',', $dependencyList);
