@@ -165,10 +165,9 @@ my %base = (
 	}, 
 	
 	jcstress => {
-		url => 'https://builds.shipilev.net/jcstress/jcstress-latest.jar',
-		fname => 'jcstress-latest.jar',
-		shaurl => 'https://builds.shipilev.net/jcstress/SHA1SUMS',
-		shafn => 'SHA1SUMS'
+		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20220908.jar',
+		fname => 'jcstress-tests-all-20220908.jar',
+		sha1 => '8cf348be49b8af939a3ce03216e3df53aa0f9ef2'
 	});
 
 my @dependencies = split(',', $dependencyList);
