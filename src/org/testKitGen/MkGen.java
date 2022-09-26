@@ -132,9 +132,9 @@ public class MkGen {
 					f.write(indent
 							+ "@echo \"JVM_OPTIONS: $(JVM_OPTIONS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 		
-					f.write(indent + "{ ");
+					f.write(indent + "{ success=0; \\\n");
 					for (int k = 1; k <= testInfo.getIterations(); k++) {
-						f.write("itercnt=" + k + "; \\\n" + indent + "$(MKTREE) $(REPORTDIR); \\\n" + indent
+						f.write(indent + "itercnt=" + k + "; \\\n" + indent + "$(MKTREE) $(REPORTDIR); \\\n" + indent
 								+ "$(CD) $(REPORTDIR); \\\n");
 						f.write(indent + testInfo.getCommand() + ";");
 						if (k != testInfo.getIterations()) {

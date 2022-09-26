@@ -132,6 +132,17 @@ JVM_TEST_ROOT = $(BUILD_ROOT)
 TEST_GROUP=level.*
 
 
+TEST_REPEAT = false
+
+ifneq ($(TKG_ITERATIONS), 1)
+	TEST_REPEAT = true
+endif
+
+ifdef AOT_ITERATIONS
+	ifneq ($(AOT_ITERATIONS), 1)
+		TEST_REPEAT = true
+	endif
+endif
 
 #######################################
 # Set OS, ARCH and BITS based on SPEC
@@ -190,10 +201,10 @@ ifndef UNIQUEID
 	export UNIQUEID := $(shell perl $(GETID) -v)
 endif
 TESTOUTPUT := $(TEST_ROOT)$(D)TKG$(D)output_$(UNIQUEID)
-ifeq ($(TEST_ITERATIONS), 1)
-	REPORTDIR_NQ = $(TESTOUTPUT)$(D)$@
-else
+ifeq ($(TEST_REPEAT), true)
 	REPORTDIR_NQ = $(TESTOUTPUT)$(D)$@_ITER_$$itercnt
+else
+	REPORTDIR_NQ = $(TESTOUTPUT)$(D)$@
 endif
 REPORTDIR = $(Q)$(REPORTDIR_NQ)$(Q)
 
@@ -205,10 +216,32 @@ KEEP_REPORTDIR?=true
 ifeq ($(KEEP_REPORTDIR), false)
 	RM_REPORTDIR=$(RM) -r $(REPORTDIR);
 endif
-ifeq ($(TEST_ITERATIONS), 1) 
-	TEST_STATUS=if [ $$? -eq 0 ] ; then $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED$(Q); $(ECHO) $(Q)$(Q); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) else $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED$(Q); $(ECHO) $(Q)$(Q); fi
+ECHO_SPACE=$(ECHO) $(Q)$(Q)
+ECHO_PASSED=$(ECHO_SPACE); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED$(Q); $(ECHO_SPACE)
+ECHO_FAILED=$(ECHO_SPACE); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED$(Q); $(ECHO_SPACE)
+ifneq ($(TEST_REPEAT), true) 
+	TEST_STATUS=if [ $$? -eq 0 ] ; then $(ECHO_PASSED); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) else $(ECHO_FAILED); fi
 else
-	TEST_STATUS=if [ $$? -eq 0 ] ; then $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED(ITER_$$itercnt)$(Q); $(ECHO) $(Q)$(Q); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) if [ $$itercnt -eq $(TEST_ITERATIONS) ] ; then $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED$(Q); $(ECHO) $(Q)$(Q); fi else $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED(ITER_$$itercnt)$(Q); $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$(Q); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED$(Q); $(ECHO) $(Q)$(Q); exit 1; fi
+	ECHO_PASSED_ITER=$(ECHO_SPACE); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED(ITER_$$itercnt)$(Q); $(ECHO_SPACE)
+	ECHO_FAILED_ITER=$(ECHO_SPACE); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED(ITER_$$itercnt)$(Q); $(ECHO_SPACE)
+	HAS_FAILURE=[ $$success -ne $$itercnt ]
+	EXIT_CONDITION=[ $$itercnt -eq $(TEST_ITERATIONS) ]
+	ifeq ($(EXIT_FAILURE), true)
+		EXIT_CONDITION+=|| $(HAS_FAILURE)
+	endif
+	TEST_STATUS=\
+		if [ $$? -eq 0 ] ; \
+		then $(ECHO_PASSED_ITER); success=$$((success+1)); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) \
+		else $(ECHO_FAILED_ITER); \
+		fi; \
+		if $(EXIT_CONDITION); \
+		then \
+			$(ECHO) $(Q)(success rate: $$success/$$itercnt)$(Q); \
+			if $(HAS_FAILURE); \
+			then $(ECHO_FAILED); exit 1;\
+			else $(ECHO_PASSED); \
+			fi; \
+		fi
 endif
 
 ifneq ($(DEBUG),)

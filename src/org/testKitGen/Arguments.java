@@ -34,7 +34,8 @@ public class Arguments {
 	private String vendor = "";
 	private String projectRootDir = System.getProperty("user.dir") + "/..";
 	private String buildList = "";
-	private String iterations = "";
+	private Integer iterations = null;
+	private Integer aotIterations = null;
 	private String testFlag = "";
 	private Integer numOfMachines = null;
 	private Integer testTime = null;
@@ -58,14 +59,16 @@ public class Arguments {
 			+ "                              Defaults to the parent folder of TKG \n"
 			+ "    --buildList=<paths>       Comma separated project paths (relative to projectRootDir) to search for playlist.xml\n"
 			+ "                              Defaults to projectRootDir\n"
-			+ "    --iterations=<number>     Repeatedly generate test command based on iteration number\n"
+			+ "    --iterations=<number>     Repeatedly generate test command based on iterations number\n"
 			+ "                              Defaults to 1\n"
+			+ "    --aotIterations=<number>  Repeatedly generate aot test command based on aotIterations number.\n"
+			+ "                              When both iterations and aotIterations is set, the larger parameter will be applied on AOT applicable tests. AOT explicit tests will be repeated based on the iterations parameter.\n"
+			+ "                              Defaults to false\n"
 			+ "    --testFlag=<string>       Comma separated string to specify different test flags\n"
 			+ "                              Defaults to \"\"\n"
 			+ "    --testTarget=<string>     Test target to execute\n"
 			+ "                              Defaults to all\n"
 			+ "    --numOfMachines=<number>  Specify number of machines for mode parallelList \n"
-			+ "                              Defaults to 1\n"
 			+ "    --testTime=<number>       Specify expected length of test running time (minutes) on each machines for mode parallelList, this option will be suppressed if numOfMachines is given\n"
 			+ "                              If testTime and numOfMachines are not provided, default numOfMachines will be used\n"
 			+ "    --TRSSURL=<serverURL>     Specify the TRSS server URL for mode parallelList\n"
@@ -124,8 +127,12 @@ public class Arguments {
 		return buildList;
 	}
 
-	public String getIterations() {
+	public Integer getIterations() {
 		return iterations;
+	}
+
+	public Integer getAotIterations() {
+		return aotIterations;
 	}
 
 	public List<String> getTestFlag() {
@@ -150,6 +157,20 @@ public class Arguments {
 
 	public String getTestList() {
 		return testList;
+	}
+
+	private Integer parsePositiveArgOrDefault(String arg, Integer defaultValue) {
+		String str = arg.substring(arg.indexOf("=") + 1);
+		Integer result = defaultValue;
+		if (!str.isEmpty()) {
+			result = Integer.valueOf(str);
+			if (result <= 0) {
+				System.err.println("Invalid option: " + arg);
+				System.err.println("The value needs to be greater than 0");
+				System.exit(1);
+			}
+		}
+		return result;
 	}
 
 	private String spec2Plat(String spec) {
@@ -211,7 +232,9 @@ public class Arguments {
 				// buildList is case sensitive
 				buildList = arg.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--iterations=")) {
-				iterations = arglc.substring(arg.indexOf("=") + 1);
+				iterations = parsePositiveArgOrDefault(arg, 1);
+			} else if  (arglc.startsWith("--aotiterations=")) {
+				aotIterations = parsePositiveArgOrDefault(arg, 1);
 			} else if (arglc.startsWith("--testflag=")) {
 				testFlag = arglc.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--testlist=")) {
@@ -225,25 +248,9 @@ public class Arguments {
 				TRSSURL = arg.substring(arg.indexOf("=") + 1);
 				TRSSURL = TRSSURL.replaceAll("/$", "");
 			} else if (arglc.startsWith("--numofmachines")) {
-				String numOfMachinesStr = arg.substring(arg.indexOf("=") + 1);
-				if (!numOfMachinesStr.isEmpty()) {
-					numOfMachines = Integer.valueOf(numOfMachinesStr);
-					if (numOfMachines <= 0) {
-						System.err.println("Invalid option: " + arg);
-						System.err.println("Num of machines need to be greater than 0");
-						System.exit(1);
-					}
-				}
+				numOfMachines = parsePositiveArgOrDefault(arg, null);
 			} else if (arglc.startsWith("--testtime")) {
-				String testTimeStr = arg.substring(arg.indexOf("=") + 1);
-				if (!testTimeStr.isEmpty()) {
-					testTime = Integer.valueOf(testTimeStr);
-					if (testTime <= 0) {
-						System.err.println("Invalid option: " + arg);
-						System.err.println("Test time needs to be greater than 0");
-						System.exit(1);
-					}
-				}
+				testTime = parsePositiveArgOrDefault(arg, null);
 			} else {
 				System.err.println("Invalid option: " + arg);
 				System.err.println(usage);
