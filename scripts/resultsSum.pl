@@ -114,6 +114,7 @@ sub resultReporter {
 				$result = <$fhIn>;
 				$result =~ s/\r//g;
 				$result =~ /Running test (.*) \.\.\.\n/;
+				my $successRate = "";
 				my $testName = $1;
 				if (!$testName) {
 					next;
@@ -132,6 +133,7 @@ sub resultReporter {
 						last;
 					} elsif ($result eq ($testName . "_PASSED\n")) {
 						$result =~ s/_PASSED\n$//;
+						$result .= " " . $successRate;
 						push (@passed, $result);
 						$numOfPassed++;
 						$numOfTotal++;
@@ -142,6 +144,7 @@ sub resultReporter {
 						}
 					} elsif ($result eq ($testName . "_FAILED\n")) {
 						$result =~ s/_FAILED\n$//;
+						$result .= " " . $successRate;
 						push (@failed, $result);
 						$numOfFailed++;
 						$numOfTotal++;
@@ -175,6 +178,8 @@ sub resultReporter {
 						$numOfTotal++;
 						$tapString .= "ok " . $numOfTotal . " - " . $testName . " # skip\n";
 						$tapString .= "  ---\n";
+					} elsif ($result =~ /(\(success rate: .*\))\n/) {
+						$successRate = $1;
 					}
 				}
 			}
