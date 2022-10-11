@@ -229,6 +229,9 @@ else
 	ifeq ($(EXIT_FAILURE), true)
 		EXIT_CONDITION+=|| $(HAS_FAILURE)
 	endif
+	ifeq ($(EXIT_SUCCESS), true)
+		EXIT_CONDITION+=|| [ $$success -ne 0 ]
+	endif
 	TEST_STATUS=\
 		if [ $$? -eq 0 ] ; \
 		then $(ECHO_PASSED_ITER); success=$$((success+1)); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) \
@@ -239,7 +242,7 @@ else
 			$(ECHO) $(Q)(success rate: $$success/$$itercnt)$(Q); \
 			if $(HAS_FAILURE); \
 			then $(ECHO_FAILED); exit 1;\
-			else $(ECHO_PASSED); \
+			else $(ECHO_PASSED); exit 0;\
 			fi; \
 		fi
 endif
