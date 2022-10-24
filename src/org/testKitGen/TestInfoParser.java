@@ -97,8 +97,6 @@ public class TestInfoParser {
 			} else if (entry.getValue().equalsIgnoreCase("applicable")) {
 				if (testFlags.contains("aot") && (entry.getKey().equalsIgnoreCase("aot") || entry.getKey().equalsIgnoreCase("all"))) {
 					ti.setAotOptions("$(AOT_OPTIONS) ");
-					// When TEST_FLAG contains AOT, the times of repetition is the max of aotIterations and iterations parameters.
-					ti.setIterations(Math.max(arg.getAotIterations(), arg.getIterations()));
 				}
 			} else if (entry.getValue().equalsIgnoreCase("nonapplicable")) {
 				// Do not generate make target if the test is not applicable for one feature defined in TEST_FLAG
@@ -107,8 +105,7 @@ public class TestInfoParser {
 				}
 			} else if (entry.getValue().equalsIgnoreCase("explicit")) {
 				if (testFlags.contains("aot") && entry.getKey().equalsIgnoreCase("aot")) {
-					// When test tagged with AOT explicit, its test runs explicitly without any special treatment. The times of repetition is depending on iterations parameter.
-					ti.setIterations(arg.getIterations());
+					ti.setAotIterations(1);
 				}
 			} else {
 				System.err.println("Error: Please provide a valid feature parameter in test " + ti.getTestCaseName() + ". The valid string is <feature_name>:[required|applicable|nonapplicable|explicit].");

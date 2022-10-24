@@ -132,6 +132,9 @@ public class Arguments {
 	}
 
 	public Integer getAotIterations() {
+		if (!getTestFlag().contains("aot")) {
+			return 1;
+		}
 		return aotIterations;
 	}
 

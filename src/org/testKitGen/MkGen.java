@@ -95,6 +95,7 @@ public class MkGen {
 
 				f.write(testTargetName + ": TEST_GROUP=" + testInfo.getLevelStr() + "\n");
 				f.write(testTargetName + ": TEST_ITERATIONS=" + testInfo.getIterations() + "\n");
+				f.write(testTargetName + ": AOT_ITERATIONS=" + testInfo.getAotIterations() + "\n");
 
 				f.write(testTargetName + ":\n");
 				f.write(indent + "@echo \"\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
@@ -124,27 +125,49 @@ public class MkGen {
 							f.write("ifeq ($(" + condition_capsReqs + "), " + testInfo.getCapabilities().get(cKey) + ")\n");
 						}
 					}
-		
-					f.write(indent + "$(TEST_SETUP);\n");
-		
+
 					f.write(indent + "@echo \"variation: " + var.getVariation()
 							+ "\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 					f.write(indent
 							+ "@echo \"JVM_OPTIONS: $(JVM_OPTIONS)\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 		
-					f.write(indent + "{ success=0; \\\n");
-					for (int k = 1; k <= testInfo.getIterations(); k++) {
-						f.write(indent + "itercnt=" + k + "; \\\n" + indent + "$(MKTREE) $(REPORTDIR); \\\n" + indent
-								+ "$(CD) $(REPORTDIR); \\\n");
-						f.write(indent + testInfo.getCommand() + ";");
-						if (k != testInfo.getIterations()) {
-							f.write(" \\\n" + indent);
-						}
+					f.write(indent + "{ \\\n");
+					if (testInfo.getIterations() != 1) {
+						f.write(indent + "success=0; \\\n");
+						f.write(indent + "itercnt=1; \\\n");
+						f.write(indent + "while [ $$itercnt -le " + testInfo.getIterations() + " ]; \\\n");
+						f.write(indent + "do \\\n");
+						f.write(indent + "echo \"\";");
+						f.write(indent + "echo \"== ITERATION $$itercnt ==\"; \\\n");
 					}
-					f.write(" } 2>&1 | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
-		
-					f.write(indent + "$(TEST_TEARDOWN);\n");
-		
+					f.write(indent + "echo \"\";");
+					f.write(indent + "echo \"TEST SETUP:\"; \\\n");
+					f.write(indent + "$(TEST_SETUP); \\\n");
+					if (arg.getTestFlag().contains("aot")) {
+						f.write(indent + "aotItercnt=1; \\\n");
+						f.write(indent + "while [ $$aotItercnt -le " + testInfo.getAotIterations() + " ]; \\\n");
+						f.write(indent + "do \\\n");
+						f.write(indent + "echo \"\";");
+						f.write(indent + "echo \"=== AOT ITERATION $$aotItercnt ===\"; \\\n");
+					}
+					f.write(indent + "$(MKTREE) $(REPORTDIR); \\\n");
+					f.write(indent + "$(CD) $(REPORTDIR); \\\n");
+					f.write(indent + "echo \"\";");
+					f.write(indent + "echo \"TESTING:\"; \\\n");
+					f.write(indent + testInfo.getCommand() + "; \\\n");
+					if (arg.getTestFlag().contains("aot")) {
+						f.write(indent + "aotItercnt=$$((aotItercnt+1)); \\\n");
+						f.write(indent + "done; \\\n");
+					}
+					f.write(indent + "echo \"\";");
+					f.write(indent + "echo \"TEST TEARDOWN:\"; \\\n");
+					f.write(indent + "$(TEST_TEARDOWN); \\\n");
+					if (testInfo.getIterations() != 1) {
+						f.write(indent + "itercnt=$$((itercnt+1)); \\\n");
+						f.write(indent + "done;");
+					}
+					f.write(indent + " } 2>&1 | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+
 					if (!capKeys.isEmpty()) {
 						Collections.sort(capKeys, Collections.reverseOrder());
 						for (String cKey : capKeys) {

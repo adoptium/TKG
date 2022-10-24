@@ -28,6 +28,7 @@ help:
 
 CD        = cd
 ECHO      = echo
+ECHO_NEWLINE = $(ECHO) $(Q)$(Q)
 MKDIR     = mkdir
 MKTREE    = mkdir -p
 PWD       = pwd
@@ -131,19 +132,6 @@ endif
 JVM_TEST_ROOT = $(BUILD_ROOT)
 TEST_GROUP=level.*
 
-
-TEST_REPEAT = false
-
-ifneq ($(TKG_ITERATIONS), 1)
-	TEST_REPEAT = true
-endif
-
-ifdef AOT_ITERATIONS
-	ifneq ($(AOT_ITERATIONS), 1)
-		TEST_REPEAT = true
-	endif
-endif
-
 #######################################
 # Set OS, ARCH and BITS based on SPEC
 #######################################
@@ -201,50 +189,122 @@ ifndef UNIQUEID
 	export UNIQUEID := $(shell perl $(GETID) -v)
 endif
 TESTOUTPUT := $(TEST_ROOT)$(D)TKG$(D)output_$(UNIQUEID)
-ifeq ($(TEST_REPEAT), true)
-	REPORTDIR_NQ = $(TESTOUTPUT)$(D)$@_ITER_$$itercnt
-else
-	REPORTDIR_NQ = $(TESTOUTPUT)$(D)$@
+
+REPORTDIR_PREFIX = $(TESTOUTPUT)$(D)$@
+REPORTDIR_NQ = $(REPORTDIR_PREFIX)
+ifneq ($(TKG_ITERATIONS), 1)
+	REPORTDIR_NQ = $(REPORTDIR_PREFIX)_ITER_$$itercnt
 endif
+
+ifneq (,$(findstring AOT,$(TEST_FLAG)))
+	REPORTDIR_NQ = $(REPORTDIR_PREFIX)_AOT_ITER_$$aotItercnt
+endif
+
 REPORTDIR = $(Q)$(REPORTDIR_NQ)$(Q)
 
 #######################################
 # TEST_STATUS
 #######################################
-RM_REPORTDIR=
-KEEP_REPORTDIR?=true
+RM_REPORTDIR =
+KEEP_REPORTDIR ?= true
 ifeq ($(KEEP_REPORTDIR), false)
-	RM_REPORTDIR=$(RM) -r $(REPORTDIR);
+	RM_REPORTDIR = $(RM) -r $(REPORTDIR);
 endif
-ECHO_SPACE=$(ECHO) $(Q)$(Q)
-ECHO_PASSED=$(ECHO_SPACE); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED$(Q); $(ECHO_SPACE)
-ECHO_FAILED=$(ECHO_SPACE); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED$(Q); $(ECHO_SPACE)
-ifneq ($(TEST_REPEAT), true) 
-	TEST_STATUS=if [ $$? -eq 0 ] ; then $(ECHO_PASSED); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) else $(ECHO_FAILED); fi
-else
-	ECHO_PASSED_ITER=$(ECHO_SPACE); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED(ITER_$$itercnt)$(Q); $(ECHO_SPACE)
-	ECHO_FAILED_ITER=$(ECHO_SPACE); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED(ITER_$$itercnt)$(Q); $(ECHO_SPACE)
-	HAS_FAILURE=[ $$success -ne $$itercnt ]
-	EXIT_CONDITION=[ $$itercnt -eq $(TEST_ITERATIONS) ]
+ECHO_DIVIDER = $(ECHO) $(Q)-----------------------------------$(Q)
+ECHO_PASSED = $(ECHO_DIVIDER); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED$(Q); $(ECHO_DIVIDER)
+ECHO_FAILED = $(ECHO_DIVIDER); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED$(Q); $(ECHO_DIVIDER)
+
+ifneq (,$(findstring AOT,$(TEST_FLAG)))
+	ECHO_PASSED_AOT_ITER = $(ECHO_NEWLINE); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED(AOT_ITER_$$aotItercnt)$(Q); $(ECHO_NEWLINE)
+	ECHO_FAILED_AOT_ITER = $(ECHO_NEWLINE); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED(AOT_ITER_$$aotItercnt)$(Q); $(ECHO_NEWLINE)
+	AOT_ITER_COMPLETE = [ $$aotItercnt -eq $(AOT_ITERATIONS) ]
+endif
+
+ifneq ($(TKG_ITERATIONS), 1)
+	ECHO_PASSED_ITER = $(ECHO_NEWLINE); $(ECHO) $(Q)$@$(Q)$(Q)_PASSED(ITER_$$itercnt)$(Q); $(ECHO_NEWLINE)
+	ECHO_FAILED_ITER = $(ECHO_NEWLINE); $(ECHO) $(Q)$@$(Q)$(Q)_FAILED(ITER_$$itercnt)$(Q); $(ECHO_NEWLINE)
+	HAS_FAILURE = [ $$success -ne $$itercnt ]
+	ITER_COMPLETE = [ $$itercnt -eq $(TEST_ITERATIONS) ]
 	ifeq ($(EXIT_FAILURE), true)
-		EXIT_CONDITION+=|| $(HAS_FAILURE)
+		EXIT_FAILURE_SUCCESS = $(HAS_FAILURE)
 	endif
 	ifeq ($(EXIT_SUCCESS), true)
-		EXIT_CONDITION+=|| [ $$success -ne 0 ]
+		EXIT_FAILURE_SUCCESS = [ $$success -ne 0 ]
 	endif
-	TEST_STATUS=\
-		if [ $$? -eq 0 ] ; \
-		then $(ECHO_PASSED_ITER); success=$$((success+1)); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) \
-		else $(ECHO_FAILED_ITER); \
-		fi; \
-		if $(EXIT_CONDITION); \
-		then \
-			$(ECHO) $(Q)(success rate: $$success/$$itercnt)$(Q); \
-			if $(HAS_FAILURE); \
-			then $(ECHO_FAILED); exit 1;\
-			else $(ECHO_PASSED); exit 0;\
+	ifneq (,$(findstring AOT,$(TEST_FLAG)))
+		EXIT_CONDITION = ( $(AOT_ITER_COMPLETE) && $(ITER_COMPLETE) )
+		ifdef EXIT_FAILURE_SUCCESS
+			EXIT_CONDITION += || ( $(AOT_ITER_COMPLETE) && $(EXIT_FAILURE_SUCCESS) )
+		endif
+		TEST_STATUS= \
+			if [ $$? -eq 0 ]; \
+			then \
+				$(ECHO_PASSED_AOT_ITER); \
+				$(CD) $(TEST_ROOT); $(RM_REPORTDIR) \
+				if $(AOT_ITER_COMPLETE); \
+					then $(ECHO_PASSED_ITER); success=$$(( success+1 )); \
+				fi; \
+			else \
+				$(ECHO_FAILED_AOT_ITER); \
+				aotItercnt=$(AOT_ITERATIONS); \
+				$(ECHO_FAILED_ITER); \
 			fi; \
-		fi
+			if $(EXIT_CONDITION); \
+			then \
+				$(ECHO_DIVIDER); \
+				$(ECHO) $(Q)(success rate: $$success/$$itercnt)$(Q); \
+				if $(HAS_FAILURE); \
+				then $(ECHO_FAILED);\
+				else $(ECHO_PASSED); \
+				fi; \
+				itercnt=$(TKG_ITERATIONS); \
+			fi
+	else
+		EXIT_CONDITION = $(ITER_COMPLETE)
+		ifdef EXIT_FAILURE_SUCCESS
+			EXIT_CONDITION += || $(EXIT_FAILURE_SUCCESS)
+		endif
+		TEST_STATUS = \
+			if [ $$? -eq 0 ] ; \
+			then $(ECHO_PASSED_ITER); success=$$(( success+1 )); $(CD) $(TEST_ROOT); $(RM_REPORTDIR) \
+			else $(ECHO_FAILED_ITER); \
+			fi; \
+			if $(EXIT_CONDITION); \
+			then \
+				$(ECHO_DIVIDER); \
+				$(ECHO) $(Q)(success rate: $$success/$$itercnt)$(Q); \
+				if $(HAS_FAILURE); \
+				then $(ECHO_FAILED);\
+				else $(ECHO_PASSED); \
+				fi; \
+				itercnt=$(TKG_ITERATIONS); \
+			fi
+	endif
+else
+	ifneq (,$(findstring AOT,$(TEST_FLAG)))
+		TEST_STATUS = \
+			if [ $$? -eq 0 ]; \
+			then \
+				$(ECHO_PASSED_AOT_ITER); \
+				if $(AOT_ITER_COMPLETE); \
+				then $(ECHO_PASSED); \
+				fi; \
+				$(CD) $(TEST_ROOT); $(RM_REPORTDIR) \
+			else \
+				$(ECHO_FAILED_AOT_ITER); \
+				$(ECHO_FAILED); \
+				aotItercnt=$(AOT_ITERATIONS); \
+			fi
+	else
+		TEST_STATUS = \
+			if [ $$? -eq 0 ]; \
+			then \
+				$(ECHO_PASSED); \
+				$(CD) $(TEST_ROOT); $(RM_REPORTDIR) \
+			else \
+				$(ECHO_FAILED); \
+			fi
+	endif
 endif
 
 ifneq ($(DEBUG),)
@@ -255,7 +315,7 @@ TEST_SKIP_STATUS=$@_SKIPPED
 #######################################
 # TEST_SETUP
 #######################################
-TEST_SETUP=@echo "Nothing to be done for setup."
+TEST_SETUP=$(ECHO) "Nothing to be done for setup."
 ifeq ($(JDK_IMPL), $(filter $(JDK_IMPL),openj9 ibm))
 	TEST_SETUP=$(JAVA_COMMAND) -Xshareclasses:destroyAll; $(JAVA_COMMAND) -Xshareclasses:groupAccess,destroyAll; echo "cache cleanup done"
 endif
@@ -263,7 +323,7 @@ endif
 #######################################
 # TEST_TEARDOWN
 #######################################
-TEST_TEARDOWN=@echo "Nothing to be done for teardown."
+TEST_TEARDOWN=$(ECHO) "Nothing to be done for teardown."
 ifeq ($(JDK_IMPL), $(filter $(JDK_IMPL),openj9 ibm))
 	TEST_TEARDOWN=$(JAVA_COMMAND) -Xshareclasses:destroyAll; $(JAVA_COMMAND) -Xshareclasses:groupAccess,destroyAll; echo "cache cleanup done"
 endif
@@ -374,5 +434,8 @@ rmResultFile:
 	@$(RM) $(Q)$(TEMPRESULTFILE)$(Q)
 
 resultsSummary:
+	@$(ECHO_NEWLINE)
+	@$(ECHO_NEWLINE)
+	@$(ECHO) $(Q)All tests finished, run result summary:$(Q)
 	$(CD) $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(Q); \
 	perl $(Q)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --platFile=$(Q)$(PLATFROMFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --jdkVendor=$(Q)$(JDK_VENDOR)$(Q) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(CUSTOM_TARGET) --testTarget=$(TESTTARGET) --tapPath=$(TESTOUTPUT)$(D) --tapName=$(TAP_NAME)
