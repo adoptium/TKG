@@ -71,9 +71,14 @@ if (!$failuremkarg) {
 }
 
 my $spec2platform = readPlatform();
-my $failures = resultReporter($spec2platform);
+my ($numOfTotal, $failures) = resultReporter($spec2platform);
 failureMkGen($failuremkarg, $failures);
-
+if (@$failures) {
+	exit 2;
+}
+if ($numOfTotal == 0) {
+	exit 3;
+}
 sub readPlatform {
 	my %map;
 	my $fhIn;
@@ -310,7 +315,7 @@ sub resultReporter {
 	}
 	unlink($resultFile);
 
-	return \@failed;
+	return ($numOfTotal, \@failed);
 }
 
 sub printTests() {
