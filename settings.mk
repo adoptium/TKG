@@ -375,4 +375,4 @@ rmResultFile:
 
 resultsSummary:
 	$(CD) $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(Q); \
-	perl $(Q)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --platFile=$(Q)$(PLATFROMFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --jdkVendor=$(Q)$(JDK_VENDOR)$(Q) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(CUSTOM_TARGET) --testTarget=$(TESTTARGET) --tapPath=$(TESTOUTPUT)$(D) --tapName=$(TAP_NAME)
+	perl $(Q)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --platFile=$(Q)$(PLATFROMFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --jdkVendor=$(Q)$(JDK_VENDOR)$(Q) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(Q)$(CUSTOM_TARGET)$(Q) --testTarget=$(TESTTARGET) --tapPath=$(TESTOUTPUT)$(D) --tapName=$(TAP_NAME)
