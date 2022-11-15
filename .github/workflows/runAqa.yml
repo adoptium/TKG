@@ -146,7 +146,7 @@ jobs:
             core.setFailed(`Request failed with error ${err}`)
           }
     - name: AQA with install-jdk
-      uses: adoptium/run-aqa@v1
+      uses: adoptium/run-aqa@v2
       if: matrix.sdk_resource != 'build-jdk'
       with:
          build_list: ${{ matrix.build_list }}
@@ -157,7 +157,7 @@ jobs:
          openj9_repo: ${{ matrix.openj9_repo }}
          tkg_Repo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
     - name: AQA with build-jdk
-      uses: adoptium/run-aqa@v1
+      uses: adoptium/run-aqa@v2
       if: matrix.sdk_resource == 'build-jdk'
       env:
         TEST_JDK_HOME: ${{ steps.buildJDK.outputs.BuildJDKDir }}
