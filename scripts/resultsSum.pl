@@ -157,13 +157,9 @@ sub resultReporter {
 						$tapString .= "  ---\n";
 						if (($diagnostic eq 'failure') || ($diagnostic eq 'all')) {
 							if ($buildList =~ /openjdk/) {
-							    my @lines = split('\\n', $output);
 								my $failureTests = "";
-								foreach my $line (@lines)
-								{
-									if ( $line =~ /TEST: /) {
-										$failureTests .= $line . "\n";
-									}
+								while ( $output =~ /([-]{50}.)(TEST: )(.*?)(\.java|\.sh)/sg ) {
+									$failureTests .= "$2$3$4\n";
 								}
 								if ( $failureTests eq "" ) {
 									# Output of dump or other non-test failures
