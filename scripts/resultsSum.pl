@@ -133,27 +133,27 @@ sub resultReporter {
 					if ($result =~ /^\Q$testName\E Start Time: .* Epoch Time \(ms\): (.*)\n/) {
 						$startTime = $1;
 					} elsif ($result =~ /^\Q$testName\E Finish Time: .* Epoch Time \(ms\): (.*)\n/) {
+						if ($successRate ne "") {
+							$successRate =~ s/\((.*)\)/$1/;
+							$tapString .= '    ' . $successRate . "\n";
+						}
 						$endTime = $1;
 						$tapString .= "    duration_ms: " . ($endTime - $startTime) . "\n  ...\n";
 						last;
 					} elsif ($result eq ($testName . "_PASSED\n")) {
-						$result =~ s/_PASSED\n$//;
-						$result .= " " . $successRate;
-						push (@passed, $result);
+						push (@passed, $testName . " " . $successRate);
 						$numOfPassed++;
 						$numOfTotal++;
-						$tapString .= "ok " . $numOfTotal . " - " . $result . "\n";
+						$tapString .= "ok " . $numOfTotal . " - " . $testName . "\n";
 						$tapString .= "  ---\n";
 						if ($diagnostic eq 'all') {
 							$tapString .= $output;
 						}
 					} elsif ($result eq ($testName . "_FAILED\n")) {
-						$result =~ s/_FAILED\n$//;
-						$result .= " " . $successRate;
-						push (@failed, $result);
+						push (@failed, $testName . " " . $successRate);
 						$numOfFailed++;
 						$numOfTotal++;
-						$tapString .= "not ok " . $numOfTotal . " - " . $result . "\n";
+						$tapString .= "not ok " . $numOfTotal . " - " . $testName . "\n";
 						$tapString .= "  ---\n";
 						if (($diagnostic eq 'failure') || ($diagnostic eq 'all')) {
 							$tapString .= $output;
@@ -302,11 +302,13 @@ sub resultReporter {
 			print "<Jenkins URL>/$rebuildLinkBase&TARGET=<FAILED test target>\n\n";
 			print "For example, to rebuild the failed tests in <Jenkins URL>=${hudsonUrl}job/Grinder, use the following links:\n";
 
-			foreach my $failedTarget (@failed) {
+			my $failedTargets = getTargetsFromResults(\@failed);
+
+			foreach my $failedTarget (@{$failedTargets}) {
 				print "${hudsonUrl}job/Grinder/$rebuildLinkBase&TARGET=$failedTarget\n";
 			}
 			if ($numOfFailed > 1) {
-				my $failedList = "&TARGET=testList%20TESTLIST=" . join(",", @failed);
+				my $failedList = "&TARGET=testList%20TESTLIST=" . join(",", @{$failedTargets});
 				print "rebuild the failed tests in one link:\n";
 				print "${hudsonUrl}job/Grinder/$rebuildLinkBase$failedList\n";
 			}
@@ -316,6 +318,16 @@ sub resultReporter {
 	unlink($resultFile);
 
 	return ($numOfTotal, \@failed);
+}
+
+sub getTargetsFromResults() {
+	my $results = $_[0];
+	my @targets = ();
+	foreach my $result (@{$results}) {
+		my @resultItems = split(" ", $result);
+		push (@targets, $resultItems[0]);
+	}
+	return \@targets;
 }
 
 sub printTests() {
