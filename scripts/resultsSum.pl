@@ -156,7 +156,27 @@ sub resultReporter {
 						$tapString .= "not ok " . $numOfTotal . " - " . $testName . "\n";
 						$tapString .= "  ---\n";
 						if (($diagnostic eq 'failure') || ($diagnostic eq 'all')) {
-							$tapString .= $output;
+							if ($buildList =~ /openjdk/) {
+								my @lines = split('\\n', $output);
+								my $failureTests = "";
+								for my $i (0 .. $#lines) {
+									if ( $lines[$i] =~ /[-]{50}/) {
+										if ( $lines[$i+1] =~ /(TEST: )(.*?)(\.java|\.sh)$/) {
+											$i++;
+											$failureTests .= $lines[$i] . "\n";
+										}
+									}
+								}
+								if ( $failureTests eq "" ) {
+									# Output of dump or other non-test failures
+									$tapString .= $output;
+								} else {
+									$tapString .= "    output:\n      |\n";
+									$tapString .= "        Failed test cases: \n" . $failureTests;
+								}
+							} else {
+								$tapString .= $output;
+							}
 						}
 						if ($spec =~ /zos/) {
 							my $dmpDir = dirname($resultFile).'/'.$testName;
