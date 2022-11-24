@@ -185,6 +185,8 @@ public class JavaInfo {
             return "oracle";
         } else if (vendorLC.contains("red hat")) {
             return "redhat";
+        } else if (vendorLC.contains("microsoft")) {
+            return "microsoft";
         } else {
             System.out.println("Warning: cannot determine vendor, use System.getProperty('java.vendor')=" + vendor + " directly.\n");
             return vendor;
