@@ -67,7 +67,9 @@ public class JavaInfo {
             spec += "_sparcv9";
         } else if (osArch.contains("riscv")) {
             spec += "_riscv";
-        } else {
+        } else if (osArch.contains("loongarch")) {
+            spec += "_loongarch";
+	} else {
             System.out.println("Cannot determine System.getProperty('os.arch')=" + osArch + "\n");
             return null;
         }
@@ -78,6 +80,7 @@ public class JavaInfo {
             spec += "-64";
             spec = spec.replace("arm-64", "aarch64");
             spec = spec.replace("riscv-64", "riscv64");
+            spec = spec.replace("loongarch-64", "loongarch64");
             if (javaImplInfo.equals("ibm") || javaImplInfo.equals("openj9")) {
                 spec += cmprssptrs();
             }
@@ -187,7 +190,9 @@ public class JavaInfo {
             return "redhat";
         } else if (vendorLC.contains("microsoft")) {
             return "microsoft";
-        } else {
+        } else if (vendorLC.contains("loongson")) {
+            return "loongson";
+	} else {
             System.out.println("Warning: cannot determine vendor, use System.getProperty('java.vendor')=" + vendor + " directly.\n");
             return vendor;
         }
