@@ -27,6 +27,7 @@ public class TestInfo {
 	private List<Variation> vars;
 	private Map<String, String> capabilities;
 	private String aotOptions;
+	private int aotIterations;
 	private int iterations;
 	private String levelStr;
 	private Map<String, String> features;
@@ -43,6 +44,7 @@ public class TestInfo {
 		this.platformRequirementsList = new ArrayList<String>();
 		this.vars = new ArrayList<Variation>();
 		this.aotOptions = "";
+		this.aotIterations = arg.getAotIterations();
 		this.iterations = arg.getIterations();
 		this.capabilities = new HashMap<String, String>();
 		this.levelStr = "";
@@ -106,6 +108,14 @@ public class TestInfo {
 
 	public void setAotOptions(String aotOptions) {
 		this.aotOptions = aotOptions;
+	}
+
+	public int getAotIterations() {
+		return this.aotIterations;
+	}
+
+	public void setAotIterations(int aotIterations) {
+		this.aotIterations = aotIterations;
 	}
 
 	public int getIterations() {
