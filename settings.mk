@@ -315,17 +315,17 @@ TEST_SKIP_STATUS=$@_SKIPPED
 #######################################
 # TEST_SETUP
 #######################################
-TEST_SETUP=$(ECHO) "Nothing to be done for setup."
+TEST_SETUP=export TMPDIR=$$(mktemp /tmp/job-XXX)
 ifeq ($(JDK_IMPL), $(filter $(JDK_IMPL),openj9 ibm))
-	TEST_SETUP=$(JAVA_COMMAND) -Xshareclasses:destroyAll; $(JAVA_COMMAND) -Xshareclasses:groupAccess,destroyAll; echo "cache cleanup done"
+	TEST_SETUP+=;$(JAVA_COMMAND) -Xshareclasses:destroyAll; $(JAVA_COMMAND) -Xshareclasses:groupAccess,destroyAll; echo "cache cleanup done"
 endif
 
 #######################################
 # TEST_TEARDOWN
 #######################################
-TEST_TEARDOWN=$(ECHO) "Nothing to be done for teardown."
+TEST_TEARDOWN=rm -rf $$TMPDIR
 ifeq ($(JDK_IMPL), $(filter $(JDK_IMPL),openj9 ibm))
-	TEST_TEARDOWN=$(JAVA_COMMAND) -Xshareclasses:destroyAll; $(JAVA_COMMAND) -Xshareclasses:groupAccess,destroyAll; echo "cache cleanup done"
+	TEST_TEARDOWN+=;$(JAVA_COMMAND) -Xshareclasses:destroyAll; $(JAVA_COMMAND) -Xshareclasses:groupAccess,destroyAll; echo "cache cleanup done"
 endif
 
 #######################################
