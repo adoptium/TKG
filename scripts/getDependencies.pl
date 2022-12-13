@@ -101,9 +101,9 @@ my %base = (
 		sha1 => 'bfcb96281ea3b59d626704f74bc6d625ff51cbce'
 	},
 	asmtools => {
-		url => 'https://ci.adoptopenjdk.net/view/Dependencies/job/dependency_pipeline/lastSuccessfulBuild/artifact/asmtools/asmtools.jar',
+		url => 'https://ci.adoptopenjdk.net/view/Dependencies/job/dependency_pipeline/lastSuccessfulBuild/artifact/asmtools/asmtools-core-7.0.b10-ea.jar',
 		fname => 'asmtools.jar',
-		shaurl => 'https://ci.adoptopenjdk.net/view/Dependencies/job/dependency_pipeline/lastSuccessfulBuild/artifact/asmtools/asmtools.jar.sha256sum.txt',
+		shaurl => 'https://ci.adoptopenjdk.net/view/Dependencies/job/dependency_pipeline/lastSuccessfulBuild/artifact/asmtools/asmtools-core-7.0.b10-ea.jar.sha256sum.txt',
 		shafn => 'asmtools.jar.sha256sum.txt',
 		shaalg => '256'
 	},
