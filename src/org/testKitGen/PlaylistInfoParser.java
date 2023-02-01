@@ -55,7 +55,7 @@ public class PlaylistInfoParser {
 		public void warning(SAXParseException e) throws SAXException {
 			throw e;
 		}
-		
+
 		@Override
 		public void error(SAXParseException e) throws SAXException {
 			throw e;
@@ -65,8 +65,8 @@ public class PlaylistInfoParser {
 		public void fatalError(SAXParseException e) throws SAXException {
 			throw e;
 		}
-	 }
-	
+	}
+
 	private void validate() {
 		if (playlistXML != null) {
 			try {
@@ -74,10 +74,10 @@ public class PlaylistInfoParser {
 				validator.setErrorHandler(new xsdErrorHandler());
 				validator.validate(new StreamSource(playlistXML));
 			} catch (SAXParseException e) {
-				System.err.println("Error: schema validation failed for " + playlistXML.getAbsolutePath() + " with exception:\n");
-				System.err.println("Line: "+e.getLineNumber());
-				System.err.println("Column: "+e.getColumnNumber());
-				System.err.println("Message: "+e.getMessage());
+				System.err.println("Error: schema validation failed for " + playlistXML.getAbsolutePath() + " with exception:");
+				System.err.println("Line: " + e.getLineNumber());
+				System.err.println("Column: " + e.getColumnNumber());
+				System.err.println("Message: " + e.getMessage());
 				System.exit(1);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -100,7 +100,7 @@ public class PlaylistInfoParser {
 		PlaylistInfo pli = new PlaylistInfo();
 		if (playlistXML == null) return pli;
 		try {
-			System.out.println("Parsing " + playlistXML.getAbsolutePath() + "\n");
+			System.out.println("Parsing " + playlistXML.getAbsolutePath());
 			Document xml = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(playlistXML);
 			NodeList childNodes = xml.getDocumentElement().getChildNodes();
 			List<TestInfo> testInfoList = new ArrayList<TestInfo>();
