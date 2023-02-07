@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+	<test>
+		<testCaseName>test_ver_11</testCaseName>
+		<command>echo "test for version 11"; \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>11</version>
+		</versions>
+	</test>
+
+	<test>
+		<testCaseName>test_ver_17plus</testCaseName>
+		<command>echo "test for version 17+"; \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>17+</version>
+		</versions>
+	</test>
+
+	<test>
+		<testCaseName>test_ver_8to11</testCaseName>
+		<command>echo "test for version 8 to 11"; \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>[8, 11]</version>
+		</versions>
+	</test>
+
+	<test>
+		<testCaseName>test_ver_8to11and17plus</testCaseName>
+		<command>echo "test for version 8 to 11 and 17+"; \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>[8, 11]</version>
+			<version>17+</version>
+		</versions>
+	</test>
+
+	<test>
+		<testCaseName>test_disable_ver_11</testCaseName>
+		<disables>
+			<disable>
+				<comment>disable version 11</comment>
+				<version>11</version>
+			</disable>
+		</disables>
+		<command>echo "disable test for version 11"; \
+	$(TEST_STATUS)</command>
+	</test>
+
+	<test>
+		<testCaseName>test_disable_ver_11to17</testCaseName>
+		<disables>
+			<disable>
+				<comment>disable version 11 to 17</comment>
+				<version>[11, 17]</version>
+			</disable>
+		</disables>
+		<command>echo "disable test for version 11 to 17"; \
+	$(TEST_STATUS)</command>
+	</test>
+
+	<test>
+		<testCaseName>test_disable_ver_8and17plus</testCaseName>
+		<disables>
+			<disable>
+				<comment>disable version 8</comment>
+				<version>8</version>
+			</disable>
+			<disable>
+				<comment>disable version 11</comment>
+				<version>17+</version>
+			</disable>
+		</disables>
+		<command>echo "disable test for version 8 and 17+"; \
+	$(TEST_STATUS)</command>
+	</test>
+</playlist>

@@ -22,13 +22,17 @@ MAKE_CLEAN = "make clean"
 MAKE_COMPILE = "make compile"
 DYNAMIC_COMPILE = "export DYNAMIC_COMPILE=true"
 EXPORT_BUILDLIST = "export BUILD_LIST"
-ALL_TESTS = ["base","level","hierarchy","platformRequirements"]
+ALL_TESTS = ["base","level","hierarchy","platformRequirements", "jdkVersion"]
+verbose = False
 
 def main():
+    global verbose
     ap = argparse.ArgumentParser()
     ap.add_argument('-l','--testList', nargs='+', required=False, default=ALL_TESTS, help="space separated test list")
+    ap.add_argument('-v','--verbose', nargs='?', required=False, const=True, default=False, help="print test output")
     args = vars(ap.parse_args())
     testList = args['testList']
+    verbose = args['verbose']
 
     rt = True
 
@@ -134,6 +138,8 @@ def test_platformRequirements():
         printError("Could not parse spec from output.")
         return False
 
+    print(spec)
+
     passed = set()
     skipped = set()
 
@@ -154,7 +160,7 @@ def test_platformRequirements():
     else:
         skipped.add('test_os_osx_0')
 
-    if 'osx_x86-64' == spec:
+    if 'osx_x86-64' in spec:
         passed.add('test_osx_x86-64_0')
     else:
         skipped.add('test_osx_x86-64_0')
@@ -164,12 +170,60 @@ def test_platformRequirements():
     else:
         skipped.add('test_arch_x86_390_0')
 
-    if 'osx_x86-64' == spec or 'win_x86' == spec or 'aix_ppc-64' == spec:
+    if 'osx_x86-64' in spec or ('win_x86' in spec and 'win_x86-64' not in spec) or 'aix_ppc-64' in spec:
         passed.add('test_osx_x86-64_win_x86_aix_ppc-64_0')
     else:
         skipped.add('test_osx_x86-64_win_x86_aix_ppc-64_0')
 
     rt &= checkResult(result, passed, set(), set(), skipped)
+    return rt
+
+def test_jdkVersion():
+    rt = True
+    printTestheader("jdkVersion")
+
+    buildList = "TKG/examples/jdkVersion"
+    command = "make _all"
+    print(f"\t{command}")
+    result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
+
+    stdout = result.stdout.decode()
+    verStr = re.search(r"set JDK_VERSION to (.*)", stdout)
+
+    if verStr is not None:
+        try:
+            ver = int(verStr.group(1))
+        except ValueError:
+            print("\tTest Skipped! JDK_VERSION is not integer.")
+            return True
+    else:
+        printError("Could not parse JDK_VERSION from output.")
+        return False
+
+    passed = set()
+    disabled = set()
+
+    if 8 <= ver < 11:
+        passed.add('test_ver_8to11_0')
+        passed.add('test_ver_8to11and17plus_0')
+        passed.add('test_disable_ver_11_0')
+        passed.add('test_disable_ver_11to17_0')
+        disabled.add('test_disable_ver_8and17plus_0')
+    elif ver == 11:
+        passed.add('test_ver_11_0')
+        passed.add('test_ver_8to11_0')
+        passed.add('test_ver_8to11and17plus_0')
+        disabled.add('test_disable_ver_11_0')
+        disabled.add('test_disable_ver_11to17_0')
+        passed.add('test_disable_ver_8and17plus_0')
+    elif ver >= 17:
+        passed.add('test_ver_17plus_0')
+        passed.add('test_ver_8to11and17plus_0')
+        passed.add('test_disable_ver_11_0')
+        disabled.add('test_disable_ver_11to17_0')
+        disabled.add('test_disable_ver_8and17plus_0')
+
+    rt &= checkResult(result, passed, set(), disabled, set())
     return rt
 
 def printTestheader(msg):
@@ -200,6 +254,7 @@ def checkTestDetail(group, detailBlock, expected):
     return rt
 
 def checkResult(result, passed, failed, disabled, skipped):
+    global verbose
     rt = True
     stdout = result.stdout.decode()
     stderr = result.stderr.decode()
@@ -207,13 +262,17 @@ def checkResult(result, passed, failed, disabled, skipped):
         printError(f"test exit code: {result.returncode} is not expected")
 
     summary = re.search(r"TEST TARGETS SUMMARY\n\+{74}\n(.*)TOTAL: (\d+)   EXECUTED: (\d+)   PASSED: (\d+)   FAILED: (\d+)   DISABLED: (\d+)   SKIPPED: (\d+)\n(.*)\+{74}", stdout, flags=re.DOTALL)
-    if summary is None:
-        printError("test not completed")
+
+    if verbose is True:
         stdout = textwrap.indent(stdout, '\t')
         stderr = textwrap.indent(stderr, '\t')
         print(f"\tstdout:\n{stdout}\n\n")
         print(f"\tstderr:\n{stderr}\n\n")
+
+    if summary is None:
+        printError("test not completed")
         return False
+
 #    print(summary.group())
     testDetail = summary.group(1)
     totalNum = int(summary.group(2))

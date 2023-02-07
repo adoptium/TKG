@@ -193,23 +193,36 @@ public class TestInfoParser {
 	}
 
 	private boolean checkJavaVersion(String version) {
-		boolean rt = false;
 		if (version.equalsIgnoreCase(arg.getJdkVersion())) {
-			rt = true;
+			return true;
 		} else {
 			try {
-				Pattern pattern = Pattern.compile("^(.*)\\+$");
+				Pattern pattern = Pattern.compile("^\\[(.*),(.*)\\]$");
 				Matcher matcher = pattern.matcher(version);
 				if (matcher.matches()) {
+					String start = matcher.group(1).trim();
+					String end = matcher.group(2).trim();
+					int currentVersion = Integer.parseInt(arg.getJdkVersion());
+					System.out.println(Integer.parseInt(start) + " " + Integer.parseInt(end) + " .  " + currentVersion);
+
+					if (currentVersion >= Integer.parseInt(start)
+						&& currentVersion <= Integer.parseInt(end)) {
+						return true;
+					}
+				}
+
+				pattern = Pattern.compile("^(.*)\\+$");
+				matcher = pattern.matcher(version);
+				if (matcher.matches()) {
 					if (Integer.parseInt(matcher.group(1)) <= Integer.parseInt(arg.getJdkVersion())) {
-						rt = true;
+						return true;
 					}
 				}
 			} catch (NumberFormatException e) {
-				// Nothing to do
+				System.out.println("Warning: jdk version is not an integer, couldn't parse it.");
 			}
 		}
-		return rt;
+		return false;
 	}
 
 	private void parseDisableInfo(TestInfo ti) {
