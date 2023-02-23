@@ -161,7 +161,7 @@ sub resultReporter {
 								my $failureTests = "";
 								for my $i (0 .. $#lines) {
 									if ( $lines[$i] =~ /[-]{50}/) {
-										if ( ($lines[$i+1] =~ /(TEST: )(.*?)(\.java|\.sh)$/) || ($lines[$i+1] =~ /(Test results: )(.*failed: )(\d{1,}$)/) ) {
+										if ( ($lines[$i+1] =~ /(TEST: )(.*?)(\.java|\.sh)$/) || ($lines[$i+1] =~ /(Test results: .*)(failed|error)(: \d{1,}$)/) ) {
 											$i++;
 											$failureTests .= $lines[$i] . "\n";
 										}
