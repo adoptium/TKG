@@ -42,9 +42,7 @@ public class MachineInfo {
 
 	// Software
 	public static final String[] SYS_OS_CMD = new String[] {"uname", "-s"};
-	public static final String[] KERNEL_VERSION_CMD = new String[] {"uname", "-r"};
 	public static final String[] GCC_VERSION_CMD = new String[] {"gcc", "-dumpversion"};
-
 	public static final String[] XLC_VERSION_CMD = new String[] {"bash", "-c", "xlC -qversion | grep 'Version' "};
 	public static final String[] GDB_VERSION_CMD = new String[] {"bash", "-c", "gdb --version | head -1"}; // debugger on Linux
 	public static final String[] LLDB_VERSION_CMD = new String[] {"lldb", "--version"}; // debugger on Darwin/Mac
@@ -81,6 +79,7 @@ public class MachineInfo {
 		getRuntimeInfo();
 		getPhysicalMemoryInfo();
 		getSpaceInfo();
+		getOtherInfo();
 		validateInfo();
 	}
 
@@ -219,5 +218,14 @@ public class MachineInfo {
 		OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 		putInfo(new Info("Total Physical Memory Size", new String[] {"osBean.getTotalPhysicalMemorySize()"}, String.valueOf(osBean.getTotalPhysicalMemorySize()), null));
 		putInfo(new Info("Free Physical Memory Size", new String[] {"osBean.getFreePhysicalMemorySize()"}, String.valueOf(osBean.getFreePhysicalMemorySize()), null));
+	}
+
+	private void getOtherInfo() {
+		CmdExecutor ce = CmdExecutor.getInstance();
+		putInfo(new Info("gcc version", GCC_VERSION_CMD, ce.execute(GCC_VERSION_CMD), null));
+		putInfo(new Info("xlc version", XLC_VERSION_CMD, ce.execute(XLC_VERSION_CMD), null));
+		putInfo(new Info("gdb version", GDB_VERSION_CMD, ce.execute(GDB_VERSION_CMD), null));
+		putInfo(new Info("lldb version", LLDB_VERSION_CMD, ce.execute(LLDB_VERSION_CMD), null));
+		putInfo(new Info("gclibc version", GCLIBC_VERSION_CMD, ce.execute(GCLIBC_VERSION_CMD), null));
 	}
 }

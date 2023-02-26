@@ -49,7 +49,6 @@ public class CmdExecutor {
 			rt = sb.toString();
 			proc.waitFor();
 		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
 			return "Command could not be executed";
 		}
 		return rt;
