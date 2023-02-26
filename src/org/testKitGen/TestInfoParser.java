@@ -203,8 +203,6 @@ public class TestInfoParser {
 					String start = matcher.group(1).trim();
 					String end = matcher.group(2).trim();
 					int currentVersion = Integer.parseInt(arg.getJdkVersion());
-					System.out.println(Integer.parseInt(start) + " " + Integer.parseInt(end) + " .  " + currentVersion);
-
 					if (currentVersion >= Integer.parseInt(start)
 						&& currentVersion <= Integer.parseInt(end)) {
 						return true;
