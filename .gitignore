@@ -34,3 +34,5 @@ buildInfo.mk
 SHA.txt
 
 .DS_Store
+
+/.project
