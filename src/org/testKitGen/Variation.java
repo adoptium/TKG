@@ -25,6 +25,7 @@ public class Variation {
 	private String subTestName;
 	private String mode;
 	private String jvmOptions;
+	private String dockerArgs;
 	private boolean isValid;
 	private List<String> disabledReasons;
 	private PrintStatus status;
@@ -35,6 +36,7 @@ public class Variation {
 		this.variation = variation;
 		this.isValid = true;
 		this.jvmOptions = "";
+		this.dockerArgs = "";
 		this.disabledReasons = new ArrayList<String>();
 		this.status = PrintStatus.DO_NOT_PRINT;
 		this.prefix = "";
@@ -58,6 +60,10 @@ public class Variation {
 
 	public String getJvmOptions() {
 		return this.jvmOptions;
+	}
+
+	public String getDockerArgs() {
+		return this.dockerArgs;
 	}
 
 	public void setJvmOptions(String jvmOptions) {

@@ -380,6 +380,7 @@ setup_%: testEnvSetup
 	@$(ECHO) set JAVA_HOME to $(JAVA_HOME)
 	@$(ECHO) set SPEC to $(SPEC)
 	@$(ECHO) set TEST_FLAG to $(TEST_FLAG)
+	@$(ECHO) set DOCKER_ARGS to $(DOCKER_ARGS)
 
 	@$(MKTREE) $(Q)$(TESTOUTPUT)$(Q)
 	@$(ECHO) Running $(TESTTARGET) ...
