@@ -93,9 +93,9 @@ public class MkGen {
 				f.write(testTargetName + ": JVM_OPTIONS?=" + testInfo.getAotOptions() + "$(RESERVED_OPTIONS) "
 						+ (var.getJvmOptions().isEmpty() ? "" : (var.getJvmOptions() + " ")) + "$(EXTRA_OPTIONS)\n");
 
-				// Add DOCKER_ARGS if it is not empty
+				// Add EXTRA_DOCKER_ARGS if it is not empty
 				if (!var.getDockerArgs().isEmpty()) {
-					f.write(testTargetName + ": DOCKER_ARGS=" + var.getDockerArgs() + "\n");
+					f.write(testTargetName + ": EXTRA_DOCKER_ARGS=" + var.getDockerArgs() + "\n");
 				}
 
 				f.write(testTargetName + ": TEST_GROUP=" + testInfo.getLevelStr() + "\n");
