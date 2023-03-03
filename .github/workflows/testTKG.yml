@@ -7,12 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.event.comment.body, 'run tkg-test')
     steps:
-      - uses: xt0rted/pull-request-comment-branch@653a7d5ca8bd91d3c5cb83286063314d0b063b8e # v1.4.0
-        id: comment-branch
-
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
-          ref: ${{ steps.comment-branch.outputs.head_ref }}
+          ref: refs/pull/${{ github.event.issue.number }}/head
           path: 'testTKG'
 
       - name: Set up JDK
