@@ -27,6 +27,7 @@ public class Arguments {
 	private Mode mode = Mode.GEN_TESTS;
 	private String spec = "";
 	private String microArch = "";
+	private String osLabel = "";
 	private String plat = "";
 	private String jdkVersion = "";
 	private String impl = "";
@@ -74,6 +75,8 @@ public class Arguments {
 			+ "    --TRSSURL=<serverURL>     Specify the TRSS server URL for mode parallelList\n"
 			+ "                              Defaults to " + Constants.TRSS_URL + "\n"
 			+ "    --microArch=<microArch>   Specify micro-architecture\n"
+			+ "                              Defaults to  \"\"\n"
+			+ "    --osLabel=<osLabel>       Specify OS Label\n"
 			+ "                              Defaults to  \"\"\n";
 			
 
@@ -97,6 +100,10 @@ public class Arguments {
 
 	public String getMicroArch() {
 		return microArch;
+	}
+
+	public String getOsLabel() {
+		return osLabel;
 	}
 
 	public String getPlat() {
@@ -217,6 +224,8 @@ public class Arguments {
 				plat = spec2Plat(spec);
 			} else if (arglc.startsWith("--microarch=")) {
 				microArch = arglc.substring(arg.indexOf("=") + 1);
+			} else if (arglc.startsWith("--oslabel=")) {
+				osLabel = arglc.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--jdkversion=")) {
 				jdkVersion = arglc.substring(arg.indexOf("=") + 1);
 			} else if (arglc.startsWith("--impl=")) {

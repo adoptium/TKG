@@ -18,16 +18,23 @@ import java.io.File;
 import java.nio.file.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 import java.lang.management.ManagementFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import com.sun.management.OperatingSystemMXBean;
 
 public class MachineInfo {
 	public static final String[] UNAME_CMD = new String[] {"uname", "-a"};
 	public static final String[] SYS_ARCH_CMD = new String[] {"uname", "-m"};
 	public static final String[] PROC_ARCH_CMD = new String[] {"uname", "-p"};
+	public static final String[] LINUX_OS_CMD = new String[] {"bash", "-c", "cat /etc/os-release"};
+	public static final String[] LINUX_OS_NAME_CMD = new String[] {"bash", "-c", "grep '^NAME' /etc/os-release | awk -F'=' ' gsub(/\"/,\"\") { print $2}'"};
+	public static final String[] LINUX_OS_VERSION_CMD = new String[] {"bash", "-c", "grep '^VERSION_ID' /etc/os-release | awk -F'=' ' gsub(/\"/,\"\") { print $2}'"};
+
 	public static final String[] MICRO_ARCH_CMD = new String[] {"bash", "-c", "cat /proc/cpuinfo | grep 'model name' | uniq"};
 	public static final String[] ULIMIT_CMD = new String[] {"bash", "-c", "ulimit -a"};
 
@@ -60,9 +67,12 @@ public class MachineInfo {
 
 
 	private Map<String, Info> infoMap;
-	
+	private CmdExecutor ce;
+
 	public MachineInfo() {
 		this.infoMap = new HashMap<String, Info>();
+		this.ce = CmdExecutor.getInstance();
+
 	}
 
 	public Map<String, Info> getInfoMap() {
@@ -75,6 +85,7 @@ public class MachineInfo {
 
 	public void checkInfo() {
 		getSysInfo();
+		getOsLabel();
 		getPrerequisiteInfo();
 		getRuntimeInfo();
 		getPhysicalMemoryInfo();
@@ -86,9 +97,10 @@ public class MachineInfo {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		String newline = "";
-		for (Map.Entry<String, Info> pair : infoMap.entrySet()) {
-			String name = pair.getKey();
-			Info info = pair.getValue();
+		List<String> keys = new ArrayList<>(infoMap.keySet());
+		Collections.sort(keys);
+		for (String name : keys) {
+			Info info = infoMap.get(name);
 			String output = info.output != null ? info.output : "";
 			if (output.contains("\n")) {
 				output = "\n" + output;
@@ -170,7 +182,6 @@ public class MachineInfo {
 	}
 
 	private void getSysInfo() {
-		CmdExecutor ce = CmdExecutor.getInstance();
 		putInfo(new Info("uname", UNAME_CMD, ce.execute(UNAME_CMD), null));
 		if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 			putInfo(new Info("cpuCores", CPU_CORES_CMD, ce.execute(CPU_CORES_CMD_MAC), null));
@@ -182,18 +193,30 @@ public class MachineInfo {
 		putInfo(new Info("sysArch", SYS_ARCH_CMD, ce.execute(SYS_ARCH_CMD), null));
 		putInfo(new Info("procArch", PROC_ARCH_CMD, ce.execute(PROC_ARCH_CMD), null));
 		String microArchOutput = ce.execute(MICRO_ARCH_CMD);
-		String microArch = "";
 		if (microArchOutput.toLowerCase().contains("skylake")) {
-			microArch = "skylake";
+			String microArch = "skylake";
+			putInfo(new Info("microArch", MICRO_ARCH_CMD, microArch, null));
 		}
-		putInfo(new Info("microArch", MICRO_ARCH_CMD, microArch, null));
 		putInfo(new Info("sysOS", SYS_OS_CMD, ce.execute(SYS_OS_CMD), null));
 		putInfo(new Info("ulimit", ULIMIT_CMD, ce.execute(ULIMIT_CMD), null));
 		putInfo(new Info("docker", CHECK_DOCKER_CMD, ce.execute(CHECK_DOCKER_CMD), null));
 	}
 	
+	private void getOsLabel() {
+		if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+			String osName = ce.execute(LINUX_OS_NAME_CMD).toLowerCase();
+			if (osName.contains("red hat enterprise linux")) {
+				osName = "rhel";
+			}
+			String fullOsVersion = ce.execute(LINUX_OS_VERSION_CMD);
+			String[] osVersions = fullOsVersion.split("\\.");
+			String osLabel = osName + "." + osVersions[0];
+			putInfo(new Info("osLabel", LINUX_OS_CMD, osLabel, null));
+			putInfo(new Info("osInfo", LINUX_OS_CMD, ce.execute(LINUX_OS_CMD), null));
+		}
+	}
+ 
 	private void getPrerequisiteInfo() {
-		CmdExecutor ce = CmdExecutor.getInstance();
 		putInfo(new Info("antVersion", ANT_VERSION_CMD, ce.execute(ANT_VERSION_CMD), "1.9.6"));
 		/* required version is 4.1, but some exception applies, do not verify for now*/
 		putInfo(new Info("makeVersion", MAKE_VERSION_CMD, ce.execute(MAKE_VERSION_CMD), null));
@@ -221,7 +244,6 @@ public class MachineInfo {
 	}
 
 	private void getOtherInfo() {
-		CmdExecutor ce = CmdExecutor.getInstance();
 		putInfo(new Info("gcc version", GCC_VERSION_CMD, ce.execute(GCC_VERSION_CMD), null));
 		putInfo(new Info("xlc version", XLC_VERSION_CMD, ce.execute(XLC_VERSION_CMD), null));
 		putInfo(new Info("gdb version", GDB_VERSION_CMD, ce.execute(GDB_VERSION_CMD), null));

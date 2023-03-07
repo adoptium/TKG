@@ -59,14 +59,7 @@
 		<platformRequirements>os.osx,bits.64,arch.x86</platformRequirements>
 	</test>
 
-		<test>
-		<testCaseName>test_os_osx</testCaseName>
-		<command>echo "test os.osx"; \
-	$(TEST_STATUS)</command>
-		<platformRequirements>os.osx</platformRequirements>
-	</test>
-
-		<test>
+	<test>
 		<testCaseName>test_osx_x86-64_win_x86_aix_ppc-64</testCaseName>
 		<command>echo "test osx_x86-64 or win_x86 or aix_ppc-64"; \
 	$(TEST_STATUS)</command>
@@ -75,5 +68,19 @@
 			<platformRequirements>os.win,bits.32,arch.x86</platformRequirements>
 			<platformRequirements>os.aix,arch.ppc,bits.64</platformRequirements>
 		</platformRequirementsList>
+	</test>
+
+	<test>
+		<testCaseName>test_os_linux_ubuntu20plus</testCaseName>
+		<command>echo "test os.linux.ubuntu.20+"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux.ubuntu.20+</platformRequirements>
+	</test>
+
+	<test>
+		<testCaseName>test_os_linux_ubuntu22</testCaseName>
+		<command>echo "test os.linux.ubuntu.22"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux.ubuntu.22</platformRequirements>
 	</test>
 </playlist>

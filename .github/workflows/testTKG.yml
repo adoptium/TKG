@@ -43,6 +43,7 @@ jobs:
           TEST_JDK_HOME: ${{ env.JAVA_HOME }}
           TEST_OPTIONS: ${{ env.TKG_TEST_OPTIONS }}
         run: |
+          sudo apt-get install ant-contrib -y
           cd scripts/testTKG
           python testRunner.py $TEST_OPTIONS
 
