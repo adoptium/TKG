@@ -21,12 +21,12 @@ def parse_apache_2_license(license_file):
 
         license_lines = license_lines[190:201]
         f.close()
-    # add the ## line to beginning of each line
-    license_lines = ''.join(['# ' + line.lstrip() for line in license_lines])
+    license_lines = ''.join(['#' + line for line in license_lines])
     return license_lines
 
 def remove_duplicate_test_tags(xml_file, license_file):
-    tree = ET.parse(xml_file)
+    tree = ET.parse(xml_file, 
+                    parser=ET.XMLParser(target=ET.TreeBuilder(insert_comments=True)))
     root = tree.getroot()
     test_case_names = []
     for test in root.findall('test'):
@@ -50,7 +50,9 @@ def remove_duplicate_test_tags(xml_file, license_file):
 
 if __name__ == '__main__':
     parser = ag.ArgumentParser()
-    parser.add_argument('--xml-file', type = str, help='Path to playlist.xml', required=True)
-    parser.add_argument('--license-file', type = str, help='Path to Apache 2.0 LICENSE', required=True)
+    parser.add_argument('-f','--xml-file', type = str, help='Path to playlist.xml', 
+                        required=True)
+    parser.add_argument('-l','--license-file', type = str, help='Path to Apache 2.0 LICENSE', 
+                        required=True, default=None)
     args = parser.parse_args()
     remove_duplicate_test_tags(args.xml_file, args.license_file)
