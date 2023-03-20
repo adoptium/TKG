@@ -12,6 +12,9 @@
 # limitations under the License.
 ##############################################################################
 
+_TESTTARGET = $(firstword $(MAKECMDGOALS))
+TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
+
 testEnvSetup:
 
 testEnvTeardown:
@@ -25,6 +28,15 @@ testEnvTeardown:
 	pkill -9 -xf "$(TEST_JDK_HOME)/bin/jitserver"; true
 
 RESERVED_OPTIONS += -XX:+UseJITServer
+endif
+
+ifneq (,$(findstring dev.external,$(TESTTARGET)))
+testEnvSetup:
+	sudo podman system prune --all --force
+
+testEnvTeardown:
+	sudo podman system prune --all --force
+
 endif
 
 export TR_silentEnv=1
