@@ -35,6 +35,7 @@ my $buildList = "";
 my $spec = "";
 my $customTarget = "";
 my $testTarget = "";
+my $comment = "";
 
 for (my $i = 0; $i < scalar(@ARGV); $i++) {
 	my $arg = $ARGV[$i];
@@ -64,6 +65,8 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 		($customTarget) = $arg =~ /^\-\-customTarget=(.*)/;
 	} elsif ($arg =~ /^\-\-testTarget=/) {
 		($testTarget) = $arg =~ /^\-\-testTarget=(.*)/;
+	} elsif ($arg =~ /^\-\-comment=/) {
+		($comment) = $arg =~ /^\-\-comment=(.*)/;
 	}
 }
 
@@ -215,7 +218,10 @@ sub resultReporter {
 	}
 
 	#generate console output
-	print "TEST TARGETS SUMMARY\n";
+	if ($comment ne "") {
+		$comment = "(${comment}) ";
+	}
+	print $comment . "TEST TARGETS SUMMARY\n";
 	print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 
 	if ($numOfDisabled != 0) {
@@ -241,13 +247,16 @@ sub resultReporter {
 
 	$numOfExecuted = $numOfTotal - $numOfSkipped - $numOfDisabled;
 
-	print "TOTAL: $numOfTotal   EXECUTED: $numOfExecuted   PASSED: $numOfPassed   FAILED: $numOfFailed";
+	my $testStatus = "TOTAL: $numOfTotal   EXECUTED: $numOfExecuted   PASSED: $numOfPassed   FAILED: $numOfFailed";
 	# Hide numOfDisabled when running disabled tests list.
 	if ($runningDisabled == 0) {
-		print "   DISABLED: $numOfDisabled";   
+		$testStatus .= "   DISABLED: $numOfDisabled";   
 	}
-	print "   SKIPPED: $numOfSkipped";
-	print "\n";
+	$testStatus .= "   SKIPPED: $numOfSkipped";
+	if ($comment ne "") {
+		$testStatus = "($testStatus)";
+	}
+	print "$testStatus\n";
 	if ($numOfTotal > 0) {
 		# set tap file name if not given
 		if ($tapName eq '') {
