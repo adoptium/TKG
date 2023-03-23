@@ -18,6 +18,7 @@ use Data::Dumper;
 use File::Basename;
 use File::Path qw/make_path/;
 use lib ".";
+use Sys::Hostname;
 require "moveDmp.pl";
 
 my $resultFile;
@@ -273,6 +274,10 @@ sub resultReporter {
 		my $AQACertContent = `cat $AQACert`;
 		$AQACertContent =~ s/\n/\n# /g;
 		print $fhOut "# AQACert.log content: \n# " . $AQACertContent . "\n";
+
+		#add machine name in TAP file
+		$host = hostname;
+		print $fhOut "#Machine name: \n#" . $host . "\n";
 
 		#add SHA.txt content in TAP file
 		my $SHAFile = $tapPath."../SHA.txt";
