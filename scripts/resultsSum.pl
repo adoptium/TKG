@@ -276,7 +276,7 @@ sub resultReporter {
 		print $fhOut "# AQACert.log content: \n# " . $AQACertContent . "\n";
 
 		#add machine name in TAP file
-		$host = hostname;
+		my $host = hostname;
 		print $fhOut "#Machine name: \n#" . $host . "\n";
 
 		#add SHA.txt content in TAP file
