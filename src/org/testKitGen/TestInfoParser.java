@@ -386,6 +386,44 @@ public class TestInfoParser {
 								break;
 							}
 						}
+						if (prSplitOnDot[0].equals("os") && (prSplitOnDot.length == 4)) {
+							String osName = prSplitOnDot[2];
+							if (arg.getOsLabel().isEmpty()) {
+								isValid = false;
+								break;
+							}
+							String[] osLabelArg = arg.getOsLabel().split("\\.");
+							if (!osLabelArg[0].equals(osName)) {
+								isValid = false;
+								break;
+							}
+							String osVersion = prSplitOnDot[3];
+							if (osVersion.endsWith("+")) {
+								int verInt = 0;
+								try {
+									verInt = Integer.parseInt(osVersion.substring(0, osVersion.length() - 1));
+								} catch (NumberFormatException e) {
+									System.out.println("Error: unrecognized platformRequirement: " + prSplitOnDot + ". Only support integer OS version.");
+									System.exit(1);
+								}
+								int argVerInt = 0;
+								try {
+									argVerInt = Integer.parseInt(osLabelArg[1]);
+								} catch (NumberFormatException e) {
+									System.out.println("Error: unrecognized osLabel: " + arg.getOsLabel() + ". Only support integer OS version.");
+									System.exit(1);
+								}
+								if (verInt > argVerInt) {
+									isValid = false;
+									break;
+								}
+							} else {
+								if (!osLabelArg[1].equals(osVersion)) {
+									isValid = false;
+									break;
+								}
+							}
+						}
 						if (!fullSpec.contains(prSplitOnDot[1])) {
 							isValid = false;
 							break;

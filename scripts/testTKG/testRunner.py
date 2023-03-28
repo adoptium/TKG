@@ -28,15 +28,15 @@ verbose = False
 def main():
     global verbose
     ap = argparse.ArgumentParser()
-    ap.add_argument('-l','--testList', nargs='+', required=False, default=ALL_TESTS, help="space separated test list")
+    ap.add_argument('-t','--test', nargs='+', required=False, default=ALL_TESTS, help="space separated test list")
     ap.add_argument('-v','--verbose', nargs='?', required=False, const=True, default=False, help="print test output")
     args = vars(ap.parse_args())
-    testList = args['testList']
+    test_list = args['test']
     verbose = args['verbose']
 
     rt = True
 
-    for test in testList:
+    for test in test_list:
         if f"test_{test}" in globals():
             rt &= globals()[f"test_{test}"]()
 
@@ -138,8 +138,6 @@ def test_platformRequirements():
         printError("Could not parse spec from output.")
         return False
 
-    print(spec)
-
     passed = set()
     skipped = set()
 
@@ -174,6 +172,35 @@ def test_platformRequirements():
         passed.add('test_osx_x86-64_win_x86_aix_ppc-64_0')
     else:
         skipped.add('test_osx_x86-64_win_x86_aix_ppc-64_0')
+
+    os_label = re.search(r"set OS_LABEL to (.*)", stdout)
+    if os_label is not None:
+        os_label = os_label.group(1)
+        # os_label example: ubuntu.22
+        if os_label.startswith("ubuntu"):
+            label_str = os_label.split(".")
+            try:
+                ver = int(label_str[1],10)
+            except ValueError as ve:
+                #value error to convert to integer
+                skipped.add('test_os_linux_ubuntu20plus_0')
+                skipped.add('test_os_linux_ubuntu22_0')
+
+            if ver >= 22:
+                passed.add('test_os_linux_ubuntu22_0')
+            else:
+                skipped.add('test_os_linux_ubuntu22_0')
+
+            if ver >= 20:
+                passed.add('test_os_linux_ubuntu20plus_0')
+            else:
+                skipped.add('test_os_linux_ubuntu20plus_0')
+        else:
+            skipped.add('test_os_linux_ubuntu20plus_0')
+            skipped.add('test_os_linux_ubuntu22_0')
+    else:
+        skipped.add('test_os_linux_ubuntu20plus_0')
+        skipped.add('test_os_linux_ubuntu22_0')
 
     rt &= checkResult(result, passed, set(), set(), skipped)
     return rt

@@ -25,6 +25,8 @@ ifneq ($(AUTO_DETECT), false)
 
     export MICROARCH:=$(DETECTED_MICRO_ARCH)
 
+    export OS_LABEL:=$(DETECTED_OS_LABEL)
+
     ifndef JDK_VERSION
         export JDK_VERSION:=$(DETECTED_JDK_VERSION)
     else
@@ -62,6 +64,10 @@ else
     ifndef MICROARCH
         export MICROARCH:=$(DETECTED_MICROARCH)
         $(info Warning: No MICROARCH has been exported. Use auto detected MICROARCH=$(MICROARCH).)
+    endif
+    ifndef OS_LABEL
+        export OS_LABEL:=$(DETECTED_OS_LABEL)
+        $(info Warning: No OS_LABEL has been exported. Use auto detected OS_LABEL=$(OS_LABEL).)
     endif
     ifndef JDK_VERSION
         export JDK_VERSION:=$(DETECTED_JDK_VERSION)

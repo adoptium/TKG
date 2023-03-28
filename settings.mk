@@ -380,6 +380,12 @@ setup_%: testEnvSetup
 	@$(ECHO) set JAVA_HOME to $(JAVA_HOME)
 	@$(ECHO) set SPEC to $(SPEC)
 	@$(ECHO) set TEST_FLAG to $(TEST_FLAG)
+	@if [ $(MICROARCH) ]; then \
+		$(ECHO) set MICROARCH to $(MICROARCH); \
+	fi
+	@if [ $(OS_LABEL) ]; then \
+		$(ECHO) set OS_LABEL to $(OS_LABEL); \
+	fi
 
 	@$(MKTREE) $(Q)$(TESTOUTPUT)$(Q)
 	@$(ECHO) Running $(TESTTARGET) ...

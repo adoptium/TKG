@@ -58,18 +58,24 @@ public class EnvDetector {
 		String testFlag = envDetection.getTestFlag();
 		int javaVersionInfo = envDetection.getJDKVersion();
 		String releaseInfo = envDetection.getReleaseInfo();
-		String microArch = machineInfo.getInfoMap().get("microArch").output;
 		if (SPECInfo == null || javaVersionInfo == -1 || javaImplInfo == null) {
 			System.exit(1);
 		}
-		String MICROARCHvalue = "DETECTED_MICRO_ARCH=" + microArch + "\n";
-		String SPECvalue = "DETECTED_SPEC=" + SPECInfo + "\n";
-		String JDKVERSIONvalue = "DETECTED_JDK_VERSION=" + javaVersionInfo + "\n";
-		String JDKIMPLvalue = "DETECTED_JDK_IMPL=" + javaImplInfo + "\n";
-		String JDKVENDORvalue = "DETECTED_JDK_VENDOR=" + vendorInfo + "\n";
-		String JavaVersionValue = "DETECTED_JAVA_VERSION=" + javaVersion + "\n";
-		String ReleaseValue = "DETECTED_RELEASE_INFO=" + releaseInfo + "\n";
-		String TESTFLAGvalue = "DETECTED_TEST_FLAG=" + testFlag + "\n";
+		String MICRO_ARCH = "";
+		if (machineInfo.getInfoMap().containsKey("microArch")) {
+			MICRO_ARCH = "DETECTED_MICRO_ARCH=" + machineInfo.getInfoMap().get("microArch").output + "\n";
+		}
+		String OS_LABEL = "";
+		if (machineInfo.getInfoMap().containsKey("osLabel")) {
+			OS_LABEL = "DETECTED_OS_LABEL=" + machineInfo.getInfoMap().get("osLabel").output + "\n";
+		}
+		String SPEC = "DETECTED_SPEC=" + SPECInfo + "\n";
+		String JDK_VERSION = "DETECTED_JDK_VERSION=" + javaVersionInfo + "\n";
+		String JDK_IMPL = "DETECTED_JDK_IMPL=" + javaImplInfo + "\n";
+		String JDK_VENDOR = "DETECTED_JDK_VENDOR=" + vendorInfo + "\n";
+		String JAVA_VERSION = "DETECTED_JAVA_VERSION=" + javaVersion + "\n";
+		String RELEASE_INFO = "DETECTED_RELEASE_INFO=" + releaseInfo + "\n";
+		String TEST_FLAG = "DETECTED_TEST_FLAG=" + testFlag + "\n";
 
 		/**
 		 * autoGenEnv.mk file will be created to store auto detected java info.
@@ -80,16 +86,17 @@ public class EnvDetector {
 			output.write("########################################################\n");
 			output.write("# This is an auto generated file. Please do NOT modify!\n");
 			output.write("########################################################\n");
-			output.write(SPECvalue);
-			output.write(MICROARCHvalue);
-			output.write(JDKVERSIONvalue);
-			output.write(JDKIMPLvalue);
-			output.write(JDKVENDORvalue);
-			output.write(TESTFLAGvalue);
+			output.write(SPEC);
+			output.write(MICRO_ARCH);
+			output.write(OS_LABEL);
+			output.write(JDK_VERSION);
+			output.write(JDK_IMPL);
+			output.write(JDK_VENDOR);
+			output.write(TEST_FLAG);
 			output.close();
 			output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log")));
-			output.write(JavaVersionValue);
-			output.write(ReleaseValue);
+			output.write(JAVA_VERSION);
+			output.write(RELEASE_INFO);
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
