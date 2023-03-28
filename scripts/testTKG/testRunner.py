@@ -176,31 +176,32 @@ def test_platformRequirements():
     os_label = re.search(r"set OS_LABEL to (.*)", stdout)
     if os_label is not None:
         os_label = os_label.group(1)
+        label_str = os_label.split(".")
         # os_label example: ubuntu.22
-        if os_label.startswith("ubuntu"):
-            label_str = os_label.split(".")
-            try:
-                ver = int(label_str[1],10)
-            except ValueError as ve:
-                #value error to convert to integer
-                skipped.add('test_os_linux_ubuntu20plus_0')
-                skipped.add('test_os_linux_ubuntu22_0')
+        try:
+            ver = int(label_str[1],10)
+            if label_str[0] == "ubuntu":
+                if ver >= 22:
+                    passed.add('test_os_linux_ubuntu22_0')
+                if ver >= 20:
+                    passed.add('test_os_linux_ubuntu20plus_0')
+                    passed.add('test_os_linux_ubuntu20plus_rhel8plus_0')
 
-            if ver >= 22:
-                passed.add('test_os_linux_ubuntu22_0')
-            else:
-                skipped.add('test_os_linux_ubuntu22_0')
+            if label_str[0] == "rhel":
+                if ver >= 8:
+                    passed.add('test_os_linux_ubuntu20plus_rhel8plus_0')
 
-            if ver >= 20:
-                passed.add('test_os_linux_ubuntu20plus_0')
-            else:
-                skipped.add('test_os_linux_ubuntu20plus_0')
-        else:
-            skipped.add('test_os_linux_ubuntu20plus_0')
-            skipped.add('test_os_linux_ubuntu22_0')
-    else:
+        except ValueError as ve:
+            print ("warning: os version value failed to convert to an integer")
+
+    if 'test_os_linux_ubuntu20plus_0' not in passed:
         skipped.add('test_os_linux_ubuntu20plus_0')
+
+    if 'test_os_linux_ubuntu22_0' not in passed:
         skipped.add('test_os_linux_ubuntu22_0')
+
+    if 'test_os_linux_ubuntu20plus_rhel8plus_0' not in passed:
+        skipped.add('test_os_linux_ubuntu20plus_rhel8plus_0')
 
     rt &= checkResult(result, passed, set(), set(), skipped)
     return rt
