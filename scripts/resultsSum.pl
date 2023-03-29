@@ -277,7 +277,7 @@ sub resultReporter {
 
 		#add machine name in TAP file
 		my $host = hostname;
-		print $fhOut "#Machine name: \n#" . $host . "\n";
+		print $fhOut "# Hostname: " . $host . "\n\n";
 
 		#add SHA.txt content in TAP file
 		my $SHAFile = $tapPath."../SHA.txt";
