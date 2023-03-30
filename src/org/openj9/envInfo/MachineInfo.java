@@ -208,6 +208,9 @@ public class MachineInfo {
 			if (osName.contains("red hat enterprise linux")) {
 				osName = "rhel";
 			}
+			if (!osName.equals("rhel") || !osName.equals("ubuntu") || !osName.equals("sles")) {
+				return;
+			}
 			String fullOsVersion = ce.execute(LINUX_OS_VERSION_CMD);
 			String[] osVersions = fullOsVersion.split("\\.");
 			String osLabel = osName + "." + osVersions[0];
