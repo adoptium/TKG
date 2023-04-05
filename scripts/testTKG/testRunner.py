@@ -141,6 +141,14 @@ def test_platformRequirements():
     passed = set()
     skipped = set()
 
+    if 'linux' in spec:
+        skipped.add('test_not_linux_arch_x86_0')
+    else:
+        if 'x86' in spec:
+            passed.add('test_not_linux_arch_x86_0')
+        else:
+            skipped.add('test_not_linux_arch_x86_0')
+
     if 'x86' in spec:
         passed.add('test_arch_x86_0')
         skipped.add('test_arch_nonx86_0')
@@ -186,13 +194,17 @@ def test_platformRequirements():
                 if ver >= 20:
                     passed.add('test_os_linux_ubuntu20plus_0')
                     passed.add('test_os_linux_ubuntu20plus_rhel8plus_0')
+                if ver < 20:
+                    passed.add('test_not_os_linux_ubuntu20plus_0')
 
             if label_str[0] == "rhel":
                 if ver >= 8:
                     passed.add('test_os_linux_ubuntu20plus_rhel8plus_0')
-
         except ValueError as ve:
             print ("warning: os version value failed to convert to an integer")
+            passed.add('test_not_os_linux_ubuntu20plus_0')
+    else:
+        passed.add('test_not_os_linux_ubuntu20plus_0')
 
     if 'test_os_linux_ubuntu20plus_0' not in passed:
         skipped.add('test_os_linux_ubuntu20plus_0')
@@ -202,6 +214,9 @@ def test_platformRequirements():
 
     if 'test_os_linux_ubuntu20plus_rhel8plus_0' not in passed:
         skipped.add('test_os_linux_ubuntu20plus_rhel8plus_0')
+
+    if 'test_not_os_linux_ubuntu20plus_0' not in passed:
+        skipped.add('test_not_os_linux_ubuntu20plus_0')
 
     rt &= checkResult(result, passed, set(), set(), skipped)
     return rt

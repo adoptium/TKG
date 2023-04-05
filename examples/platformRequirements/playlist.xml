@@ -60,6 +60,13 @@
 	</test>
 
 	<test>
+		<testCaseName>test_not_linux_arch_x86</testCaseName>
+		<command>echo "test on none linux and on arch x86"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>^os.linux,arch.x86</platformRequirements>
+	</test>
+
+	<test>
 		<testCaseName>test_osx_x86-64_win_x86_aix_ppc-64</testCaseName>
 		<command>echo "test osx_x86-64 or win_x86 or aix_ppc-64"; \
 	$(TEST_STATUS)</command>
@@ -93,4 +100,12 @@
 			<platformRequirements>os.linux.rhel.8+</platformRequirements>
 		</platformRequirementsList>
 	</test>
+
+	<test>
+		<testCaseName>test_not_os_linux_ubuntu20plus</testCaseName>
+		<command>echo "test on none os.linux.ubuntu.20+"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>^os.linux.ubuntu.20+</platformRequirements>
+	</test>
+
 </playlist>
