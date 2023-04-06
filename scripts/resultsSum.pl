@@ -288,10 +288,12 @@ sub resultReporter {
 		print $fhOut "# Timestamp: " . $timeStamp . " UTC \n";
 
 		#add customTarget to TAP file
-  		if ($customTarget ne '') {
-  			print $fhOut "# CUSTOM_TARGET: " . "${customTarget}" . "\n";
-  		}
-		
+		if ($customTarget ne '') {
+			print $fhOut "# CUSTOM_TARGET: " . "${customTarget}" . "\n";
+		}
+
+		print $fhOut "# RESULTS_SUMMARY: TOTAL: $numOfTotal EXECUTED: $numOfExecuted PASSED: $numOfPassed FAILED: $numOfFailed DISABLED: $numOfDisabled SKIPPED: $numOfSkipped\n";
+
 		print $fhOut "1.." . $numOfTotal . "\n";
 		print $fhOut $tapString;
 		close $fhOut;
