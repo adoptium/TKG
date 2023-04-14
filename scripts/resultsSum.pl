@@ -160,28 +160,40 @@ sub resultReporter {
 						$tapString .= "not ok " . $numOfTotal . " - " . $testName . "\n";
 						$tapString .= "  ---\n";
 						if (($diagnostic eq 'failure') || ($diagnostic eq 'all')) {
-							if ($buildList =~ /openjdk/) {
+							if ($diagnostic eq 'all') {
+								$tapString .= $output;
+							}
+							if (($buildList =~ /openjdk/) || ($buildList =~ /jck/)) {
 								my @lines = split('\\n', $output);
 								my $failureTests = "";
 								for my $i (0 .. $#lines) {
-									if ( $lines[$i] =~ /[-]{50}/) {
-										if ( ($lines[$i+1] =~ /(TEST: )(.*?)(\.java|\.sh|#.*)$/) || ($lines[$i+1] =~ /(Test results: .*)(failed|error)(: \d{1,}$)/) ) {
-											$i++;
+									if ($buildList =~ /openjdk/) {
+										if ( $lines[$i] =~ /[-]{50}/) {
+											if ( ($lines[$i+1] =~ /(TEST: )(.*?)(\.java|\.sh|#.*)$/) || ($lines[$i+1] =~ /(Test results: .*)(failed|error)(: \d{1,}$)/) ) {
+												$i++;
+												$failureTests .= $lines[$i] . "\n";
+											}
+										}
+									} else {
+										if ($lines[$i] =~ /(Test results: .*)(failed: .*)(\d{1,}$)/){
 											$failureTests .= $lines[$i] . "\n";
+										} elsif ($lines[$i] =~ /(Failed. test cases: \d{1,})/) {
+											my ($testsName) = $lines[$i] =~ /([^#|\s]+)/;
+											$failureTests = "        TEST: $testsName" . "\n" . $failureTests;
 										}
 									}
 								}
-								if ( $failureTests eq "" ) {
+								if ( ($failureTests eq "") && ($diagnostic eq 'failure')) {
 									# Output of dump or other non-test failures
 									$tapString .= $output;
 								} else {
 									$tapString .= "    output:\n      |\n";
 									$tapString .= "        Failed test cases: \n" . $failureTests;
 								}
-							} else {
+							} elsif ($diagnostic eq 'failure') {
 								$tapString .= $output;
 							}
-						}
+						} 
 						if ($spec =~ /zos/) {
 							my $dmpDir = dirname($resultFile).'/'.$testName;
 							moveTDUMPS($output, $dmpDir, $spec);
