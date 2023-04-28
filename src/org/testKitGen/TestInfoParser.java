@@ -353,86 +353,90 @@ public class TestInfoParser {
 	}
 
 	private boolean checkPlatformReq(List<String> platformRequirementsList) {
-		boolean isValid = true;
-		if (!platformRequirementsList.isEmpty()) {
-			for (String prs : platformRequirementsList) {
-				isValid = true;
-				for (String pr : prs.split("\\s*,\\s*")) {
-					pr = pr.trim();
-					String[] prSplitOnDot = pr.split("\\.");
-					String spec = arg.getSpec();
-					String fullSpec = spec;
+		if (platformRequirementsList.isEmpty()) {
+			return true;
+		}
+		for (String prs : platformRequirementsList) {
+			boolean isValid = true;
+			for (String pr : prs.split("\\s*,\\s*")) {
+				pr = pr.trim();
+				boolean notPrefix = false;
+				if (pr.startsWith("^")) {
+					pr = pr.substring(1);
+					notPrefix = true;
+				}
+				String spec = arg.getSpec();
+				String fullSpec = spec;
 
-					// Special case 32/31-bit specs which do not have 32 or 31 in the name (i.e.
-					// aix_ppc)
-					if (!spec.contains("-64")) {
-						if (spec.contains("390")) {
-							fullSpec = spec + "-31";
-						} else {
-							fullSpec = spec + "-32";
-						}
-					}
-
-					if (prSplitOnDot[0].charAt(0) == '^') {
-						if (fullSpec.contains(prSplitOnDot[1])) {
-							isValid = false;
-							break;
-						}
+				// Special case 32/31-bit specs which do not have 32 or 31 in the name (i.e.
+				// aix_ppc)
+				if (!spec.contains("-64")) {
+					if (spec.contains("390")) {
+						fullSpec = spec + "-31";
 					} else {
-						if (prSplitOnDot[0].contains("arch") && (prSplitOnDot.length == 3)) {
-							String microArch = prSplitOnDot[2];
-							if (!microArch.equals(arg.getMicroArch())) {
-								isValid = false;
-								break;
-							}
-						}
-						if (prSplitOnDot[0].equals("os") && (prSplitOnDot.length == 4)) {
-							String osName = prSplitOnDot[2];
-							if (arg.getOsLabel().isEmpty()) {
-								isValid = false;
-								break;
-							}
-							String[] osLabelArg = arg.getOsLabel().split("\\.");
-							if (!osLabelArg[0].equals(osName)) {
-								isValid = false;
-								break;
-							}
-							String osVersion = prSplitOnDot[3];
-							if (osVersion.endsWith("+")) {
-								int verInt = 0;
-								try {
-									verInt = Integer.parseInt(osVersion.substring(0, osVersion.length() - 1));
-								} catch (NumberFormatException e) {
-									System.out.println("Error: unrecognized platformRequirement: " + prSplitOnDot + ". Only support integer OS version.");
-									System.exit(1);
-								}
-								int argVerInt = 0;
-								try {
-									argVerInt = Integer.parseInt(osLabelArg[1]);
-								} catch (NumberFormatException e) {
-									System.out.println("Error: unrecognized osLabel: " + arg.getOsLabel() + ". Only support integer OS version.");
-									System.exit(1);
-								}
-								if (verInt > argVerInt) {
-									isValid = false;
-									break;
-								}
-							} else {
-								if (!osLabelArg[1].equals(osVersion)) {
-									isValid = false;
-									break;
-								}
-							}
-						}
-						if (!fullSpec.contains(prSplitOnDot[1])) {
-							isValid = false;
-							break;
-						}
+						fullSpec = spec + "-32";
 					}
 				}
-				if (isValid) break;
+
+				boolean isMatch = matchPlat(fullSpec, pr);
+				if ((notPrefix && isMatch) || (!notPrefix && !isMatch)) {
+					isValid = false;
+					break;
+				}
+			}
+			if (isValid) {
+				return true;
 			}
 		}
-		return isValid;
+		return false;
+	}
+
+	private boolean matchPlat(String fullSpec, String pr) {
+		String[] prSplitOnDot = pr.split("\\.");
+
+		if (!fullSpec.contains(prSplitOnDot[1])) {
+			return false;
+		}
+
+		if (prSplitOnDot[0].equals("arch") && (prSplitOnDot.length == 3)) {
+			String microArch = prSplitOnDot[2];
+			if (!microArch.equals(arg.getMicroArch())) {
+				return false;
+			}
+		} else if (prSplitOnDot[0].equals("os") && (prSplitOnDot.length == 4)) {
+			String osName = prSplitOnDot[2];
+			if (arg.getOsLabel().isEmpty()) {
+				return false;
+			}
+			String[] osLabelArg = arg.getOsLabel().split("\\.");
+			if (!osLabelArg[0].equals(osName)) {
+				return false;
+			}
+			String osVersion = prSplitOnDot[3];
+			if (osVersion.endsWith("+")) {
+				int verInt = 0;
+				try {
+					verInt = Integer.parseInt(osVersion.substring(0, osVersion.length() - 1));
+				} catch (NumberFormatException e) {
+					System.out.println("Error: unrecognized platformRequirement: " + prSplitOnDot + ". Only support integer OS version.");
+					System.exit(1);
+				}
+				int argVerInt = 0;
+				try {
+					argVerInt = Integer.parseInt(osLabelArg[1]);
+				} catch (NumberFormatException e) {
+					System.out.println("Error: unrecognized osLabel: " + arg.getOsLabel() + ". Only support integer OS version.");
+					System.exit(1);
+				}
+				if (verInt > argVerInt) {
+					return false;
+				}
+			} else {
+				if (!osLabelArg[1].equals(osVersion)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }
