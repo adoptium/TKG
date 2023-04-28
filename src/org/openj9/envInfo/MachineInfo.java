@@ -17,12 +17,15 @@ package org.openj9.envInfo;
 import java.io.File;
 import java.nio.file.*;
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.lang.management.ManagementFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import com.sun.management.OperatingSystemMXBean;
@@ -207,10 +210,15 @@ public class MachineInfo {
 			String osName = ce.execute(LINUX_OS_NAME_CMD).toLowerCase();
 			if (osName.contains("red hat enterprise linux")) {
 				osName = "rhel";
+			} else if (osName.contains("centos")) {
+				osName = "cent";
 			}
-			if (!osName.equals("rhel") || !osName.equals("ubuntu") || !osName.equals("sles")) {
+
+			Set<String> supportedOS = new HashSet<>(Arrays.asList("rhel", "ubuntu", "sles", "cent"));
+			if (!supportedOS.contains(osName)) {
 				return;
 			}
+
 			String fullOsVersion = ce.execute(LINUX_OS_VERSION_CMD);
 			String[] osVersions = fullOsVersion.split("\\.");
 			String osLabel = osName + "." + osVersions[0];
