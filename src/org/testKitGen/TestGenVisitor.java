@@ -29,7 +29,7 @@ public class TestGenVisitor implements DirectoryVisitor {
 	}
 
 	@Override
-	public boolean visit(File playlistXML, String absoluteDir, List<String> dirList, List<String> subDirs) {
+	public boolean visit(File playlistXML, String absoluteDir, List<String> dirList, List<String> subDirs, List<String> ignoreOnRerunList) {
 		PlaylistInfoParser parser = new PlaylistInfoParser(arg, md, tt, playlistXML);
 		PlaylistInfo pli = parser.parse();
 		boolean testFound = !subDirs.isEmpty() || pli.containsTest();
@@ -37,6 +37,7 @@ public class TestGenVisitor implements DirectoryVisitor {
 		File file = new File(makeFile); 
 		file.delete();
 		if (testFound) {
+			ignoreOnRerunList.addAll(pli.getIgnoreOnRerunList());
 			MkGen mg = new MkGen(arg, tt, pli, makeFile, dirList, subDirs);
 			mg.start();
 			return true;

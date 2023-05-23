@@ -109,7 +109,22 @@ public class TestInfoParser {
 				}
 			} else {
 				System.err.println("Error: Please provide a valid feature parameter in test " + ti.getTestCaseName() + ". The valid string is <feature_name>:[required|applicable|nonapplicable|explicit].");
+				System.exit(1);
 			}
+		}
+
+		String rerun = getImmediateChildContent(testEle, "rerun");
+		if (rerun != null) {
+			if (rerun.equals("true")) {
+				ti.setRerun(true);
+			} else if (rerun.equals("false")) {
+				ti.setRerun(false);
+			} else {
+				System.err.println("Error: Please provide a valid rerun parameter in test " + ti.getTestCaseName() + ". The valid string is [true|false].");
+				System.exit(1);
+			}
+		} else {
+			ti.setRerun(true);
 		}
 
 		String platform = getImmediateChildContent(testEle, "platform");

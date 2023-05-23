@@ -29,7 +29,7 @@ public class ParallelGenVisitor implements DirectoryVisitor {
 	}
 
 	@Override
-	public boolean visit(File playlistXML, String absoluteDir, List<String> dirList, List<String> subDirs) {
+	public boolean visit(File playlistXML, String absoluteDir, List<String> dirList, List<String> subDirs, List<String> ignoreOnRerunList) {
 		PlaylistInfoParser parser = new PlaylistInfoParser(arg, md, tt, playlistXML);
 		parser.parse();
 		return true;

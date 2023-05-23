@@ -18,5 +18,5 @@ import java.io.File;
 import java.util.List;
 
 public interface DirectoryVisitor {
-	public boolean visit(File playlistXML, String absoluteDir, List<String> dirList, List<String> subDirs);
+	public boolean visit(File playlistXML, String absoluteDir, List<String> dirList, List<String> subDirs, List<String> ignoreOnRerunList);
 }

@@ -17,20 +17,30 @@ package org.testKitGen;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 public class UtilsGen {
 	private Arguments arg;
 	private ModesDictionary md;
-	private String utilsmk;
+	private String utilsMk;
+	private String rerunMk;
+	private List<String> ignoreOnRerunList;
 
-	public UtilsGen(Arguments arg, ModesDictionary md) {
+	public UtilsGen(Arguments arg, ModesDictionary md, List<String> ignoreOnRerunList) {
 		this.arg = arg;
 		this.md = md;
-		utilsmk = arg.getProjectRootDir() + "/TKG/" + Constants.UTILSMK;
+		this.utilsMk = arg.getProjectRootDir() + "/TKG/" + Constants.UTILSMK;
+		this.rerunMk = arg.getProjectRootDir() + "/TKG/" + Constants.RERUNMK;
+		this.ignoreOnRerunList = ignoreOnRerunList;
 	}
 
-	public void generateFile() {
-		try (FileWriter f = new FileWriter(utilsmk)) {
+	public void generateFiles() {
+		generateUtil();
+		generateRerun();
+	}
+
+	private void generateUtil() {
+		try (FileWriter f = new FileWriter(utilsMk)) {
 			f.write(Constants.HEADERCOMMENTS);
 			f.write("TOTALCOUNT := " + TestInfo.numOfTests() + "\n");
 			f.write("PLATFORM=\n");
@@ -38,7 +48,22 @@ public class UtilsGen {
 			if (!plat.isEmpty()) {
 				f.write("ifeq" + " ($(SPEC)," + arg.getSpec() + ")\n\tPLATFORM=" + plat + "\nendif\n\n");
 			}
-			System.out.println("Generated " + utilsmk + "\n");
+			System.out.println("Generated " + utilsMk + "\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	private void generateRerun() {
+		try (FileWriter f = new FileWriter(rerunMk)) {
+			f.write(Constants.HEADERCOMMENTS);
+			String ignoreOnRerunStr = String.join(",", ignoreOnRerunList);
+			f.write("IGNORE_ON_RERUN=");
+			if (ignoreOnRerunList != null && !ignoreOnRerunList.isEmpty()) {
+				f.write(ignoreOnRerunStr);
+			}
+			System.out.println("Generated " + rerunMk + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -46,7 +71,9 @@ public class UtilsGen {
 	}
 
 	public void clean() {
-		File f = new File(utilsmk);
+		File f = new File(utilsMk);
+		f.delete();
+		f = new File(rerunMk);
 		f.delete();
 	}
 }

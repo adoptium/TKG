@@ -13,6 +13,8 @@
 *******************************************************************************/
 package org.testKitGen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 public class MainRunner {
 
@@ -56,16 +58,17 @@ public class MainRunner {
 
 	public static void genTests(Arguments argInfo, ModesDictionary md, TestTarget tt, BuildList bl) {
 		System.out.println("Starting to generate test make files.\n");
-		DirectoryWalker dw = new DirectoryWalker(argInfo, new TestGenVisitor(argInfo, md, tt), bl);
+		List<String> ignoreOnRerunList = new ArrayList<>();
+		DirectoryWalker dw = new DirectoryWalker(argInfo, new TestGenVisitor(argInfo, md, tt), bl, ignoreOnRerunList);
 		dw.traverse();
-		UtilsGen ug = new UtilsGen(argInfo, md);
-		ug.generateFile();
+		UtilsGen ug = new UtilsGen(argInfo, md, ignoreOnRerunList);
+		ug.generateFiles();
 		System.out.println("Make files are generated successfully.\n");
 	}
 
 	public static void genParallelList(Arguments argInfo, ModesDictionary md, TestTarget tt, BuildList bl) {
 		System.out.println("\nStarting to generate parallel test lists.\n");
-		DirectoryWalker dw = new DirectoryWalker(argInfo, new ParallelGenVisitor(argInfo, md, tt), bl);
+		DirectoryWalker dw = new DirectoryWalker(argInfo, new ParallelGenVisitor(argInfo, md, tt), bl, null);
 		dw.traverse();
 		TestDivider td = new TestDivider(argInfo, tt);
 		td.generateLists();
@@ -73,15 +76,15 @@ public class MainRunner {
 
 	public static void genBuildList(Arguments argInfo, ModesDictionary md, TestTarget tt, BuildList bl) {
 		System.out.println("\nStarting to generate build list.\n");
-		DirectoryWalker dw = new DirectoryWalker(argInfo, new BuildListGenVisitor(argInfo, md, tt, bl), bl);
+		DirectoryWalker dw = new DirectoryWalker(argInfo, new BuildListGenVisitor(argInfo, md, tt, bl), bl, null);
 		dw.traverse();
 		bl.generateList();
 	}
 
 	public static void clean(Arguments argInfo, BuildList bl) {
-		DirectoryWalker dw = new DirectoryWalker(argInfo, new CleanVisitor(), bl);
+		DirectoryWalker dw = new DirectoryWalker(argInfo, new CleanVisitor(), bl, null);
 		dw.traverse();
-		UtilsGen ug = new UtilsGen(argInfo, null);
+		UtilsGen ug = new UtilsGen(argInfo, null, null);
 		ug.clean();
 		TestDivider td = new TestDivider(argInfo, null);
 		td.clean();

@@ -29,6 +29,7 @@ public final class Constants {
 	public static final String TRSSCACHE_DIR = Constants.RESOURCE + "/TRSS";
 	public static final String TESTMK = "autoGen.mk";
 	public static final String UTILSMK = "utils.mk";
+	public static final String RERUNMK = "rerun.mk";
 	public static final String SETTINGSMK = "settings.mk";
 	public static final String PARALLELMK = "parallelList.mk";
 	public static final String BUILDINFOMK = "buildInfo.mk";
