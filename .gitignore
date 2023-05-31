@@ -23,6 +23,7 @@ scripts/testBot/__pycache__
 # misc auto generated files
 autoGen.mk
 utils.mk
+rerun.mk
 parallelList.mk
 *.log
 *.tap

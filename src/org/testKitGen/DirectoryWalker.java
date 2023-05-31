@@ -23,11 +23,13 @@ public class DirectoryWalker {
 	private DirectoryVisitor dv;
 	private BuildList bl;
 	private ArrayList<String> dirList;
+	private List<String> ignoreOnRerunList;
 
-	public DirectoryWalker(Arguments arg, DirectoryVisitor dv, BuildList bl) {
+	public DirectoryWalker(Arguments arg, DirectoryVisitor dv, BuildList bl, List<String> ignoreOnRerunList) {
 		this.arg = arg;
 		this.dv = dv;
 		this.bl = bl;
+		this.ignoreOnRerunList = ignoreOnRerunList;
 		dirList = new ArrayList<String>();
 	}
 
@@ -60,7 +62,7 @@ public class DirectoryWalker {
 			}
 		}
 
-		boolean rt = dv.visit(playlistXML, absoluteDir, dirList, subDirsWithTest);
+		boolean rt = dv.visit(playlistXML, absoluteDir, dirList, subDirsWithTest, ignoreOnRerunList);
 		return rt;
 	}
 }

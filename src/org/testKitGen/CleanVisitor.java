@@ -23,7 +23,7 @@ public class CleanVisitor implements DirectoryVisitor {
 	}
 
 	@Override
-	public boolean visit(File playlistXML, String absoluteDir, List<String> dirList, List<String> subDirs) {
+	public boolean visit(File playlistXML, String absoluteDir, List<String> dirList, List<String> subDirs, List<String> ignoreOnRerunList) {
 		String makeFile = absoluteDir + "/" + Constants.TESTMK;
 		File file = new File(makeFile); 
 		file.delete();

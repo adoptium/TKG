@@ -120,6 +120,11 @@ public class PlaylistInfoParser {
 							if ((previousTestsToExecute < TestInfo.getTestsToExecute().size()) && (bl != null)) {
 								bl.add(playlistXML);
 							}
+							if (!ti.getRerun()) {
+								for (Variation var : ti.getVars()) {
+									pli.addIgnoreOnRerun(var.getSubTestName());
+								}
+							}
 						}
 					}
 				}

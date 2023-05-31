@@ -19,10 +19,12 @@ import java.util.List;
 public class PlaylistInfo {
 	private List<TestInfo> testInfoList;
 	private List<String> includeList;
+	private List<String> ignoreOnRerunList;
 
 	public PlaylistInfo() {
 		this.includeList = new ArrayList<String>();
 		this.testInfoList = new ArrayList<TestInfo>();
+		this.ignoreOnRerunList = new ArrayList<String>();
 	}
 
 	public List<String> getIncludeList() {
@@ -39,6 +41,14 @@ public class PlaylistInfo {
 
 	public void setTestInfoList(List<TestInfo> testInfoList) {
 		this.testInfoList = testInfoList;
+	}
+
+	public void addIgnoreOnRerun(String test) {
+		ignoreOnRerunList.add(test);
+	}
+
+	public List<String> getIgnoreOnRerunList() {
+		return this.ignoreOnRerunList;
 	}
 
 	public boolean containsTest() {

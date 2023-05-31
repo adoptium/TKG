@@ -34,6 +34,7 @@ public class TestInfo {
 	private List<String> levels;
 	private List<String> groups;
 	private List<String> types;
+	private boolean rerun;
 	private static List<String> testsToExecute = new ArrayList<>();
 	private static List<String> testsToDisplay = new ArrayList<>();
 
@@ -164,6 +165,14 @@ public class TestInfo {
 
 	public void setTypes(List<String> types) {
 		this.types = types;
+	}
+
+	public void setRerun(boolean rerun) {
+		this.rerun = rerun;
+	}
+
+	public boolean getRerun() {
+		return this.rerun;
 	}
 
 	public static void countTests(TestInfo ti, TestTarget tt) {
