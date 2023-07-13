@@ -61,7 +61,7 @@ public class MachineInfo {
 	public static final String[] ANT_VERSION_CMD = new String[] {"bash", "-c", "ant -version"};
 	public static final String[] MAKE_VERSION_CMD = new String[] {"bash", "-c", "make --version"};
 	public static final String[] PERL_VERSION_CMD = new String[] {"bash", "-c", "perl --version"};
-	public static final String[] CURL_VERSION_CMD = new String[] {"bash", "-c", "curl --version | head -n 1 | awk '{ print $2 }'"};
+	public static final String[] CURL_VERSION_CMD = new String[] {"bash", "-c", "curl --version"};
 
 
 	// Console
@@ -142,12 +142,11 @@ public class MachineInfo {
 		}
 	}
 
-	private boolean validateVersion(Info info, String requriedVersionStr) {
+	private boolean validateVersion(String versionName, String actualVersionStr, String requriedVersionStr) {
 		boolean isValid = true;
-		String actualVersionStr = parseInfo(info.output);
-		ArrayList<Integer> accVer = versionStr2ArrList(actualVersionStr);
-		ArrayList<Integer> reqVer = versionStr2ArrList(requriedVersionStr);
 		try { 
+			ArrayList<Integer> accVer = versionStr2ArrList(actualVersionStr);
+			ArrayList<Integer> reqVer = versionStr2ArrList(requriedVersionStr);
 			int accVerLen = accVer.size();
 			int reqVerLen = reqVer.size();
 			if (accVerLen > reqVerLen) {
@@ -163,11 +162,11 @@ public class MachineInfo {
 				}
 			}
 			if (!isValid) {
-				System.out.println("Warning: required " + info.name + ": " + requriedVersionStr + ". Output:\n" + info.output);
+				System.out.println("Error: required " + versionName + ": " + requriedVersionStr + ". Installed version: " + actualVersionStr);
 			}
 		} catch (NumberFormatException e){
-			System.out.println("Warning: "+ info.name + " information cannot be extracted.");
-			System.out.println(info.name + " output: " + actualVersionStr);
+			System.out.println("Warning: "+ versionName + " information cannot be extracted.");
+			System.out.println(versionName + " output: " + actualVersionStr);
 		}
 		return isValid;
 	}
@@ -176,15 +175,13 @@ public class MachineInfo {
 		boolean valid = true;
 		for (Info info : infoMap.values()) {
 			if (info.req != null) {
-				valid &= validateVersion(info, info.req);
+				String version = parseInfo(info.output);
+				valid &= validateVersion(info.name, version, info.req);
 			}
 		}
-
-		// Do not fail if the check not pass for the build environment.
-		// We need to add an option to toggle the failure or warning mode.
-		// if (!valid) {
-		//	System.exit(1);
-		//}
+		if (!valid) {
+			System.exit(1);
+		}
 	}
 
 	private void getSysInfo() {
