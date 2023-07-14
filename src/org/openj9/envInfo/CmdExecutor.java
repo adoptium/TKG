@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Map;
 
 public class CmdExecutor {
 	private static CmdExecutor instance;
@@ -36,9 +37,15 @@ public class CmdExecutor {
 		String rt = null;
 		try {
 			ProcessBuilder builder = new ProcessBuilder(Arrays.asList(commands));
+			Map<String, String> env = builder.environment();
+			// clear env and copy from the parent shell environment
+			env.clear();
+			Map<String, String> shellEnv = System.getenv();
+			env.putAll(shellEnv);
 			builder.redirectErrorStream(true);
 			Process proc = builder.start();
 			BufferedReader stdOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			String newline = "";  

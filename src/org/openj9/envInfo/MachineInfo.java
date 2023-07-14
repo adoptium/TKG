@@ -142,9 +142,10 @@ public class MachineInfo {
 		}
 	}
 
-	private boolean validateVersion(String versionName, String actualVersionStr, String requriedVersionStr) {
+	private boolean validateVersion(Info info, String requriedVersionStr) {
 		boolean isValid = true;
-		try { 
+		String actualVersionStr = parseInfo(info.output);
+		try {
 			ArrayList<Integer> accVer = versionStr2ArrList(actualVersionStr);
 			ArrayList<Integer> reqVer = versionStr2ArrList(requriedVersionStr);
 			int accVerLen = accVer.size();
@@ -162,11 +163,13 @@ public class MachineInfo {
 				}
 			}
 			if (!isValid) {
-				System.out.println("Error: required " + versionName + ": " + requriedVersionStr + ". Installed version: " + actualVersionStr);
+				System.out.println("Warning: required " + info.name + ": " + requriedVersionStr + ". Output:\n" + info.output);
 			}
 		} catch (NumberFormatException e){
-			System.out.println("Warning: "+ versionName + " information cannot be extracted.");
-			System.out.println(versionName + " output: " + actualVersionStr);
+			// We need to add an option to toggle the failure or warning mode.
+			// isValid = false;
+			System.out.println("Warning: "+ info.name + " information cannot be extracted.");
+			System.out.println(info.name + " output: " + actualVersionStr);
 		}
 		return isValid;
 	}
@@ -175,13 +178,15 @@ public class MachineInfo {
 		boolean valid = true;
 		for (Info info : infoMap.values()) {
 			if (info.req != null) {
-				String version = parseInfo(info.output);
-				valid &= validateVersion(info.name, version, info.req);
+				valid &= validateVersion(info, info.req);
 			}
 		}
-		if (!valid) {
-			System.exit(1);
-		}
+
+		// Do not fail if the check not pass for the build environment.
+		// We need to add an option to toggle the failure or warning mode.
+		// if (!valid) {
+		//	System.exit(1);
+		//}
 	}
 
 	private void getSysInfo() {
