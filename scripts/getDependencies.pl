@@ -129,6 +129,13 @@ my %base = (
 		fname => 'org.eclipse.osgi-3.16.100.jar',
 		sha1 => '7ddb312f386b799d6e004d193a01c50169bf69f3'
 	},
+	jtreg_5_1_b01 => {
+		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg5.1-b01.tar.gz',
+		fname => 'jtreg_5_1_b01.tar.gz',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg5.1-b01.tar.gz.sha256sum.txt',
+		shafn => 'jtreg_5_1_b01.tar.gz.sha256sum.txt',
+		shaalg => '256'
+	},
 	jtreg_6_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-6+1.tar.gz',
 		fname => 'jtreg_6_1.tar.gz',
@@ -157,20 +164,20 @@ my %base = (
 		shafn => 'jtreg_7_2_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
-	jtreg_5_1_b01 => {
-		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg5.1-b01.tar.gz',
-		fname => 'jtreg_5_1_b01.tar.gz',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg5.1-b01.tar.gz.sha256sum.txt',
-		shafn => 'jtreg_5_1_b01.tar.gz.sha256sum.txt',
+	jtreg_7_3_1 => {
+		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.3+1.tar.gz',
+		fname => 'jtreg_7_3_1.tar.gz',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.3+1.tar.gz.sha256sum.txt',
+		shafn => 'jtreg_7_3_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
-	
+
 	jython => {
 		url => 'https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
 		fname => 'jython-standalone.jar',
 		sha1 => '15592c29538abd36d15570eda9fa055ed1a618ba'
-	}, 
-	
+	},
+
 	jcstress => {
 		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20220908.jar',
 		fname => 'jcstress-tests-all-20220908.jar',
