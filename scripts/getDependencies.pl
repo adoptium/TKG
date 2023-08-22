@@ -171,13 +171,18 @@ my %base = (
 		shafn => 'jtreg_7_3_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
-
+	jtreg_7_3_1_1 => {
+		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.3.1+1.tar.gz',
+		fname => 'jtreg_7_3_1_1.tar.gz',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.3.1+1.tar.gz.sha256sum.txt',
+		shafn => 'jtreg_7_3_1_1.tar.gz.sha256sum.txt',
+		shaalg => '256'
+	},
 	jython => {
 		url => 'https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
 		fname => 'jython-standalone.jar',
 		sha1 => '15592c29538abd36d15570eda9fa055ed1a618ba'
 	},
-
 	jcstress => {
 		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20220908.jar',
 		fname => 'jcstress-tests-all-20220908.jar',
