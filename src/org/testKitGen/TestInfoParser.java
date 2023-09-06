@@ -88,28 +88,34 @@ public class TestInfoParser {
 		}
 		Set<String> testFlags = new HashSet<>(arg.getTestFlag());
 		for (Map.Entry<String,String> entry : ti.getFeatures().entrySet()) {
-			if (entry.getValue().equalsIgnoreCase("required")) {
-				if (!testFlags.contains(entry.getKey())) {
+			String featureOpt = entry.getValue().toLowerCase();
+			if (featureOpt.equals("required")) {
+				if (!isFeatureInTestFlags(testFlags, entry.getKey())) {
 					return null;
-				} else if (entry.getKey().equalsIgnoreCase("aot")) {
-					ti.setAotOptions("$(AOT_OPTIONS) ");
 				}
-			} else if (entry.getValue().equalsIgnoreCase("applicable")) {
-				if (testFlags.contains("aot") && (entry.getKey().equalsIgnoreCase("aot") || entry.getKey().equalsIgnoreCase("all"))) {
-					ti.setAotOptions("$(AOT_OPTIONS) ");
-				}
-			} else if (entry.getValue().equalsIgnoreCase("nonapplicable")) {
+			} else if (featureOpt.equals("nonapplicable")) {
 				// Do not generate make target if the test is not applicable for one feature defined in TEST_FLAG
-				if (testFlags.contains(entry.getKey())) {
+				if (isFeatureInTestFlags(testFlags, entry.getKey())) {
 					return null;
 				}
-			} else if (entry.getValue().equalsIgnoreCase("explicit")) {
-				if (testFlags.contains("aot") && entry.getKey().equalsIgnoreCase("aot")) {
-					ti.setAotIterations(1);
-				}
+			} else if (featureOpt.equals("applicable") || featureOpt.equals("explicit")) {
+				// Do nothing
 			} else {
 				System.err.println("Error: Please provide a valid feature parameter in test " + ti.getTestCaseName() + ". The valid string is <feature_name>:[required|applicable|nonapplicable|explicit].");
 				System.exit(1);
+			}
+		}
+
+		if (testFlags.contains("aot")) {
+			for (Map.Entry<String,String> entry : ti.getFeatures().entrySet()) {
+				if (doesFeatureMatchTestFlag("aot", entry.getKey())) {
+					String featureOpt = entry.getValue().toLowerCase();
+					if (featureOpt.equals("required") || featureOpt.equals("applicable")) {
+						ti.setAotOptions("$(AOT_OPTIONS) ");
+					} else if (featureOpt.equals("explicit")) {
+						ti.setAotIterations(1);
+					}
+				}
 			}
 		}
 
@@ -205,6 +211,30 @@ public class TestInfoParser {
 			ti = null;
 		}
 		return ti;
+	}
+
+	private boolean isFeatureInTestFlags(Set<String> testFlags, String feature) {
+		for (String testFlag : testFlags) {
+			if (doesFeatureMatchTestFlag(testFlag, feature)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean doesFeatureMatchTestFlag(String testFlag, String feature) {
+		if (feature.equals("all")) {
+			return true;
+		}
+		if (!feature.startsWith("/") || !feature.endsWith("/")) {
+			return testFlag.equalsIgnoreCase(feature);
+		}
+		Pattern pattern = Pattern.compile(feature.substring(1, feature.length() - 1));
+		Matcher matcher = pattern.matcher(testFlag);
+		if (matcher.matches()) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean checkJavaVersion(String version) {

@@ -23,12 +23,12 @@ def run_test():
     command = "make _all"
     print(f"\t{command}")
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
-    rt = checkResult(result, {'testSuccess_0'}, {'testFail_0'}, set(), set())
+    rt &= checkResult(result, {'testSuccess_0'}, {'testFail_0'}, set(), set())
 
     command = "make _testSuccess"
     print(f"\t{command}")
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
-    rt = checkResult(result, {'testSuccess_0'}, set(), set(), set())
+    rt &= checkResult(result, {'testSuccess_0'}, set(), set(), set())
     return rt
 
 if __name__ == "__main__":
