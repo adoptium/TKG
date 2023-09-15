@@ -24,27 +24,27 @@ def run_test():
     command = "make _sanity"
     print(f"\t{command}")
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
-    rt = checkResult(result, {'testSanity_0'}, set(), set(), set())
+    rt &= checkResult(result, {'testSanity_0'}, set(), set(), set())
 
     command = "make _extended"
     print(f"\t{command}")
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
-    rt = checkResult(result, {'testDefault_0', 'testExtended_0'}, set(), set(), set())
+    rt &= checkResult(result, {'testDefault_0', 'testExtended_0'}, set(), set(), set())
 
     command = "make _dev"
     print(f"\t{command}")
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
-    rt = checkResult(result, {'testDev_0'}, set(), set(), set())
+    rt &= checkResult(result, {'testDev_0'}, set(), set(), set())
     
     command = "make _special"
     print(f"\t{command}")
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
-    rt = checkResult(result, {'testSpecial_0'}, set(), set(), set())
+    rt &= checkResult(result, {'testSpecial_0'}, set(), set(), set())
 
     command = "make _all"
     print(f"\t{command}")
     result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
-    rt = checkResult(result, {'testSanity_0', 'testDefault_0', 'testExtended_0', 'testDev_0', 'testSpecial_0'}, set(), set(), set())
+    rt &= checkResult(result, {'testSanity_0', 'testDefault_0', 'testExtended_0', 'testDev_0', 'testSpecial_0'}, set(), set(), set())
     return rt
 
 if __name__ == "__main__":
