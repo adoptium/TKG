@@ -19,7 +19,7 @@ jobs:
       id: workflow_run_info
     # Checkout current (TKG) repo to access the repo-specific config file `.github/workflows/runAqaConfig.json` and the shared script `scripts/testRepo/runAqaArgParse.py`
     - name: Checkout current repo
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
         path: 'main'
     - name: Parse parameters
@@ -107,7 +107,7 @@ jobs:
         sourceType: 'buildType'
         impl: ${{ matrix.jdk_impl }}
     - name: Checkout PR Ref
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       if: matrix.sdk_resource == 'build-jdk'
       with:
         repository: ${{ matrix.build_repo_branch.repo }}
