@@ -27,10 +27,14 @@ my $path;
 # define task
 my $task = "default";
 my $dependencyList = "all";
+my $customUrl = "";
+my $curlOpts = "";
 
 GetOptions ("path=s" => \$path,
 			"task=s" => \$task,
-			"dependencyList=s" => \$dependencyList)
+			"dependencyList=s" => \$dependencyList,
+			"customUrl=s" => \$customUrl,
+			"curlOpts=s" => \$curlOpts)
 	or die("Error in command line arguments\n");
 
 if (not defined $path) {
@@ -188,6 +192,15 @@ if ($task eq "clean") {
 		my $filename = $path . $sep . $fn;
 		my $shaurl = $jars_info[$i]{shaurl};
 		my $shafn = $jars_info[$i]{shafn};
+
+		# if customUrl is provided, use customUrl and reset $url and $shaurl
+		if ($customUrl ne "") {
+			$url = "$customUrl/$fn";
+			if (defined $shaurl && $shaurl ne '') {
+				$shaurl = "$customUrl/$shafn";
+			}
+		}
+
 		my $shaalg = $jars_info[$i]{shaalg};
 		if (!$shaalg) {
 			$shaalg = "sha1";
@@ -279,9 +292,9 @@ sub downloadFile {
 	# .txt SHA files are in ISO8859-1
 	# note _ENCODE_FILE_NEW flag is set for zos
 	if ('.txt' eq substr $filename, -length('.txt')) {
-		$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl -k -o $filename $url 2>&1};
+		$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl $curlOpts -k -o $filename $url 2>&1};
 	} else {
-		$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl -k -o $filename $url 2>&1};
+		$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl $curlOpts -k -o $filename $url 2>&1};
 	}
 	my $returnCode = $?;
 	if ($returnCode == 0) {
