@@ -38,7 +38,8 @@ public class MachineInfo {
 	public static final String[] LINUX_OS_NAME_CMD = new String[] {"bash", "-c", "grep '^NAME' /etc/os-release | awk -F'=' ' gsub(/\"/,\"\") { print $2}'"};
 	public static final String[] LINUX_OS_VERSION_CMD = new String[] {"bash", "-c", "grep '^VERSION_ID' /etc/os-release | awk -F'=' ' gsub(/\"/,\"\") { print $2}'"};
 
-	public static final String[] MICRO_ARCH_CMD = new String[] {"bash", "-c", "cat /proc/cpuinfo | grep 'model name' | uniq"};
+	public static final String[] MICRO_ARCH_CMD = new String[] {"bash", "-c", "cat /proc/cpuinfo | grep -E 'machine|model name' | uniq"};
+
 	public static final String[] ULIMIT_CMD = new String[] {"bash", "-c", "ulimit -a"};
 
 	public static final String[] INSTALLED_MEM_CMD = new String[] {"bash", "-c", "grep MemTotal /proc/meminfo | awk '{print $2}"};
@@ -201,10 +202,31 @@ public class MachineInfo {
 		putInfo(new Info("sysArch", SYS_ARCH_CMD, ce.execute(SYS_ARCH_CMD), null));
 		putInfo(new Info("procArch", PROC_ARCH_CMD, ce.execute(PROC_ARCH_CMD), null));
 		String microArchOutput = ce.execute(MICRO_ARCH_CMD);
+		String microArch = "";
+		// Check for specific machine versions and set the microArch accordingly
 		if (microArchOutput.toLowerCase().contains("skylake")) {
-			String microArch = "skylake";
+			microArch = "skylake";
+		} else if (microArchOutput.contains("8562")) {
+			microArch = "IBM z15";
+		} else if (microArchOutput.contains("8561")) {
+			microArch = "IBM z15";
+		} else if (microArchOutput.contains("3907")) {
+			microArch = "IBM z14";
+		} else if (microArchOutput.contains("3906")) {
+			microArch = "IBM z14";
+		} else if (microArchOutput.contains("2965")) {
+			microArch = "IBM z13";
+		} else if (microArchOutput.contains("2964")) {
+			microArch= "IBM z13";
+		} 
+		else {
+			System.out.println("Unfamiliar microArch detected in TKG. It will not be added in TKG microArch!");
+			System.out.println("microArchOutput: " + microArchOutput);
+	 	}
+
+		if (!microArch.isEmpty()) {
 			putInfo(new Info("microArch", MICRO_ARCH_CMD, microArch, null));
-		}
+		} 
 		putInfo(new Info("sysOS", SYS_OS_CMD, ce.execute(SYS_OS_CMD), null));
 		putInfo(new Info("ulimit", ULIMIT_CMD, ce.execute(ULIMIT_CMD), null));
 		putInfo(new Info("docker", CHECK_DOCKER_CMD, ce.execute(CHECK_DOCKER_CMD), null));
