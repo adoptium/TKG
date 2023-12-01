@@ -15,6 +15,7 @@
 package org.testKitGen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -412,7 +413,6 @@ public class TestInfoParser {
 				}
 				String spec = arg.getSpec();
 				String fullSpec = spec;
-
 				// Special case 32/31-bit specs which do not have 32 or 31 in the name (i.e.
 				// aix_ppc)
 				if (!spec.contains("-64")) {
@@ -442,14 +442,13 @@ public class TestInfoParser {
 		if (!fullSpec.contains(prSplitOnDot[1])) {
 			return false;
 		}
-
 		if (prSplitOnDot[0].equals("arch") && (prSplitOnDot.length == 3)) {
-			String microArch = prSplitOnDot[2];
-			if (!microArch.equals(arg.getMicroArch())) {
-				return false;
-			}
+			String requiredMicroArch = prSplitOnDot[2];
+			String actualMicroArch = arg.getMicroArch();
+			return compareVersion(requiredMicroArch, actualMicroArch);
 		} else if (prSplitOnDot[0].equals("os") && (prSplitOnDot.length == 4)) {
 			String osName = prSplitOnDot[2];
+			String osVersion = prSplitOnDot[3];
 			if (arg.getOsLabel().isEmpty()) {
 				return false;
 			}
@@ -457,31 +456,42 @@ public class TestInfoParser {
 			if (!osLabelArg[0].equals(osName)) {
 				return false;
 			}
-			String osVersion = prSplitOnDot[3];
-			if (osVersion.endsWith("+")) {
-				int verInt = 0;
-				try {
-					verInt = Integer.parseInt(osVersion.substring(0, osVersion.length() - 1));
-				} catch (NumberFormatException e) {
-					System.out.println("Error: unrecognized platformRequirement: " + prSplitOnDot + ". Only support integer OS version.");
-					System.exit(1);
-				}
-				int argVerInt = 0;
-				try {
-					argVerInt = Integer.parseInt(osLabelArg[1]);
-				} catch (NumberFormatException e) {
-					System.out.println("Error: unrecognized osLabel: " + arg.getOsLabel() + ". Only support integer OS version.");
-					System.exit(1);
-				}
-				if (verInt > argVerInt) {
-					return false;
-				}
-			} else {
-				if (!osLabelArg[1].equals(osVersion)) {
-					return false;
-				}
-			}
+			return compareVersion(osVersion, osLabelArg[1]);
 		}
 		return true;
 	}
+
+	private boolean compareVersion(String requiredLabel, String actualLabel) {
+		if (requiredLabel.isEmpty() || actualLabel.isEmpty()) {
+			return false;
+		} else if (requiredLabel.equals(actualLabel)) {
+			return true;
+		} else if (requiredLabel.endsWith("+")) {
+			Pattern pattern = Pattern.compile("(\\D+)?(\\d+)");
+			Matcher requiredLabelMatcher = pattern.matcher(requiredLabel);
+			Matcher actualLabelMatcher = pattern.matcher(actualLabel);
+
+		  if (requiredLabelMatcher.find() && actualLabelMatcher.find()) {
+			String requiredPrefix = requiredLabelMatcher.group(1) != null ? requiredLabelMatcher.group(1) : "";
+	   		String actualPrefix = actualLabelMatcher.group(1) != null ? actualLabelMatcher.group(1) : "";
+			if (requiredPrefix.equals(actualPrefix)) {
+				int requiredLabelNum = 0;
+				int actualLabelNum = 0;
+				try {
+				requiredLabelNum = Integer.parseInt(requiredLabelMatcher.group(2));
+				actualLabelNum = Integer.parseInt(actualLabelMatcher.group(2));
+				} catch (NumberFormatException e) {
+				System.out.println("Error: unrecognized requiredLabel:" + requiredLabel + " or actualLabel:" + actualLabel);
+				System.err.println(e.getMessage());
+				System.exit(1);
+				}
+				if (actualLabelNum >= requiredLabelNum) {
+					return true;
+				}
+			}
+		  }
+		}
+		return false;
+	  }
+
 }
