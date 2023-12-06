@@ -99,7 +99,7 @@
 
 	<target name="getDependentLibs" unless="skipDependency">
 		<exec executable="perl" failonerror="true">
-			<arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${TEST_ROOT}/TKG/lib -task default -dependencyList ${LIB}"/>
+			<arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${LIB_DIR} -task default -dependencyList ${LIB}"/>
 		</exec>
 	</target>
 </project>
