@@ -120,7 +120,7 @@ _failed:
 # generate parallel list
 #######################################
 genParallelList: envDetect
-	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINES=$(NUM_MACHINES) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST) TRSS_URL=$(TRSS_URL)
+	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINES=$(NUM_MACHINES) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST) TRSS_URL=$(TRSS_URL) LIB_DIR=$(LIB_DIR)
 
 #######################################
 # clean
