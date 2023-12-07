@@ -28,7 +28,7 @@ P=:
 Q="
 
 TKG_JAR = .$(D)bin$(D)TestKitGen.jar
-JSON_SIMPLE = .$(D)lib$(D)json-simple.jar
+JSON_SIMPLE = $(LIB_DIR)$(D)json-simple.jar
 
 ifneq (,$(findstring Win,$(OS)))
 CURRENT_DIR := $(subst \,/,$(CURRENT_DIR))
