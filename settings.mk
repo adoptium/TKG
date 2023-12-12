@@ -171,13 +171,6 @@ endif
 #######################################
 # common dir and jars
 #######################################
-ifndef LIB_DIR
-	LIB_DIR:=$(TEST_ROOT)$(D)TKG$(D)lib
-endif
-ifeq ($(CYGWIN),1)
-	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
-endif
-LIB_DIR:=$(subst \,/,$(LIB_DIR))
 
 TESTNG=$(LIB_DIR)$(D)testng.jar$(P)$(LIB_DIR)$(D)jcommander.jar
 RESOURCES_DIR=$(JVM_TEST_ROOT)$(D)TestConfig$(D)resources

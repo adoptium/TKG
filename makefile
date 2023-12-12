@@ -25,6 +25,9 @@ export JAVA_HOME := $(TEST_JDK_HOME)
 $(info JAVA_HOME is set to $(JAVA_HOME))
 endif
 
+
+
+
 D = /
 MKTREE = mkdir -p
 SUBDIRS = ..
@@ -32,6 +35,14 @@ SUBDIRS = ..
 ifndef TEST_ROOT
 	TEST_ROOT := $(shell pwd)$(D)..
 endif
+ifndef LIB_DIR
+	LIB_DIR:=$(TEST_ROOT)$(D)TKG$(D)lib
+endif
+ifeq ($(CYGWIN),1)
+	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
+endif
+LIB_DIR:=$(subst \,/,$(LIB_DIR))
+
 
 _TESTTARGET = $(firstword $(MAKECMDGOALS))
 TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
