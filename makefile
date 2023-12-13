@@ -41,8 +41,7 @@ endif
 ifeq ($(CYGWIN),1)
 	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
 endif
-LIB_DIR:=$(subst \,/,$(LIB_DIR))
-
+export LIB_DIR:=$(subst \,/,$(LIB_DIR))
 
 _TESTTARGET = $(firstword $(MAKECMDGOALS))
 TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
