@@ -37,8 +37,8 @@
 				</then>
 			</elseif>
 			<elseif>
-				<!-- versions 17, 21, 22 -->
-				<matches pattern="^(17|2[12])$" string="${JDK_VERSION}"/>
+				<!-- versions 17, 21, 22, 23 -->
+				<matches pattern="^(17|2[123])$" string="${JDK_VERSION}"/>
 				<then>
 					<property name="jtregTar" value="jtreg_7_3_1_1"/>
 				</then>
