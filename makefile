@@ -38,7 +38,10 @@ endif
 ifndef LIB_DIR
 	LIB_DIR:=$(TEST_ROOT)$(D)TKG$(D)lib
 endif
-ifeq ($(CYGWIN),1)
+
+UNAME := uname
+UNAME_OS := $(shell $(UNAME) -s | $(CUT) -f1 -d_)
+ifeq ($(findstring CYGWIN,$(UNAME_OS)), CYGWIN)
 	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
 endif
 export LIB_DIR:=$(subst \,/,$(LIB_DIR))
