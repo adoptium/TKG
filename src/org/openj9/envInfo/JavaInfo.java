@@ -229,6 +229,7 @@ public class JavaInfo {
         String isCRIUCapable = System.getProperty("org.eclipse.openj9.criu.isCRIUCapable");
         if ((isCRIUCapable != null) && isCRIUCapable.equals("true")) {
             detectedTfs.add("CRIU");
+            detectedTfs.add("CRAC");
         }
     }
 
