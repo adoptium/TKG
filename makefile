@@ -25,8 +25,9 @@ export JAVA_HOME := $(TEST_JDK_HOME)
 $(info JAVA_HOME is set to $(JAVA_HOME))
 endif
 
-
-
+ifndef CUT
+$(error Please provide CUT value.)
+endif
 
 D = /
 MKTREE = mkdir -p
