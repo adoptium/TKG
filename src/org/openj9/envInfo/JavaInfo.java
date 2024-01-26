@@ -226,10 +226,13 @@ public class JavaInfo {
     }
 
     public void checkCRIU() {
-        String isCRIUCapable = System.getProperty("org.eclipse.openj9.criu.isCRIUCapable");
-        if ((isCRIUCapable != null) && isCRIUCapable.equals("true")) {
+        if ("true".equalsIgnoreCase(System.getProperty("org.eclipse.openj9.criu.isCRIUCapable"))) {
+            // CRIU is only supported on Linux.
             detectedTfs.add("CRIU");
-            detectedTfs.add("CRAC");
+            if ("amd64".equalsIgnoreCase(System.getProperty("os.arch"))) {
+                // CRaC is only supported on Linux amd64.
+                detectedTfs.add("CRAC");
+            }
         }
     }
 
