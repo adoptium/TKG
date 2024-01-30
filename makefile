@@ -25,10 +25,6 @@ export JAVA_HOME := $(TEST_JDK_HOME)
 $(info JAVA_HOME is set to $(JAVA_HOME))
 endif
 
-ifndef CUT
-$(error Please provide CUT value.)
-endif
-
 D = /
 MKTREE = mkdir -p
 SUBDIRS = ..
@@ -41,7 +37,7 @@ ifndef LIB_DIR
 endif
 
 UNAME := uname
-UNAME_OS := $(shell $(UNAME) -s | $(CUT) -f1 -d_)
+UNAME_OS := $(shell $(UNAME) -s | cut -f1 -d_)
 ifeq ($(findstring CYGWIN,$(UNAME_OS)), CYGWIN)
 	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
 endif
