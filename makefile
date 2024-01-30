@@ -42,6 +42,7 @@ ifeq ($(findstring CYGWIN,$(UNAME_OS)), CYGWIN)
 	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
 endif
 export LIB_DIR:=$(subst \,/,$(LIB_DIR))
+$(info LIB_DIR is set to $(LIB_DIR))
 
 _TESTTARGET = $(firstword $(MAKECMDGOALS))
 TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
