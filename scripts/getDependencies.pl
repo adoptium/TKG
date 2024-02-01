@@ -163,6 +163,16 @@ my %base = (
 		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20220908.jar',
 		fname => 'jcstress-tests-all-20220908.jar',
 		sha1 => '8cf348be49b8af939a3ce03216e3df53aa0f9ef2'
+	},
+	hamcrest_core => {
+		url => 'https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar',
+		fname => 'hamcrest-core.jar',
+		sha1 => '42a25dc3219429f0e5d060061f71acb49bf010a0'
+	},
+	bcprov_jdk18on => {
+		url => 'https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.jar',
+		fname => 'bcprov-jdk18on.jar',
+		sha1 => '2cc971b6c20949c1ff98d1a4bc741ee848a09523'
 	});
 
 my @dependencies = split(',', $dependencyList);
