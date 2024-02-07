@@ -40,10 +40,10 @@ variation:Mode127,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
 variation:Mode128,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
 variation:Mode130,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
 variation:Mode131,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
-variation:Mode136,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
+variation:Mode136,no,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,yes,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
 variation:Mode137,yes,yes,yes,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
 variation:Mode138,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
-variation:Mode139,no,yes,no,yes,no,yes,no,yes,no,yes,no,yes,yes,no,yes,no,yes,no,no,yes,yes,no,yes,no,yes,no,no,yes,no,no,yes,yes,no,yes,no,yes,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes
+variation:Mode139,no,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,no,no,yes,no,no,yes,yes,no,yes,no,yes,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode140,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
 variation:Mode141,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
 variation:Mode142,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
@@ -93,7 +93,7 @@ variation:Mode199,no,no,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,
 variation:Mode200,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
 variation:Mode201,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
 variation:Mode202,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
-variation:Mode203,no,no,no,no,no,no,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
+variation:Mode203,no,no,no,no,yes,no,no,yes,yes,no,no,yes,no,no,yes,yes,no,no,no,yes,no,yes,no,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
 variation:Mode204,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
 variation:Mode205,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
 variation:Mode206,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
@@ -102,7 +102,7 @@ variation:Mode301,no,no,no,no,yes,yes,no,yes,yes,no,no,yes,no,no,yes,yes,no,no,n
 variation:Mode303,no,no,no,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode304,no,no,no,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode305,no,no,no,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes
-variation:Mode306,no,no,no,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes
+variation:Mode306,no,no,no,no,yes,yes,no,yes,yes,no,no,yes,no,no,yes,yes,no,no,no,yes,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode307,no,no,no,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode350,no,no,no,no,no,no,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode351,no,no,no,no,yes,no,yes,yes,yes,no,no,yes,no,no,yes,yes,no,no,no,yes,no,yes,no,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
@@ -122,7 +122,7 @@ variation:Mode506,no,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes
 variation:Mode507,no,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,no,no,yes,no,no,yes,yes,no,yes,no,yes,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode550,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
 variation:Mode551,no,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,yes,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
-variation:Mode553,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
+variation:Mode553,no,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,yes,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode554,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode555,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode556,no,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,yes,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
@@ -133,7 +133,7 @@ variation:Mode592,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes
 variation:Mode593,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode594,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
 variation:Mode600,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
-variation:Mode601,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
+variation:Mode601,no,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,yes,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
 variation:Mode603,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
 variation:Mode604,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
 variation:Mode605,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,yes,yes,no,no,no,no,no,no,yes,yes,yes,yes
@@ -165,7 +165,7 @@ variation:Mode645,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes
 variation:Mode650,no,yes,no,yes,no,yes,no,yes,no,yes,no,yes,yes,no,yes,no,yes,no,no,yes,yes,no,yes,no,yes,no,no,yes,no,no,yes,yes,no,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,yes,yes,yes,yes,no
 variation:Mode685,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
 variation:Mode686,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
-variation:Mode687,no,no,yes,yes,no,no,yes,yes,no,no,yes,yes,no,yes,yes,no,no,yes,yes,yes,yes,no,no,yes,yes,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
+variation:Mode687,no,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,yes,yes,yes,yes,yes,no,yes,yes,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
 variation:Mode688,no,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,yes,yes,yes,yes,yes,no,yes,yes,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no,no,yes,yes,yes,yes
 variation:Mode107-OSR,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,no,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
 variation:Mode110-OSR,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
