@@ -27,10 +27,14 @@ my $path;
 # define task
 my $task = "default";
 my $dependencyList = "all";
+my $customUrl = "";
+my $curlOpts = "";
 
 GetOptions ("path=s" => \$path,
 			"task=s" => \$task,
-			"dependencyList=s" => \$dependencyList)
+			"dependencyList=s" => \$dependencyList,
+			"customUrl=s" => \$customUrl,
+			"curlOpts=s" => \$curlOpts)
 	or die("Error in command line arguments\n");
 
 if (not defined $path) {
@@ -159,6 +163,16 @@ my %base = (
 		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20220908.jar',
 		fname => 'jcstress-tests-all-20220908.jar',
 		sha1 => '8cf348be49b8af939a3ce03216e3df53aa0f9ef2'
+	},
+	hamcrest_core => {
+		url => 'https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar',
+		fname => 'hamcrest-core.jar',
+		sha1 => '42a25dc3219429f0e5d060061f71acb49bf010a0'
+	},
+	bcprov_jdk18on => {
+		url => 'https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.jar',
+		fname => 'bcprov-jdk18on.jar',
+		sha1 => '2cc971b6c20949c1ff98d1a4bc741ee848a09523'
 	});
 
 my @dependencies = split(',', $dependencyList);
@@ -188,6 +202,15 @@ if ($task eq "clean") {
 		my $filename = $path . $sep . $fn;
 		my $shaurl = $jars_info[$i]{shaurl};
 		my $shafn = $jars_info[$i]{shafn};
+
+		# if customUrl is provided, use customUrl and reset $url and $shaurl
+		if ($customUrl ne "") {
+			$url = "$customUrl/$fn";
+			if (defined $shaurl && $shaurl ne '') {
+				$shaurl = "$customUrl/$shafn";
+			}
+		}
+
 		my $shaalg = $jars_info[$i]{shaalg};
 		if (!$shaalg) {
 			$shaalg = "sha1";
@@ -279,9 +302,9 @@ sub downloadFile {
 	# .txt SHA files are in ISO8859-1
 	# note _ENCODE_FILE_NEW flag is set for zos
 	if ('.txt' eq substr $filename, -length('.txt')) {
-		$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl -k -o $filename $url 2>&1};
+		$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl $curlOpts -k -o $filename $url 2>&1};
 	} else {
-		$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl -k -o $filename $url 2>&1};
+		$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl $curlOpts -k -o $filename $url 2>&1};
 	}
 	my $returnCode = $?;
 	if ($returnCode == 0) {

@@ -171,7 +171,7 @@ endif
 #######################################
 # common dir and jars
 #######################################
-LIB_DIR=$(TEST_ROOT)$(D)TKG$(D)lib
+
 TESTNG=$(LIB_DIR)$(D)testng.jar$(P)$(LIB_DIR)$(D)jcommander.jar
 RESOURCES_DIR=$(JVM_TEST_ROOT)$(D)TestConfig$(D)resources
 

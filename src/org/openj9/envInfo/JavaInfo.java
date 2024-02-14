@@ -226,9 +226,12 @@ public class JavaInfo {
     }
 
     public void checkCRIU() {
-        String isCRIUCapable = System.getProperty("org.eclipse.openj9.criu.isCRIUCapable");
-        if ((isCRIUCapable != null) && isCRIUCapable.equals("true")) {
+        if ("true".equalsIgnoreCase(System.getProperty("org.eclipse.openj9.criu.isCRIUCapable"))) {
             detectedTfs.add("CRIU");
+            // CRIU support is required by CRaC
+            if ("true".equalsIgnoreCase(System.getProperty("org.eclipse.openj9.criu.isCRaCCapable"))) {
+            	detectedTfs.add("CRAC");
+            }
         }
     }
 

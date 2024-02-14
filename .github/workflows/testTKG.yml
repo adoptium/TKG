@@ -12,13 +12,13 @@ jobs:
           ref: refs/pull/${{ github.event.issue.number }}/head
 
       - name: Set up JDK
-        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # v3.13.0
+        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4.0.0
         with:
           distribution: 'temurin'
           java-version: 11
 
       - name: Create success comment
-        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -53,7 +53,7 @@ jobs:
     if: failure()
     steps:
     - name: Create comment
-      uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -73,7 +73,7 @@ jobs:
     if: cancelled()
     steps:
     - name: Create comment
-      uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -93,7 +93,7 @@ jobs:
     if: success()
     steps:
     - name: Create comment
-      uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |

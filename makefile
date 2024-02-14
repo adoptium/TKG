@@ -32,6 +32,17 @@ SUBDIRS = ..
 ifndef TEST_ROOT
 	TEST_ROOT := $(shell pwd)$(D)..
 endif
+ifndef LIB_DIR
+	LIB_DIR:=$(TEST_ROOT)$(D)TKG$(D)lib
+endif
+
+UNAME := uname
+UNAME_OS := $(shell $(UNAME) -s | cut -f1 -d_)
+ifeq ($(findstring CYGWIN,$(UNAME_OS)), CYGWIN)
+	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
+endif
+export LIB_DIR:=$(subst \,/,$(LIB_DIR))
+$(info LIB_DIR is set to $(LIB_DIR))
 
 _TESTTARGET = $(firstword $(MAKECMDGOALS))
 TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))
@@ -88,7 +99,7 @@ endif
 # compile tools
 #######################################
 include moveDmp.mk
-COMPILE_TOOLS_CMD=ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME) -DTEST_ROOT=$(TEST_ROOT)
+COMPILE_TOOLS_CMD=ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME) -DTEST_ROOT=$(TEST_ROOT) -DLIB_DIR=$(LIB_DIR)
 
 compileTools:
 	$(RM) -r $(COMPILATION_OUTPUT); \
@@ -120,7 +131,7 @@ _failed:
 # generate parallel list
 #######################################
 genParallelList: envDetect
-	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINES=$(NUM_MACHINES) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST) TRSS_URL=$(TRSS_URL)
+	$(MAKE) -f makeGen.mk AUTO_DETECT=$(AUTO_DETECT) MODE=parallelList NUM_MACHINES=$(NUM_MACHINES) TEST_TIME=$(TEST_TIME) TESTTARGET=$(TEST) TESTLIST=$(TESTLIST) TRSS_URL=$(TRSS_URL) LIB_DIR=$(LIB_DIR)
 
 #######################################
 # clean
