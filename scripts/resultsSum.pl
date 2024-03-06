@@ -130,7 +130,7 @@ sub resultReporter {
 				}
 				my $startTime = 0;
 				my $endTime = 0;
-				while ( $result = <$fhIn> ) {
+			    while ( $result = <$fhIn> ) {
 					# remove extra carriage return
 					$result =~ s/\r//g;
 					$output .= '        ' . $result;
@@ -160,7 +160,7 @@ sub resultReporter {
 						$tapString .= "not ok " . $numOfTotal . " - " . $testName . "\n";
 						$tapString .= "  ---\n";
 						# sometime jck test output shows after _FAILED message and before the $testName\E Finish Time
-
+						my $isJckFailedTestFinish = 0;
 						my $jckFailedDuration = '';
 						if ($buildList =~ /jck/) {
 							while ( my $extraFailedOutput = <$fhIn> ) {
@@ -173,6 +173,7 @@ sub resultReporter {
 									}
 									$endTime = $1;
 									$jckFailedDuration .= "    duration_ms: " . ($endTime - $startTime) . "\n  ...\n";
+									$isJckFailedTestFinish = 1;
 									last;
 								}
 							}
@@ -222,6 +223,10 @@ sub resultReporter {
 						if ($spec =~ /zos/) {
 							my $dmpDir = dirname($resultFile).'/'.$testName;
 							moveTDUMPS($output, $dmpDir, $spec);
+						}
+
+						if ( $isJckFailedTestFinish ) {
+							last;
 						}
 					} elsif ($result eq ($testName . "_DISABLED\n")) {
 						$result =~ s/_DISABLED\n$//;
