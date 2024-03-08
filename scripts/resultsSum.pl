@@ -203,7 +203,7 @@ sub resultReporter {
 										$testName =~ s/#.*//;
 										print "Testname removed is " . $testName. "\n";
 										$failureTests .= '        ' ."TEST: " . $testName . "\n";
-									} elsif ( $lines[$i] =~  /(Test results: .*)(failed|error)(: \d{1,}$)/) {
+									} elsif ( $lines[$i] =~  /(Test results: .*)(skipped|failed|error)(: \d{1,}$)/) {
 										$testResult = $lines[$i];
 									}
 								}
