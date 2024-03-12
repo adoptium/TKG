@@ -104,11 +104,6 @@ my %base = (
 		fname => 'byte-buddy.jar',
 		sha1 => '6e37f743dc15a8d7a4feb3eb0025cbc612d5b9e1'
 	},
-	maven_jar_plugin => {
-		url => 'https://repo1.maven.org/maven2/org/apache/maven/plugins/maven-jar-plugin/3.3.0/maven-jar-plugin-3.3.0.jar',
-		fname => 'maven-jar-plugin.jar',
-		sha1 => '21829ae5feec95ae6fec425f2d85bbbfe49880c4'
-	},
 	testng => {
 		url => 'https://repo1.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
 		fname => 'testng.jar',
