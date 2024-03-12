@@ -170,9 +170,9 @@ my %base = (
 		sha1 => '15592c29538abd36d15570eda9fa055ed1a618ba'
 	},
 	jcstress => {
-		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20220908.jar',
-		fname => 'jcstress-tests-all-20220908.jar',
-		sha1 => '8cf348be49b8af939a3ce03216e3df53aa0f9ef2'
+		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20240222.jar',
+		fname => 'jcstress-tests-all-20240222.jar',
+		sha1 => '200da75e67689e8a604ec6fe9a6f55b2c000b6ce'
 	},
 	hamcrest_core => {
 		url => 'https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar',
