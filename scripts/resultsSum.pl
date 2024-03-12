@@ -106,12 +106,17 @@ sub resultReporter {
 	my $numOfDisabled = 0;
 	my $numOfTotal = 0;
 	my $runningDisabled = 0;
+	my $numOfTestCasesPassed = 0;
+	my $numOfTestCasesFailed = 0;
+	my $numOfTestCasesError = 0;
+	my $numOfTestCasesSkipped = 0;
 	my @passed;
 	my @failed;
 	my @disabled;
 	my @capSkipped;
 	my $tapString = '';
 	my $fhIn;
+	my @testCasesResults;
 
 	print "\n\n";
 
@@ -130,6 +135,7 @@ sub resultReporter {
 				}
 				my $startTime = 0;
 				my $endTime = 0;
+				my $testTargetSummary = '';
 			    while ( $result = <$fhIn> ) {
 					# remove extra carriage return
 					$result =~ s/\r//g;
@@ -144,20 +150,32 @@ sub resultReporter {
 						$endTime = $1;
 						$tapString .= "    duration_ms: " . ($endTime - $startTime) . "\n  ...\n";
 						last;
+					} elsif ($result =~  /(Test results: .*)(passed|skipped|failed|error)(: \d{1,}$)/) {
+						$testTargetSummary = $result;
+						push (@testCasesResults, $result);					
 					} elsif ($result eq ($testName . "_PASSED\n")) {
-						push (@passed, $testName . " " . $successRate);
 						$numOfPassed++;
 						$numOfTotal++;
-						$tapString .= "ok " . $numOfTotal . " - " . $testName . "\n";
+						my $summarySuffix = '';
+						$tapString .= "ok " . $numOfTotal . " - " . $testName .  "\n";
 						$tapString .= "  ---\n";
+						if ( $testTargetSummary ) {
+							$summarySuffix = " - " . $testTargetSummary . " ";
+							$tapString .= "    output: " . $testTargetSummary;
+						}
+						push (@passed, $testName . $summarySuffix . $successRate);
 						if ($diagnostic eq 'all') {
 							$tapString .= $output;
 						}
 					} elsif ($result eq ($testName . "_FAILED\n")) {
-						push (@failed, $testName . " " . $successRate);
 						$numOfFailed++;
 						$numOfTotal++;
-						$tapString .= "not ok " . $numOfTotal . " - " . $testName . "\n";
+						my $summarySuffix = '';
+						if ( $testTargetSummary ) {
+							$summarySuffix = " - " . $testTargetSummary . " ";
+						}
+						push (@failed, $testName . $summarySuffix . $successRate);
+						$tapString .= "not ok " . $numOfTotal . " - " . $testName .  "\n";
 						$tapString .= "  ---\n";
 						# sometime jck test output shows after _FAILED message and before the $testName\E Finish Time
 						my $isJckFailedTestFinish = 0;
@@ -201,7 +219,6 @@ sub resultReporter {
 										my @testsInfo = split(/\s+/, $lines[$i]);
 										my $testName = $testsInfo[0];
 										$testName =~ s/#.*//;
-										print "Testname removed is " . $testName. "\n";
 										$failureTests .= '        ' ."TEST: " . $testName . "\n";
 									} elsif ( $lines[$i] =~  /(Test results: .*)(skipped|failed|error)(: \d{1,}$)/) {
 										$testResult = $lines[$i];
@@ -288,16 +305,16 @@ sub resultReporter {
 
 	$numOfExecuted = $numOfTotal - $numOfSkipped - $numOfDisabled;
 
-	my $testStatus = "TOTAL: $numOfTotal   EXECUTED: $numOfExecuted   PASSED: $numOfPassed   FAILED: $numOfFailed";
+	my $testTargetStatus = "TOTAL: $numOfTotal   EXECUTED: $numOfExecuted   PASSED: $numOfPassed   FAILED: $numOfFailed";
 	# Hide numOfDisabled when running disabled tests list.
 	if ($runningDisabled == 0) {
-		$testStatus .= "   DISABLED: $numOfDisabled";   
+		$testTargetStatus .= "   DISABLED: $numOfDisabled";   
 	}
-	$testStatus .= "   SKIPPED: $numOfSkipped";
+	$testTargetStatus .= "   SKIPPED: $numOfSkipped";
 	if ($comment ne "") {
-		$testStatus = "($testStatus)";
+		$testTargetStatus = "($testTargetStatus)";
 	}
-	print "$testStatus\n";
+	print "$testTargetStatus\n";
 	if ($numOfTotal > 0) {
 		# set tap file name if not given
 		if ($tapName eq '') {
@@ -342,8 +359,11 @@ sub resultReporter {
 			print $fhOut "# CUSTOM_TARGET: " . "${customTarget}" . "\n";
 		}
 
-		print $fhOut "# RESULTS_SUMMARY: TOTAL: $numOfTotal EXECUTED: $numOfExecuted PASSED: $numOfPassed FAILED: $numOfFailed DISABLED: $numOfDisabled SKIPPED: $numOfSkipped\n";
-
+		print $fhOut "# TEST TARGET RESULTS SUMMARY: $testTargetStatus\n";
+		if ( $buildList =~ /openjdk/ || $buildList =~ /jck/ ) {
+			print $fhOut "# TEST CASE RESULTS SUMMARY: " . "\n"; # TODO add details
+		}
+		
 		print $fhOut "1.." . $numOfTotal . "\n";
 		print $fhOut $tapString;
 		close $fhOut;
@@ -392,9 +412,16 @@ sub resultReporter {
 			print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 		}
 	}
-    unlink($resultFile);
+	# Testing
+	print join(", ", @testCasesResults);
+    # unlink($resultFile);
 
 	return ($numOfTotal, \@failed);
+}
+
+sub getTestcasesResults() {
+	#parsing test results per targte
+
 }
 
 sub getTargetsFromResults() {
