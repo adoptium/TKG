@@ -94,16 +94,6 @@ my %base = (
 		fname => 'junit4.jar',
 		sha1 => 'e4f1766ce7404a08f45d859fb9c226fc9e41a861'
 	},
-	mockito_core => {
-		url => 'https://repo1.maven.org/maven2/org/mockito/mockito-core/5.9.0/mockito-core-5.9.0.jar',
-		fname => 'mockito-core.jar',
-		sha1 => 'faa88b96db3aeb96a93e83dec7491345bfbfc414'
-	},
-	byte_buddy => {
-		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.14.12/byte-buddy-1.14.12.jar',
-		fname => 'byte-buddy.jar',
-		sha1 => '6e37f743dc15a8d7a4feb3eb0025cbc612d5b9e1'
-	},
 	testng => {
 		url => 'https://repo1.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
 		fname => 'testng.jar',
