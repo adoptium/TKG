@@ -426,32 +426,24 @@ sub resultReporter {
 sub getTestcaseResults() {
 	my $testCaseResults = '';
 	my @resultsArray = @{$_[0]};
-	my $numOfTestCasesPassed = 0;
-	my $numOfTestCasesFailed = 0;
-	my $numOfTestCasesError = 0;
-	my $numOfTestCasesSkipped = 0;
-
+	my %testCasesSummary = ( 'passed: ' => 0, 'failed: ' => 0, 'error: ' => 0, 'skipped: ' => 0 );
+	
 	for my $result (@resultsArray) {
 		$result =~ s/Test results: //;
 		my @statusNumbers = split(";", $result);
 		for my $statusNumber (@statusNumbers) {
 			$statusNumber =~ s/,//;
-			if ( $statusNumber =~ /passed: /) {
-				$statusNumber =~ s/passed: //;
-				$numOfTestCasesPassed += $statusNumber;
-			} elsif ( $statusNumber =~ /failed: / ) {
-				$statusNumber =~ s/failed: //;
-				$numOfTestCasesFailed += $statusNumber;
-			} elsif ( $statusNumber =~ /error: / ) {
-				$statusNumber =~ s/error: //;
-				$numOfTestCasesError += + $statusNumber;
-			} elsif ( $statusNumber =~ /skipped: / ) {
-				$statusNumber =~ s/skipped: //;
-				$numOfTestCasesSkipped += $statusNumber;
+			for (keys %testCasesSummary ) {
+				if ( $statusNumber =~ /\Q$_\E/) {
+					$statusNumber =~ s/\Q$_\E//;
+					$testCasesSummary{$_} += $statusNumber;
+					last;
+				}
 			}
 		}		
 	}
-	$testCaseResults = "TESTCASES RESULTS SUMMARY: passed: " . $numOfTestCasesPassed .  "; failed: " . $numOfTestCasesFailed . "; error: " . $numOfTestCasesError . "; skipped: " . $numOfTestCasesSkipped;
+	
+	$testCaseResults = "TESTCASES RESULTS SUMMARY: passed: " . $testCasesSummary{'passed: '} .  "; failed: " . $testCasesSummary{'failed: '} . "; error: " . $testCasesSummary{'error: '} . "; skipped: " . $testCasesSummary{'skipped: '};
 	return $testCaseResults;
 }
 
