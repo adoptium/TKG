@@ -114,7 +114,7 @@ sub resultReporter {
 	my $tapString = '';
 	my $fhIn;
 	my @testCasesResults;
-	my $testCaseSummary;
+	my $testCasesAllTargetsSummary;
 
 	print "\n\n";
 
@@ -133,7 +133,7 @@ sub resultReporter {
 				}
 				my $startTime = 0;
 				my $endTime = 0;
-				my $testTargetSummary = '';
+				my $testCasesPerTargetSummary = '';
 			    while ( $result = <$fhIn> ) {
 					# remove extra carriage return
 					$result =~ s/\r//g;
@@ -149,7 +149,7 @@ sub resultReporter {
 						$tapString .= "    duration_ms: " . ($endTime - $startTime) . "\n  ...\n";
 						last;
 					} elsif ($result =~  /(Test results: .*)(passed|skipped|failed|error)(: \d{1,}$)/) {
-						$testTargetSummary = $result;
+						$testCasesPerTargetSummary = $result;
 						push (@testCasesResults, $result);					
 					} elsif ($result eq ($testName . "_PASSED\n")) {
 						$numOfPassed++;
@@ -157,10 +157,10 @@ sub resultReporter {
 						my $summarySuffix = '';
 						$tapString .= "ok " . $numOfTotal . " - " . $testName .  "\n";
 						$tapString .= "  ---\n";
-						if ( $testTargetSummary ) {
-							$summarySuffix = " - " . $testTargetSummary . " ";
+						if ( $testCasesPerTargetSummary ) {
+							$summarySuffix = " - " . $testCasesPerTargetSummary . " ";
 							$tapString .= "    output:\n      |\n";
-							$tapString .= "        " . $testTargetSummary;
+							$tapString .= "        " . $testCasesPerTargetSummary;
 						}
 
 						push (@passed, $testName . $summarySuffix . $successRate);
@@ -171,8 +171,8 @@ sub resultReporter {
 						$numOfFailed++;
 						$numOfTotal++;
 						my $summarySuffix = '';
-						if ( $testTargetSummary ) {
-							$summarySuffix = " - " . $testTargetSummary . " ";
+						if ( $testCasesPerTargetSummary ) {
+							$summarySuffix = " - " . $testCasesPerTargetSummary . " ";
 						}
 						push (@failed, $testName . $summarySuffix . $successRate);
 						$tapString .= "not ok " . $numOfTotal . " - " . $testName .  "\n";
@@ -318,8 +318,8 @@ sub resultReporter {
 	
 	print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n";
 	if (@testCasesResults) { 
-		$testCaseSummary = getTestcaseResults(\@testCasesResults);
-		print $testCaseSummary . "\n";
+		$testCasesAllTargetsSummary = getTestcaseResults(\@testCasesResults);
+		print $testCasesAllTargetsSummary . "\n";
 		print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 	}
 
@@ -368,8 +368,8 @@ sub resultReporter {
 		}
 
 		print $fhOut "# TEST TARGETS RESULTS SUMMARY: $testTargetStatus\n";
-		if ( $testCaseSummary ) {
-			print $fhOut "# $testCaseSummary " . "\n";
+		if ( $testCasesAllTargetsSummary ) {
+			print $fhOut "# $testCasesAllTargetsSummary " . "\n";
 		}
 		
 		print $fhOut "1.." . $numOfTotal . "\n";
