@@ -317,7 +317,7 @@ sub resultReporter {
 	print "$testTargetStatus\n";
 	
 	print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n";
-	if (@testCasesResults) { 
+	if (@testCasesResults && ($buildList =~ /openjdk/ || $buildList =~ /jck/)) { 
 		$testCasesAllTargetsSummary = getTestcaseResults(\@testCasesResults);
 		print $testCasesAllTargetsSummary . "\n";
 		print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
