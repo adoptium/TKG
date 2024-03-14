@@ -4,6 +4,10 @@ on:
     types: [created]
 jobs:
   testTKG:
+    permissions:
+        contents: read
+        issues: write
+        pull-requests: write
     runs-on: ubuntu-latest
     if: startsWith(github.event.comment.body, 'run tkg-test')
     steps:
