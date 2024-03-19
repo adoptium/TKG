@@ -101,7 +101,7 @@ my %base = (
 	},
 	junit_jupiter_api => {
 		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.0/junit-jupiter-api-5.8.0.jar',
-		fname => 'junit-jupiter-api',
+		fname => 'junit-jupiter-api.jar',
 		sha1 => '1afdba46bfdf3f23de4910f5f257be8d3dcfc3c7'
 	},
 	mockito_core => {
