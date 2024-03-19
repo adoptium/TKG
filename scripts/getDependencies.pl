@@ -94,6 +94,36 @@ my %base = (
 		fname => 'junit4.jar',
 		sha1 => 'e4f1766ce7404a08f45d859fb9c226fc9e41a861'
 	},
+	mockito_junit_jupiter => {
+		url => 'https://repo1.maven.org/maven2/org/mockito/mockito-junit-jupiter/5.8.0/mockito-junit-jupiter-5.8.0.jar',
+		fname => 'mockito-junit-jupiter.jar',
+		sha1 => 'c6ee9a4267376d0a060e78b7e8af5cbc199bbbfc'
+	},
+	junit_jupiter_api => {
+		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.0/junit-jupiter-api-5.8.0.jar',
+		fname => 'junit-jupiter-api',
+		sha1 => '1afdba46bfdf3f23de4910f5f257be8d3dcfc3c7'
+	},
+	mockito_core => {
+		url => 'https://repo1.maven.org/maven2/org/mockito/mockito-core/5.8.0/mockito-core-5.8.0.jar',
+		fname => 'mockito-core.jar',
+		sha1 => 'df310627f77f859114ad31e1376fff0dce263cca'
+	},
+	byte_buddy => {
+		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.14.12/byte-buddy-1.14.12.jar',
+		fname => 'byte-buddy.jar',
+		sha1 => '6e37f743dc15a8d7a4feb3eb0025cbc612d5b9e1'
+	},
+	maven_surefire_plugin => {
+		url => 'https://repo1.maven.org/maven2/org/apache/maven/plugins/maven-surefire-plugin/3.2.2/maven-surefire-plugin-3.2.2.jar',
+		fname => 'maven-surefire-plugin.jar',
+		sha1 => '11d4e9b45ce0953096896475ab212a605a63854e'
+	},
+	maven_jar_plugin => {
+		url => 'https://repo1.maven.org/maven2/org/apache/maven/plugins/maven-jar-plugin/3.3.0/maven-jar-plugin-3.3.0.jar',
+		fname => 'maven-jar-plugin.jar',
+		sha1 => '21829ae5feec95ae6fec425f2d85bbbfe49880c4'
+	},
 	testng => {
 		url => 'https://repo1.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
 		fname => 'testng.jar',
