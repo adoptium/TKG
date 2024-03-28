@@ -107,5 +107,74 @@
 	$(TEST_STATUS)</command>
 		<platformRequirements>^os.linux.ubuntu.20+</platformRequirements>
 	</test>
+	<test>
+		<testCaseName>test_not_microarch_supported</testCaseName>
+		<command>echo "test on none microarch.supported"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>^microarch.supported</platformRequirements>
+	</test>
+	<!-- Test for skylake microarchitecture -->
+	<test>
+		<testCaseName>test_microarch_skylake</testCaseName>
+		<command>echo "test microarch.skylake"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>microarch.skylake</platformRequirements>
+		</platformRequirementsList>
+	</test>
+	<!-- Test for z15+ microarchitecture -->
+	<test>
+		<testCaseName>test_microarch_z15plus</testCaseName>
+		<command>echo "test microarch.z15+";
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>microarch.z15+</platformRequirements>
+		</platformRequirementsList>
+	</test>
+	<!-- Test for z15 microarchitecture -->
+	<test>
+		<testCaseName>test_microarch_z15</testCaseName>
+		<command>echo "test microarch.z15"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>microarch.z15</platformRequirements>
+		</platformRequirementsList>
+	</test>
+	<!-- Test for z14+ microarchitecture -->
+	<test>
+		<testCaseName>test_microarch_z14plus</testCaseName>
+		<command>echo "test microarch.z14+"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>microarch.z14+</platformRequirements>
+		</platformRequirementsList>
+	</test>
+	<!-- Test for z14 microarchitecture -->
+	<test>
+		<testCaseName>test_microarch_z14</testCaseName>
+		<command>echo "test microarch.z14"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>microarch.z14</platformRequirements>
+		</platformRequirementsList>
+	</test>
+	<!-- Test for z13+ microarchitecture -->
+	<test>
+		<testCaseName>test_microarch_z13plus</testCaseName>
+		<command>echo "test microarch.z13+"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>microarch.z13+</platformRequirements>
+		</platformRequirementsList>
+	</test>
+	<!-- Test for z13 microarchitecture -->
+	<test>
+		<testCaseName>test_microarch_z13</testCaseName>
+		<command>echo "test microarch.z13"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>microarch.z13</platformRequirements>
+		</platformRequirementsList>
+	</test>
 
 </playlist>
