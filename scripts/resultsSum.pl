@@ -148,8 +148,9 @@ sub resultReporter {
 						$endTime = $1;
 						$tapString .= "    duration_ms: " . ($endTime - $startTime) . "\n  ...\n";
 						last;
-					} elsif ($result =~  /(Test results: .*)(passed|skipped|failed|error)(: \d{1,}$)/) {
+					} elsif ($result =~  /(Test results: .*)(passed|skipped|failed|error)(: .*\d{1,}$)/) {
 						$testCasesPerTargetSummary = $result;
+						chomp($testCasesPerTargetSummary);
 						push (@testCasesResults, $result);					
 					} elsif ($result eq ($testName . "_PASSED\n")) {
 						$numOfPassed++;
