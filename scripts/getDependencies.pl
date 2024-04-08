@@ -114,6 +114,11 @@ my %base = (
 		fname => 'byte-buddy.jar',
 		sha1 => '6e37f743dc15a8d7a4feb3eb0025cbc612d5b9e1'
 	},
+	junit_platform_console_standalone=> {
+		url => 'https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar',
+		fname => 'junit-platform-console-standalone.jar',
+		sha1 => '552303cce67dc3485ded393d744c0f6b5cae355b'
+	},
 	testng => {
 		url => 'https://repo1.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
 		fname => 'testng.jar',
