@@ -94,11 +94,6 @@ my %base = (
 		fname => 'junit4.jar',
 		sha1 => 'e4f1766ce7404a08f45d859fb9c226fc9e41a861'
 	},
-	mockito_junit_jupiter => {
-		url => 'https://repo1.maven.org/maven2/org/mockito/mockito-junit-jupiter/5.8.0/mockito-junit-jupiter-5.8.0.jar',
-		fname => 'mockito-junit-jupiter.jar',
-		sha1 => 'c6ee9a4267376d0a060e78b7e8af5cbc199bbbfc'
-	},
 	junit_jupiter_api => {
 		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.0/junit-jupiter-api-5.8.0.jar',
 		fname => 'junit-jupiter-api.jar',
