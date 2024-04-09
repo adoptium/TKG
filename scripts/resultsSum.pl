@@ -148,8 +148,9 @@ sub resultReporter {
 						$endTime = $1;
 						$tapString .= "    duration_ms: " . ($endTime - $startTime) . "\n  ...\n";
 						last;
-					} elsif ($result =~  /(Test results: .*)(passed|skipped|failed|error)(: \d{1,}$)/) {
+					} elsif ($result =~  /(Test results: .*)(passed|skipped|failed|error)(: .*\d{1,}$)/) {
 						$testCasesPerTargetSummary = $result;
+						chomp($testCasesPerTargetSummary);
 						push (@testCasesResults, $result);					
 					} elsif ($result eq ($testName . "_PASSED\n")) {
 						$numOfPassed++;
@@ -160,7 +161,7 @@ sub resultReporter {
 						if ( $testCasesPerTargetSummary ) {
 							$summarySuffix = " - " . $testCasesPerTargetSummary . " ";
 							$tapString .= "    output:\n      |\n";
-							$tapString .= "        " . $testCasesPerTargetSummary;
+							$tapString .= "        " . $testCasesPerTargetSummary .  "\n";
 						}
 
 						push (@passed, $testName . $summarySuffix . $successRate);
@@ -441,6 +442,10 @@ sub getTestcaseResults() {
 				}
 			}
 		}		
+	}
+
+	for (keys %testCasesSummary ) {
+		while ($testCasesSummary{$_} =~ s/^(\d+)(\d{3})/$1,$2/) {}
 	}
 	
 	$testCaseResults = "TESTCASES RESULTS SUMMARY: passed: " . $testCasesSummary{'passed: '} .  "; failed: " . $testCasesSummary{'failed: '} . "; error: " . $testCasesSummary{'error: '} . "; skipped: " . $testCasesSummary{'skipped: '};
