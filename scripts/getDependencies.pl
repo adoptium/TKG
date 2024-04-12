@@ -109,15 +109,10 @@ my %base = (
 		fname => 'junit4.jar',
 		sha1 => 'e4f1766ce7404a08f45d859fb9c226fc9e41a861'
 	},
-	junit_jupiter_api => {
-		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.0/junit-jupiter-api-5.8.0.jar',
-		fname => 'junit-jupiter-api.jar',
-		sha1 => '1afdba46bfdf3f23de4910f5f257be8d3dcfc3c7'
-	},
 	mockito_core => {
-		url => 'https://repo1.maven.org/maven2/org/mockito/mockito-core/5.9.0/mockito-core-5.9.0.jar',
+		url => 'https://repo1.maven.org/maven2/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0.jar',
 		fname => 'mockito-core.jar',
-		sha1 => 'faa88b96db3aeb96a93e83dec7491345bfbfc414'
+		sha1 => 'e4069fa4f4ff2c94322cfec5f2e45341c6c70aff'
 	},
 	testng => {
 		url => 'https://repo1.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
