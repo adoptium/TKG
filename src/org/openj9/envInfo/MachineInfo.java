@@ -38,7 +38,8 @@ public class MachineInfo {
 	public static final String[] LINUX_OS_NAME_CMD = new String[] {"bash", "-c", "grep '^NAME' /etc/os-release | awk -F'=' ' gsub(/\"/,\"\") { print $2}'"};
 	public static final String[] LINUX_OS_VERSION_CMD = new String[] {"bash", "-c", "grep '^VERSION_ID' /etc/os-release | awk -F'=' ' gsub(/\"/,\"\") { print $2}'"};
 
-	public static final String[] MICRO_ARCH_CMD = new String[] {"bash", "-c", "cat /proc/cpuinfo | grep 'model name' | uniq"};
+	public static final String[] MICRO_ARCH_CMD = new String[] {"bash", "-c", "cat /proc/cpuinfo | grep -E 'machine|model name' | uniq"};
+
 	public static final String[] ULIMIT_CMD = new String[] {"bash", "-c", "ulimit -a"};
 
 	public static final String[] INSTALLED_MEM_CMD = new String[] {"bash", "-c", "grep MemTotal /proc/meminfo | awk '{print $2}"};
@@ -116,8 +117,8 @@ public class MachineInfo {
 	}
 
 	private String parseInfo(String output) {
-		if (output == null) return ""; 
-		Pattern pattern = Pattern.compile("[0-9]+[.][0-9]+([.][0-9]+)?"); 
+		if (output == null) return "";
+		Pattern pattern = Pattern.compile("[0-9]+[.][0-9]+([.][0-9]+)?");
 		Matcher matcher = pattern.matcher(output);
 		if (matcher.find()) {
 			return matcher.group(0);
@@ -201,15 +202,36 @@ public class MachineInfo {
 		putInfo(new Info("sysArch", SYS_ARCH_CMD, ce.execute(SYS_ARCH_CMD), null));
 		putInfo(new Info("procArch", PROC_ARCH_CMD, ce.execute(PROC_ARCH_CMD), null));
 		String microArchOutput = ce.execute(MICRO_ARCH_CMD);
+		String microArch = "";
+		// Check for specific machine versions and set the microArch accordingly
 		if (microArchOutput.toLowerCase().contains("skylake")) {
-			String microArch = "skylake";
+			microArch = "skylake";
+		} else if (microArchOutput.contains("8562")) {
+			microArch = "z15";
+		} else if (microArchOutput.contains("8561")) {
+			microArch = "z15";
+		} else if (microArchOutput.contains("3907")) {
+			microArch = "z14";
+		} else if (microArchOutput.contains("3906")) {
+			microArch = "z14";
+		} else if (microArchOutput.contains("2965")) {
+			microArch = "z13";
+		} else if (microArchOutput.contains("2964")) {
+			microArch= "z13";
+		}
+		else {
+			System.out.println("Unfamiliar microArch detected in TKG. It will not be added in TKG microArch!");
+			System.out.println("microArchOutput: " + microArchOutput);
+	 	}
+
+		if (!microArch.isEmpty()) {
 			putInfo(new Info("microArch", MICRO_ARCH_CMD, microArch, null));
 		}
 		putInfo(new Info("sysOS", SYS_OS_CMD, ce.execute(SYS_OS_CMD), null));
 		putInfo(new Info("ulimit", ULIMIT_CMD, ce.execute(ULIMIT_CMD), null));
 		putInfo(new Info("docker", CHECK_DOCKER_CMD, ce.execute(CHECK_DOCKER_CMD), null));
 	}
-	
+
 	private void getOsLabel() {
 		if (System.getProperty("os.name").toLowerCase().contains("linux")) {
 			String osName = ce.execute(LINUX_OS_NAME_CMD).toLowerCase();
@@ -231,7 +253,7 @@ public class MachineInfo {
 			putInfo(new Info("osInfo", LINUX_OS_CMD, ce.execute(LINUX_OS_CMD), null));
 		}
 	}
- 
+
 	private void getPrerequisiteInfo() {
 		putInfo(new Info("antVersion", ANT_VERSION_CMD, ce.execute(ANT_VERSION_CMD), "1.9.6"));
 		/* required version is 4.1, but some exception applies, do not verify for now*/
@@ -252,7 +274,7 @@ public class MachineInfo {
 		putInfo(new Info("vmVendor", new String[] {"ManagementFactory.getRuntimeMXBean().getSpecVendor()"}, ManagementFactory.getRuntimeMXBean().getSpecVendor(), null));
 		putInfo(new Info("vmVersion", new String[] {"ManagementFactory.getRuntimeMXBean().getVmVersion()"}, ManagementFactory.getRuntimeMXBean().getVmVersion(), null));
 	}
-	
+
 	private void getPhysicalMemoryInfo() {
 		OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 		putInfo(new Info("Total Physical Memory Size", new String[] {"osBean.getTotalPhysicalMemorySize()"}, String.valueOf(osBean.getTotalPhysicalMemorySize()), null));
