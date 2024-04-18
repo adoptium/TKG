@@ -74,6 +74,21 @@ my %base = (
 		fname => 'asm.jar',
 		sha1 => 'a0f58cad836a410f6ba133aaa209aea7e54aaf8a'
 	},
+	byte_buddy => {
+		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.14.12/byte-buddy-1.14.12.jar',
+		fname => 'byte-buddy.jar',
+		sha1 => '6e37f743dc15a8d7a4feb3eb0025cbc612d5b9e1'
+	},
+	byte_buddy_agent => {
+		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12.jar',
+		fname => 'byte-buddy-agent.jar',
+		sha1 => 'be4984cb6fd1ef1d11f218a648889dfda44b8a15'
+	 },
+	objenesis => {
+		url => 'https://repo1.maven.org/maven2/org/objenesis/objenesis/3.3/objenesis-3.3.jar',
+		fname => 'objenesis.jar',
+		sha1 => '1049c09f1de4331e8193e579448d0916d75b7631'
+	 },
 	commons_cli => {
 		url => 'https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar',
 		fname => 'commons-cli.jar',
@@ -93,6 +108,11 @@ my %base = (
 		url => 'https://repo1.maven.org/maven2/junit/junit/4.10/junit-4.10.jar',
 		fname => 'junit4.jar',
 		sha1 => 'e4f1766ce7404a08f45d859fb9c226fc9e41a861'
+	},
+	mockito_core => {
+		url => 'https://repo1.maven.org/maven2/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0.jar',
+		fname => 'mockito-core.jar',
+		sha1 => 'e4069fa4f4ff2c94322cfec5f2e45341c6c70aff'
 	},
 	testng => {
 		url => 'https://repo1.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
