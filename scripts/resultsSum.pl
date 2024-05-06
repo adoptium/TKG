@@ -171,11 +171,6 @@ sub resultReporter {
 					} elsif ($result eq ($testName . "_FAILED\n")) {
 						$numOfFailed++;
 						$numOfTotal++;
-						my $summarySuffix = '';
-						if ( $testCasesPerTargetSummary ) {
-							$summarySuffix = " - " . $testCasesPerTargetSummary . " ";
-						}
-						push (@failed, $testName . $summarySuffix . $successRate);
 						$tapString .= "not ok " . $numOfTotal . " - " . $testName .  "\n";
 						$tapString .= "  ---\n";
 						# sometime jck test output shows after _FAILED message and before the $testName\E Finish Time
@@ -197,12 +192,11 @@ sub resultReporter {
 								}
 							}
 						}
-
+						my $failureTests = "";
 						if ($diagnostic ne 'failure' || ($buildList !~ /openjdk/ && $buildList !~ /jck/)) {
 							$tapString .= $output;
 						} else { #rerun jdk or jck* custom target only work for diagnostic=failure
 							my @lines = split('\\n', $output);
-							my $failureTests = "";
 							if ($buildList =~ /openjdk/) {
 								for my $i (0 .. $#lines) {
 									if ( $lines[$i] =~ /[-]{50}/) {
@@ -243,6 +237,17 @@ sub resultReporter {
 							moveTDUMPS($output, $dmpDir, $spec);
 						}
 
+						my $summarySuffix = '';
+						if ( $testCasesPerTargetSummary ) {
+							$summarySuffix = " - " . $testCasesPerTargetSummary . " ";
+							$testCasesPerTargetSummary .= "\n";
+							$failureTests =~ s/$testCasesPerTargetSummary//;
+							$failureTests =~ s/        /\t\t\t/;
+							chomp($failureTests);
+							$summarySuffix .= "\n\t\t" . "Failed test cases: \n" . "$failureTests";
+						}
+
+						push (@failed, $testName . $summarySuffix . $successRate);
 						if ( $isJckFailedTestFinish ) {
 							last;
 						}
