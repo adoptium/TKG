@@ -2,23 +2,31 @@ name: "Run TKG Tests"
 on:
   issue_comment:
     types: [created]
+permissions:
+    contents: write
+    issues: write
+    pull-requests: write
 jobs:
   testTKG:
+    permissions:
+        contents: write
+        issues: write
+        pull-requests: write
     runs-on: ubuntu-latest
     if: startsWith(github.event.comment.body, 'run tkg-test')
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
         with:
           ref: refs/pull/${{ github.event.issue.number }}/head
 
       - name: Set up JDK
-        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # v3.13.0
+        uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
         with:
           distribution: 'temurin'
           java-version: 11
 
       - name: Create success comment
-        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -53,7 +61,7 @@ jobs:
     if: failure()
     steps:
     - name: Create comment
-      uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -73,7 +81,7 @@ jobs:
     if: cancelled()
     steps:
     - name: Create comment
-      uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -93,7 +101,7 @@ jobs:
     if: success()
     steps:
     - name: Create comment
-      uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
