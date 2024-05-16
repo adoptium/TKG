@@ -150,6 +150,15 @@
 	</test>
 
 	<test>
+		<testCaseName>test_not_arch_390_z15plus</testCaseName>
+		<command>echo "test not arch.390.z15+"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>^arch.390.z15+</platformRequirements>
+		</platformRequirementsList>
+	</test>
+
+	<test>
 		<testCaseName>test_arch_390_z14</testCaseName>
 		<command>echo "test arch.390.z14"; \
 		$(TEST_STATUS)</command>
