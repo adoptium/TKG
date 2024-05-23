@@ -183,9 +183,39 @@ my %base = (
 		sha1 => '42a25dc3219429f0e5d060061f71acb49bf010a0'
 	},
 	bcprov_jdk18on => {
-		url => 'https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.jar',
+		url => 'https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.78.1/bcprov-jdk18on-1.78.1.jar',
 		fname => 'bcprov-jdk18on.jar',
-		sha1 => '2cc971b6c20949c1ff98d1a4bc741ee848a09523'
+		sha1 => '39e9e45359e20998eb79c1828751f94a818d25f8'
+	},
+	junit_vintage_engine => {
+		url => 'https://repo1.maven.org/maven2/org/junit/vintage/junit-vintage-engine/5.10.2/junit-vintage-engine-5.10.2.jar',
+		fname => 'junit-vintage-engine.jar',
+		sha1 => '2905387f99f86a6618d1f7c005e7a5946224f317'
+	},
+	junit_platform_suite => {
+		url => 'https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite/1.10.1/junit-platform-suite-1.10.1.jar',
+		fname => 'junit-platform-suite.jar',
+		sha1 => 'a219dbd79ec2b1fc61b806554fcf4eb5c17a6d1d'
+	},
+	junit_jupiter_api => {
+		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar',
+		fname => 'junit-jupiter-api.jar',
+		sha1 => 'fb55d6e2bce173f35fd28422e7975539621055ef'
+	},
+	junit_jupiter_engine => {
+		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar',
+		fname => 'junit-jupiter-engine.jar',
+		sha1 => 'f1f8fe97bd58e85569205f071274d459c2c4f8cd'
+	},
+	junit_jupiter_params => {
+		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar',
+		fname => 'junit-jupiter-params.jar',
+		sha1 => '359132c82a9d3fa87a325db6edd33b5fdc67a3d8'
+	},
+	junit_platform_suite_api => {
+		url => 'https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite-api/1.10.2/junit-platform-suite-api-1.10.2.jar',
+		fname => 'junit-platform-suite-api.jar',
+		sha1 => '174bba1574c37352b0eb2c06e02b6403738ad57c'
 	});
 
 my @dependencies = split(',', $dependencyList);
