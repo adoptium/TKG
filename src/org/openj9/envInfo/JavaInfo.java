@@ -194,6 +194,8 @@ public class JavaInfo {
             return "loongson";
         } else if (vendorLC.contains("fujitsu")) {
             return "fujitsu";
+        } else if (vendorLC.contains("temurin")) {
+            return "temurin";
 	} else {
             System.out.println("Warning: cannot determine vendor, use System.getProperty('java.vendor')=" + vendor + " directly.\n");
             return vendor;
