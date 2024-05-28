@@ -25,9 +25,6 @@ export JAVA_HOME := $(TEST_JDK_HOME)
 $(info JAVA_HOME is set to $(JAVA_HOME))
 endif
 
-
-
-
 D = /
 MKTREE = mkdir -p
 SUBDIRS = ..
@@ -40,11 +37,21 @@ ifndef LIB_DIR
 endif
 
 UNAME := uname
-UNAME_OS := $(shell $(UNAME) -s | $(CUT) -f1 -d_)
+UNAME_OS := $(shell $(UNAME) -s | cut -f1 -d_)
+$(info UNAME_OS is $(UNAME_OS))
 ifeq ($(findstring CYGWIN,$(UNAME_OS)), CYGWIN)
 	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
+else ifeq ($(UNAME_OS),OS/390)
+# The issue is still being investigated. See backlog/issues/1424
+# set -Dfile.encoding=IBM-1047 for JDK21+ zOS for now
+ifeq ($(shell test $(JDK_VERSION) -ge 21; echo $$?),0)
+export IBM_JAVA_OPTIONS="-Dfile.encoding=IBM-1047"
+$(info export IBM_JAVA_OPTIONS="-Dfile.encoding=IBM-1047")
 endif
+endif
+
 export LIB_DIR:=$(subst \,/,$(LIB_DIR))
+$(info LIB_DIR is set to $(LIB_DIR))
 
 _TESTTARGET = $(firstword $(MAKECMDGOALS))
 TESTTARGET = $(patsubst _%,%,$(_TESTTARGET))

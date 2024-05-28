@@ -192,6 +192,10 @@ public class JavaInfo {
             return "microsoft";
         } else if (vendorLC.contains("loongson")) {
             return "loongson";
+        } else if (vendorLC.contains("fujitsu")) {
+            return "fujitsu";
+        } else if (vendorLC.contains("temurin")) {
+            return "temurin";
 	} else {
             System.out.println("Warning: cannot determine vendor, use System.getProperty('java.vendor')=" + vendor + " directly.\n");
             return vendor;
@@ -226,9 +230,12 @@ public class JavaInfo {
     }
 
     public void checkCRIU() {
-        String isCRIUCapable = System.getProperty("org.eclipse.openj9.criu.isCRIUCapable");
-        if ((isCRIUCapable != null) && isCRIUCapable.equals("true")) {
+        if ("true".equalsIgnoreCase(System.getProperty("org.eclipse.openj9.criu.isCRIUCapable"))) {
             detectedTfs.add("CRIU");
+            // CRIU support is required by CRaC
+            if ("true".equalsIgnoreCase(System.getProperty("org.eclipse.openj9.criu.isCRaCCapable"))) {
+            	detectedTfs.add("CRAC");
+            }
         }
     }
 

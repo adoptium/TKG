@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../resources/playlist.xsd">
 	<test>
 		<testCaseName>test_arch_x86</testCaseName>
 		<command>echo "test arch.x86"; \
@@ -106,6 +106,83 @@
 		<command>echo "test on none os.linux.ubuntu.20+"; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>^os.linux.ubuntu.20+</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>test_not_arch_390</testCaseName>
+		<command>echo "test on none arch.390"; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>^arch.390</platformRequirements>
+	</test>
+
+	<test>
+		<testCaseName>test_arch_x86_skylake</testCaseName>
+		<command>echo "test arch.x86.skylake"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>arch.x86.skylake</platformRequirements>
+		</platformRequirementsList>
+	</test>
+
+	<test>
+		<testCaseName>test_arch_390_z15plus</testCaseName>
+		<command>echo "test arch.390.z15+"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>arch.390.z15+</platformRequirements>
+		</platformRequirementsList>
+	</test>
+
+	<test>
+		<testCaseName>test_arch_390_z15</testCaseName>
+		<command>echo "test arch.390.z15"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>arch.390.z15</platformRequirements>
+		</platformRequirementsList>
+	</test>
+	<test>
+		<testCaseName>test_arch_390_z14plus</testCaseName>
+		<command>echo "test arch.390.z14+"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>arch.390.z14+</platformRequirements>
+		</platformRequirementsList>
+	</test>
+
+	<test>
+		<testCaseName>test_not_arch_390_z15plus</testCaseName>
+		<command>echo "test not arch.390.z15+"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>^arch.390.z15+</platformRequirements>
+		</platformRequirementsList>
+	</test>
+
+	<test>
+		<testCaseName>test_arch_390_z14</testCaseName>
+		<command>echo "test arch.390.z14"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>arch.390.z14</platformRequirements>
+		</platformRequirementsList>
+	</test>
+
+	<test>
+		<testCaseName>test_arch_390_z13plus</testCaseName>
+		<command>echo "test arch.390.z13+"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>arch.390.z13+</platformRequirements>
+		</platformRequirementsList>
+	</test>
+
+	<test>
+		<testCaseName>test_arch_390_z13</testCaseName>
+		<command>echo "test arch.390.z13"; \
+		$(TEST_STATUS)</command>
+		<platformRequirementsList>
+			<platformRequirements>arch.390.z13</platformRequirements>
+		</platformRequirementsList>
 	</test>
 
 </playlist>

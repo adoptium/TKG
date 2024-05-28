@@ -74,6 +74,21 @@ my %base = (
 		fname => 'asm.jar',
 		sha1 => 'a0f58cad836a410f6ba133aaa209aea7e54aaf8a'
 	},
+	byte_buddy => {
+		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.14.12/byte-buddy-1.14.12.jar',
+		fname => 'byte-buddy.jar',
+		sha1 => '6e37f743dc15a8d7a4feb3eb0025cbc612d5b9e1'
+	},
+	byte_buddy_agent => {
+		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12.jar',
+		fname => 'byte-buddy-agent.jar',
+		sha1 => 'be4984cb6fd1ef1d11f218a648889dfda44b8a15'
+	 },
+	objenesis => {
+		url => 'https://repo1.maven.org/maven2/org/objenesis/objenesis/3.3/objenesis-3.3.jar',
+		fname => 'objenesis.jar',
+		sha1 => '1049c09f1de4331e8193e579448d0916d75b7631'
+	 },
 	commons_cli => {
 		url => 'https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar',
 		fname => 'commons-cli.jar',
@@ -93,6 +108,11 @@ my %base = (
 		url => 'https://repo1.maven.org/maven2/junit/junit/4.10/junit-4.10.jar',
 		fname => 'junit4.jar',
 		sha1 => 'e4f1766ce7404a08f45d859fb9c226fc9e41a861'
+	},
+	mockito_core => {
+		url => 'https://repo1.maven.org/maven2/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0.jar',
+		fname => 'mockito-core.jar',
+		sha1 => 'e4069fa4f4ff2c94322cfec5f2e45341c6c70aff'
 	},
 	testng => {
 		url => 'https://repo1.maven.org/maven2/org/testng/testng/6.14.2/testng-6.14.2.jar',
@@ -140,13 +160,6 @@ my %base = (
 		shafn => 'jtreg_5_1_b01.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
-	jtreg_6_1 => {
-		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-6+1.tar.gz',
-		fname => 'jtreg_6_1.tar.gz',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-6+1.tar.gz.sha256sum.txt',
-		shafn => 'jtreg_6_1.tar.gz.sha256sum.txt',
-		shaalg => '256'
-	},
 	jtreg_7_3_1_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.3.1+1.tar.gz',
 		fname => 'jtreg_7_3_1_1.tar.gz',
@@ -160,9 +173,49 @@ my %base = (
 		sha1 => '15592c29538abd36d15570eda9fa055ed1a618ba'
 	},
 	jcstress => {
-		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20220908.jar',
-		fname => 'jcstress-tests-all-20220908.jar',
-		sha1 => '8cf348be49b8af939a3ce03216e3df53aa0f9ef2'
+		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20240222.jar',
+		fname => 'jcstress-tests-all-20240222.jar',
+		sha1 => '200da75e67689e8a604ec6fe9a6f55b2c000b6ce'
+	},
+	hamcrest_core => {
+		url => 'https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar',
+		fname => 'hamcrest-core.jar',
+		sha1 => '42a25dc3219429f0e5d060061f71acb49bf010a0'
+	},
+	bcprov_jdk18on => {
+		url => 'https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.78.1/bcprov-jdk18on-1.78.1.jar',
+		fname => 'bcprov-jdk18on.jar',
+		sha1 => '39e9e45359e20998eb79c1828751f94a818d25f8'
+	},
+	junit_vintage_engine => {
+		url => 'https://repo1.maven.org/maven2/org/junit/vintage/junit-vintage-engine/5.10.2/junit-vintage-engine-5.10.2.jar',
+		fname => 'junit-vintage-engine.jar',
+		sha1 => '2905387f99f86a6618d1f7c005e7a5946224f317'
+	},
+	junit_platform_suite => {
+		url => 'https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite/1.10.1/junit-platform-suite-1.10.1.jar',
+		fname => 'junit-platform-suite.jar',
+		sha1 => 'a219dbd79ec2b1fc61b806554fcf4eb5c17a6d1d'
+	},
+	junit_jupiter_api => {
+		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar',
+		fname => 'junit-jupiter-api.jar',
+		sha1 => 'fb55d6e2bce173f35fd28422e7975539621055ef'
+	},
+	junit_jupiter_engine => {
+		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar',
+		fname => 'junit-jupiter-engine.jar',
+		sha1 => 'f1f8fe97bd58e85569205f071274d459c2c4f8cd'
+	},
+	junit_jupiter_params => {
+		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar',
+		fname => 'junit-jupiter-params.jar',
+		sha1 => '359132c82a9d3fa87a325db6edd33b5fdc67a3d8'
+	},
+	junit_platform_suite_api => {
+		url => 'https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite-api/1.10.2/junit-platform-suite-api-1.10.2.jar',
+		fname => 'junit-platform-suite-api.jar',
+		sha1 => '174bba1574c37352b0eb2c06e02b6403738ad57c'
 	});
 
 my @dependencies = split(',', $dependencyList);
