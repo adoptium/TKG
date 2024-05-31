@@ -218,75 +218,14 @@ my %base = (
 		sha1 => '174bba1574c37352b0eb2c06e02b6403738ad57c'
 	});
 
-my %system_jars = (
-	ant_launcher => {
-		url => 'https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1.jar',
-		dir => 'apache-ant/lib',
-		fname => 'ant-launcher.jar',
-		is_system_test => 1
-	},
-	asm => {
-		url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/9.0/asm-9.0.jar',
-		dir => 'asm',
-		fname => 'asm.jar',
-		is_system_test => 1
-	},
-	cvsclient => {
-		url => 'https://repo1.maven.org/maven2/org/netbeans/lib/cvsclient/20060125/cvsclient-20060125.jar',
-		dir => 'cvsclient',
-		fname => 'org-netbeans-lib-cvsclient.jar',
-		is_system_test => 1
-	},
-	hamcrest_core => {
-		url => 'https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar',
-		dir => 'junit',
-		fname => 'hamcrest-core.jar',
-		is_system_test => 1
-	},
-	junit => {
-		url => 'https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar',
-		dir => 'junit',
-		fname => 'junit.jar',
-		is_system_test => 1
-	},
-	log4j_api => {
-		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.jar',
-		dir => 'log4j',
-		fname => 'log4j-api.jar',
-		is_system_test => 1
-	},
-	log4j_core => {
-		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.jar',
-		dir => 'log4j',
-		fname => 'log4j-core.jar',
-		is_system_test => 1
-	},
-	mauve => {
-		url => 'https://ci.adoptium.net/job/systemtest.getDependency/lastSuccessfulBuild/artifact/systemtest_prereqs/mauve/mauve.jar',
-		dir => 'mauve',
-		fname => 'mauve.jar',
-		is_system_test => 1
-	},
-	tools => {
-		url => 'https://ci.adoptium.net/job/systemtest.getDependency/lastSuccessfulBuild/artifact/systemtest_prereqs/tools/tools.jar',
-		dir => 'tools',
-		fname => 'tools.jar',
-		is_system_test => 1
-	});
-
-my %jars_to_use;
-if ($path =~ /system_lib/) {
-	%jars_to_use = (%base, %system_jars);
-} else {
-	%jars_to_use = %base;
-}
 my @dependencies = split(',', $dependencyList);
+
 # Put all dependent jars hash to array to prepare downloading
 my @jars_info;
-foreach my $dependency (keys %jars_to_use) {
+foreach my $dependency (keys %base) {
 	foreach my $i (@dependencies) {
 		if ($i eq "all" || $dependency eq $i) {
-			push(@jars_info, $jars_to_use{$dependency});
+			push(@jars_info, $base{$dependency});
 		}
 	}
 }
@@ -303,30 +242,15 @@ if ($task eq "clean") {
 	for my $i (0 .. $#jars_info) {
 		my $url = $jars_info[$i]{url};
 		my $fn = $jars_info[$i]{fname};
-		my $sha1 = $jars_info[$i]{sha1};
-		my $dir = $jars_info[$i]{dir} // "";
-		my $full_dir_path = File::Spec->catdir($path, $dir);
-		my $url_custom = $customUrl;
-
-		if (!-d $full_dir_path) {
-			make_path($full_dir_path, {chmod => 0755, verbose => 1}) or die "Failed to create directory: $full_dir_path: $!";
-			print "Directory created: $full_dir_path\n";
-		}
-
-		my $filename = File::Spec->catfile($full_dir_path, $fn);
+		my $filename = $path . $sep . $fn;
 		my $shaurl = $jars_info[$i]{shaurl};
 		my $shafn = $jars_info[$i]{shafn};
 
-		# if url_custom is provided, use url_custom and reset $url and $shaurl
-		if ($url_custom ne "") {
-			if ($jars_info[$i]{is_system_test}) {
-				$url_custom =~ s/test.getDependency/systemtest.getDependency/;
-				$url_custom .= "systemtest_prereqs/";
-				$url_custom .= $jars_info[$i]{dir};
-			}
-			$url = "$url_custom/$fn";
+		# if customUrl is provided, use customUrl and reset $url and $shaurl
+		if ($customUrl ne "") {
+			$url = "$customUrl/$fn";
 			if (defined $shaurl && $shaurl ne '') {
-				$shaurl = "$url_custom/$shafn";
+				$shaurl = "$customUrl/$shafn";
 			}
 		}
 
@@ -344,12 +268,10 @@ if ($task eq "clean") {
 
 		my $expectedsha = $jars_info[$i]{sha1};
 		if (!$expectedsha) {
-			if (defined $shafn && $shafn ne '') {
-				$shafn = $path . $sep . $shafn;
-				# if the sha file exists, parse the file and get the expected sha
-				if (-e $shafn) {
-					$expectedsha = getShaFromFile($shafn, $fn);
-				}
+			$shafn = $path . $sep . $shafn;
+			# if the sha file exists, parse the file and get the expected sha
+			if (-e $shafn) {
+				$expectedsha = getShaFromFile($shafn, $fn);
 			}
 
 			# if expectedsha is not set above and shaurl is provided, download the sha file
@@ -365,35 +287,30 @@ if ($task eq "clean") {
 			next;
 		}
 
-		my $ignoreChecksum = (!defined $sha1 || $sha1 eq '') && (!defined $shaurl || $shaurl eq '');
 		# download the dependent third party jar
 		downloadFile($url, $filename);
 
 		# if shaurl is provided, re-download the sha file and reset the expectedsha value
 		# as the dependent third party jar is newly downloadeded
-		if (!$ignoreChecksum) {
-			if ($shaurl) {
-				downloadFile($shaurl, $shafn);
-				$expectedsha = getShaFromFile($shafn, $fn);
-			}
+		if ($shaurl) {
+			downloadFile($shaurl, $shafn);
+			$expectedsha = getShaFromFile($shafn, $fn);
+		}
 
-			if (!$expectedsha) {
-				die "ERROR: cannot get the expected sha for file $fn.\n";
-			}
+		if (!$expectedsha) {
+			die "ERROR: cannot get the expected sha for file $fn.\n";
+		}
 
-			# validate dependencies sha sum
-			$sha = Digest::SHA->new($shaalg);
-			$sha->addfile($filename);
-			$digest = $sha->hexdigest;
+		# validate dependencies sha sum
+		$sha = Digest::SHA->new($shaalg);
+		$sha->addfile($filename);
+		$digest = $sha->hexdigest;
 
-			if ($digest ne $expectedsha) {
-				print "Expected sha is: $expectedsha,\n";
-				print "Actual sha is  : $digest.\n";
-				print "Please delete $filename and rerun the program!";
-				die "ERROR: sha checksum error.\n";
-			}
-		} else {
-			print "Checksum verification skipped for $filename\n";
+		if ($digest ne $expectedsha) {
+			print "Expected sha is: $expectedsha,\n";
+			print "Actual sha is  : $digest.\n";
+			print "Please delete $filename and rerun the program!";
+			die "ERROR: sha checksum error.\n";
 		}
 	}
 	print "downloaded dependent third party jars successfully\n";
