@@ -49,7 +49,6 @@ public class MachineInfo {
 	public static final String[] CPU_CORES_CMD_SOLARIS = new String[] {"bash", "-c", "psrinfo | wc -l"};
 	public static final String[] NUMA_CMD = new String[] {"bash", "-c", "numactl --show | grep 'No NUMA support available on this system"};
 	public static final String[] SYS_VIRT_CMD = new String[] {""};
-	public static final String[] CHECK_DOCKER_CMD = new String[] {"bash", "-c", "if grep -sq 'docker\\|lxc' /proc/1/cgroup; then echo 'running on docker'; else echo 'not on docker'; fi"};
 
 	// Software
 	public static final String[] SYS_OS_CMD = new String[] {"uname", "-s"};
@@ -63,6 +62,8 @@ public class MachineInfo {
 	public static final String[] MAKE_VERSION_CMD = new String[] {"bash", "-c", "make --version"};
 	public static final String[] PERL_VERSION_CMD = new String[] {"bash", "-c", "perl --version"};
 	public static final String[] CURL_VERSION_CMD = new String[] {"bash", "-c", "curl --version"};
+	public static final String[] DOCKER_VERSION_CMD = new String[] {"bash", "-c", "docker --version"};
+	public static final String[] PODMAN_VERSION_CMD = new String[] {"bash", "-c", "podman --version"};
 
 
 	// Console
@@ -229,7 +230,6 @@ public class MachineInfo {
 		}
 		putInfo(new Info("sysOS", SYS_OS_CMD, ce.execute(SYS_OS_CMD), null));
 		putInfo(new Info("ulimit", ULIMIT_CMD, ce.execute(ULIMIT_CMD), null));
-		putInfo(new Info("docker", CHECK_DOCKER_CMD, ce.execute(CHECK_DOCKER_CMD), null));
 	}
 
 	private void getOsLabel() {
@@ -260,6 +260,8 @@ public class MachineInfo {
 		putInfo(new Info("makeVersion", MAKE_VERSION_CMD, ce.execute(MAKE_VERSION_CMD), null));
 		putInfo(new Info("perlVersion", PERL_VERSION_CMD, ce.execute(PERL_VERSION_CMD), "5.10.1"));
 		putInfo(new Info("curlVersion", CURL_VERSION_CMD, ce.execute(CURL_VERSION_CMD), "7.20.0"));
+		putInfo(new Info("dockerVersion", DOCKER_VERSION_CMD, ce.execute(DOCKER_VERSION_CMD), null));
+		putInfo(new Info("podmanVersion", PODMAN_VERSION_CMD, ce.execute(PODMAN_VERSION_CMD), null));
 	}
 
 	private void getSpaceInfo() {
