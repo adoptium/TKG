@@ -64,6 +64,7 @@ public class MachineInfo {
 	public static final String[] CURL_VERSION_CMD = new String[] {"bash", "-c", "curl --version"};
 	public static final String[] DOCKER_VERSION_CMD = new String[] {"bash", "-c", "docker --version"};
 	public static final String[] PODMAN_VERSION_CMD = new String[] {"bash", "-c", "podman --version"};
+	public static final String[] MAVEN_VERSION_CMD = new String[] {"bash", "-c", "mvn -v"};
 
 
 	// Console
@@ -262,6 +263,7 @@ public class MachineInfo {
 		putInfo(new Info("curlVersion", CURL_VERSION_CMD, ce.execute(CURL_VERSION_CMD), "7.20.0"));
 		putInfo(new Info("dockerVersion", DOCKER_VERSION_CMD, ce.execute(DOCKER_VERSION_CMD), null));
 		putInfo(new Info("podmanVersion", PODMAN_VERSION_CMD, ce.execute(PODMAN_VERSION_CMD), null));
+		putInfo(new Info("mavenVersion", MAVEN_VERSION_CMD, ce.execute(MAVEN_VERSION_CMD), null));
 	}
 
 	private void getSpaceInfo() {
