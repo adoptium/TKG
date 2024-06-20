@@ -226,7 +226,15 @@ public class TestDivider {
 		String level = getLevel();
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		String URL = constructURL(impl, plat, group, level);
-		String command = "curl --silent --max-time 120 -L " + URL;
+		String osName = System.getProperty("os.name").toLowerCase();
+		String command;
+
+		if (osName.contains("win")) {
+			command = "cmd.exe /c curl --silent --max-time 120 -L -k \"" + URL + "\"";
+		} else {
+			command = "curl --silent --max-time 120 -L -k " + URL;
+		}
+	
 		System.out.println("Attempting to get test duration data from TRSS.");
 		System.out.println(command);
 		Process process;
