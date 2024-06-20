@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <!--
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,15 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-
 <project name="getDependency" default="getDependentLibs" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
 	<description>
 		Get Third Party Dependencies
 	</description>
 
 	<!-- set default LIB property to all -->
-	<property name="LIB" value="all" />
+	<property name="LIB" value="all"/>
 	<target name="getJtregVersion">
 		<if>
 			<!-- versions 8-10, 12-16 -->
@@ -29,8 +27,16 @@
 			<then>
 				<property name="jtregTar" value="jtreg_5_1_b01"/>
 			</then>
+			<elseif>
+				<!-- versions 11, 17-23 -->
+				<matches pattern="^(11|1[7-9]|2[0-3])$" string="${JDK_VERSION}"/>
+				<then>
+					<property name="jtregTar" value="jtreg_7_3_1_1"/>
+				</then>
+			</elseif>
 			<else>
-				<property name="jtregTar" value="jtreg_7_3_1_1"/>
+				<!-- versions 24+ -->
+				<property name="jtregTar" value="jtreg_7_4_1"/>
 			</else>
 		</if>
 
@@ -49,7 +55,7 @@
 		<var name="LIB" unset="true"/>
 		<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
 	</target>
-	
+
 	<target name="getJtreg" depends="getJtregVersion,getDependentLibs">
 		<mkdir dir="${DEST}"/>
 		<if>
