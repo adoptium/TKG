@@ -167,6 +167,13 @@ my %base = (
 		shafn => 'jtreg_7_3_1_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
+	jtreg_7_4_1 => {
+		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.4+1.tar.gz',
+		fname => 'jtreg_7_4_1.tar.gz',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.4+1.tar.gz.sha256sum.txt',
+		shafn => 'jtreg_7_4_1.tar.gz.sha256sum.txt',
+		shaalg => '256'
+	},
 	jython => {
 		url => 'https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
 		fname => 'jython-standalone.jar',
@@ -183,19 +190,120 @@ my %base = (
 		sha1 => '42a25dc3219429f0e5d060061f71acb49bf010a0'
 	},
 	bcprov_jdk18on => {
-		url => 'https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.jar',
+		url => 'https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.78.1/bcprov-jdk18on-1.78.1.jar',
 		fname => 'bcprov-jdk18on.jar',
-		sha1 => '2cc971b6c20949c1ff98d1a4bc741ee848a09523'
+		sha1 => '39e9e45359e20998eb79c1828751f94a818d25f8'
+	},
+	junit_vintage_engine => {
+		url => 'https://repo1.maven.org/maven2/org/junit/vintage/junit-vintage-engine/5.10.2/junit-vintage-engine-5.10.2.jar',
+		fname => 'junit-vintage-engine.jar',
+		sha1 => '2905387f99f86a6618d1f7c005e7a5946224f317'
+	},
+	junit_platform_suite => {
+		url => 'https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite/1.10.1/junit-platform-suite-1.10.1.jar',
+		fname => 'junit-platform-suite.jar',
+		sha1 => 'a219dbd79ec2b1fc61b806554fcf4eb5c17a6d1d'
+	},
+	junit_jupiter_api => {
+		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar',
+		fname => 'junit-jupiter-api.jar',
+		sha1 => 'fb55d6e2bce173f35fd28422e7975539621055ef'
+	},
+	junit_jupiter_engine => {
+		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar',
+		fname => 'junit-jupiter-engine.jar',
+		sha1 => 'f1f8fe97bd58e85569205f071274d459c2c4f8cd'
+	},
+	junit_jupiter_params => {
+		url => 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar',
+		fname => 'junit-jupiter-params.jar',
+		sha1 => '359132c82a9d3fa87a325db6edd33b5fdc67a3d8'
+	},
+	junit_platform_suite_api => {
+		url => 'https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite-api/1.10.2/junit-platform-suite-api-1.10.2.jar',
+		fname => 'junit-platform-suite-api.jar',
+		sha1 => '174bba1574c37352b0eb2c06e02b6403738ad57c'
 	});
 
-my @dependencies = split(',', $dependencyList);
+my %system_jars = (
+	json_simple => {
+		url => 'https://repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar',
+		fname => 'json-simple.jar',
+		sha1 => 'c9ad4a0850ab676c5c64461a05ca524cdfff59f1',
+	},
+	jcstress => {
+		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20240222.jar',
+		fname => 'jcstress-tests-all-20240222.jar',
+		sha1 => '200da75e67689e8a604ec6fe9a6f55b2c000b6ce',
+	},
+	ant_launcher => {
+		url => 'https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1.jar',
+		dir => 'apache-ant/lib',
+		fname => 'ant-launcher.jar',
+		is_system_test => 1
+	},
+	asm => {
+		url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/9.0/asm-9.0.jar',
+		dir => 'asm',
+		fname => 'asm.jar',
+		is_system_test => 1
+	},
+	cvsclient => {
+		url => 'https://repo1.maven.org/maven2/org/netbeans/lib/cvsclient/20060125/cvsclient-20060125.jar',
+		dir => 'cvsclient',
+		fname => 'org-netbeans-lib-cvsclient.jar',
+		is_system_test => 1
+	},
+	hamcrest_core => {
+		url => 'https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar',
+		dir => 'junit',
+		fname => 'hamcrest-core.jar',
+		is_system_test => 1
+	},
+	junit => {
+		url => 'https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar',
+		dir => 'junit',
+		fname => 'junit.jar',
+		is_system_test => 1
+	},
+	log4j_api => {
+		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.jar',
+		dir => 'log4j',
+		fname => 'log4j-api.jar',
+		is_system_test => 1
+	},
+	log4j_core => {
+		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.jar',
+		dir => 'log4j',
+		fname => 'log4j-core.jar',
+		is_system_test => 1
+	},
+	mauve => {
+		url => 'https://ci.adoptium.net/job/systemtest.getDependency/lastSuccessfulBuild/artifact/systemtest_prereqs/mauve/mauve.jar',
+		dir => 'mauve',
+		fname => 'mauve.jar',
+		is_system_test => 1
+	},
+	tools => {
+		url => 'https://ci.adoptium.net/job/systemtest.getDependency/lastSuccessfulBuild/artifact/systemtest_prereqs/tools/tools.jar',
+		dir => 'tools',
+		fname => 'tools.jar',
+		is_system_test => 1
+	});
 
+my %jars_to_use;
+if ($path =~ /system_lib/) {
+	%jars_to_use = %system_jars;
+} else {
+	%jars_to_use = %base;
+}
+my @dependencies = split(',', $dependencyList);
 # Put all dependent jars hash to array to prepare downloading
 my @jars_info;
-foreach my $dependency (keys %base) {
+foreach my $dependency (keys %jars_to_use) {
 	foreach my $i (@dependencies) {
 		if ($i eq "all" || $dependency eq $i) {
-			push(@jars_info, $base{$dependency});
+			push(@jars_info, $jars_to_use{$dependency});
 		}
 	}
 }
@@ -212,15 +320,33 @@ if ($task eq "clean") {
 	for my $i (0 .. $#jars_info) {
 		my $url = $jars_info[$i]{url};
 		my $fn = $jars_info[$i]{fname};
-		my $filename = $path . $sep . $fn;
+		my $sha1 = $jars_info[$i]{sha1};
+		my $dir = $jars_info[$i]{dir} // "";
+		my $full_dir_path = File::Spec->catdir($path, $dir);
+		my $url_custom = $customUrl;
+
+		if (!-d $full_dir_path) {
+			make_path($full_dir_path, {chmod => 0755, verbose => 1}) or die "Failed to create directory: $full_dir_path: $!";
+			print "Directory created: $full_dir_path\n";
+		}
+
+		my $filename = File::Spec->catfile($full_dir_path, $fn);
 		my $shaurl = $jars_info[$i]{shaurl};
 		my $shafn = $jars_info[$i]{shafn};
 
-		# if customUrl is provided, use customUrl and reset $url and $shaurl
-		if ($customUrl ne "") {
-			$url = "$customUrl/$fn";
+		# if url_custom is provided, use url_custom and reset $url and $shaurl
+		if ($url_custom ne "") {
+			if (defined $jars_info[$i]{is_system_test} && $jars_info[$i]{is_system_test} == 1) {
+				$url_custom =~ s/test.getDependency/systemtest.getDependency/;
+				$url_custom .= "systemtest_prereqs/";
+				$url_custom .= $jars_info[$i]{dir};
+				$url_custom .= '/' unless $url_custom =~ /\/$/;
+				$url_custom .= $jars_info[$i]{fname};
+				$url = "$url_custom";
+			}
+
 			if (defined $shaurl && $shaurl ne '') {
-				$shaurl = "$customUrl/$shafn";
+				$shaurl = "$url_custom/$shafn";
 			}
 		}
 
@@ -238,10 +364,12 @@ if ($task eq "clean") {
 
 		my $expectedsha = $jars_info[$i]{sha1};
 		if (!$expectedsha) {
-			$shafn = $path . $sep . $shafn;
-			# if the sha file exists, parse the file and get the expected sha
-			if (-e $shafn) {
-				$expectedsha = getShaFromFile($shafn, $fn);
+			if (defined $shafn && $shafn ne '') {
+				$shafn = $path . $sep . $shafn;
+				# if the sha file exists, parse the file and get the expected sha
+				if (-e $shafn) {
+					$expectedsha = getShaFromFile($shafn, $fn);
+				}
 			}
 
 			# if expectedsha is not set above and shaurl is provided, download the sha file
@@ -257,30 +385,40 @@ if ($task eq "clean") {
 			next;
 		}
 
+		my $ignoreChecksum = (!defined $sha1 || $sha1 eq '') && (!defined $shaurl || $shaurl eq '');
 		# download the dependent third party jar
-		downloadFile($url, $filename);
 
-		# if shaurl is provided, re-download the sha file and reset the expectedsha value
-		# as the dependent third party jar is newly downloadeded
-		if ($shaurl) {
-			downloadFile($shaurl, $shafn);
-			$expectedsha = getShaFromFile($shafn, $fn);
-		}
+		if ($ignoreChecksum && -e $filename) {
+			print "$filename exists, not downloading.\n";
+		} else {
+			downloadFile($url, $filename);
 
-		if (!$expectedsha) {
-			die "ERROR: cannot get the expected sha for file $fn.\n";
-		}
+			# if shaurl is provided, re-download the sha file and reset the expectedsha value
+			# as the dependent third party jar is newly downloadeded
+			if (!$ignoreChecksum) {
+				if ($shaurl) {
+					downloadFile($shaurl, $shafn);
+					$expectedsha = getShaFromFile($shafn, $fn);
+				}
 
-		# validate dependencies sha sum
-		$sha = Digest::SHA->new($shaalg);
-		$sha->addfile($filename);
-		$digest = $sha->hexdigest;
+				if (!$expectedsha) {
+					die "ERROR: cannot get the expected sha for file $fn.\n";
+				}
 
-		if ($digest ne $expectedsha) {
-			print "Expected sha is: $expectedsha,\n";
-			print "Actual sha is  : $digest.\n";
-			print "Please delete $filename and rerun the program!";
-			die "ERROR: sha checksum error.\n";
+				# validate dependencies sha sum
+				$sha = Digest::SHA->new($shaalg);
+				$sha->addfile($filename);
+				$digest = $sha->hexdigest;
+
+				if ($digest ne $expectedsha) {
+					print "Expected sha is: $expectedsha,\n";
+					print "Actual sha is  : $digest.\n";
+					print "Please delete $filename and rerun the program!";
+					die "ERROR: sha checksum error.\n";
+				}
+			} else {
+				print "Checksum verification skipped for $filename\n";
+			}
 		}
 	}
 	print "downloaded dependent third party jars successfully\n";
