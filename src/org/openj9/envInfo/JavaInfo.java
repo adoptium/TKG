@@ -55,7 +55,7 @@ public class JavaInfo {
             return null;
         }
 
-        if (osArch.contains("amd64") || osArch.contains("x86")) {
+        if (osArch.contains("amd64") || osArch.contains("x86") || osArch.contains("i386")) {
             spec += "_x86";
         } else if (osArch.contains("ppc") || osArch.contains("powerpc")) {
             spec += "_ppc";
