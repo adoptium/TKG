@@ -194,6 +194,16 @@ my %base = (
 		fname => 'bcprov-jdk18on.jar',
 		sha1 => '39e9e45359e20998eb79c1828751f94a818d25f8'
 	},
+	bcpkix_jdk18on => {
+		url => 'https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.78.1/bcpkix-jdk18on-1.78.1.jar',
+		fname => 'bcpkix-jdk18on.jar',
+		sha1 => '17b3541f736df97465f87d9f5b5dfa4991b37bb3'
+	},
+	bcprov_ext_jdk18on => {
+		url => 'https://repo1.maven.org/maven2/org/bouncycastle/bcprov-ext-jdk18on/1.78/bcprov-ext-jdk18on-1.78.jar',
+		fname => 'bcprov-ext-jdk18on.jar',
+		sha1 => 'ce389d6dee236dbf6aea7fb139e2745381c18882'
+	},
 	junit_vintage_engine => {
 		url => 'https://repo1.maven.org/maven2/org/junit/vintage/junit-vintage-engine/5.10.2/junit-vintage-engine-5.10.2.jar',
 		fname => 'junit-vintage-engine.jar',
