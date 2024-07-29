@@ -246,10 +246,17 @@ public class JavaInfo {
         }
     }
 
+    public void checkJFR() {
+        if ("true".equalsIgnoreCase(System.getProperty("org.eclipse.openj9.jfr.isJFREnabled"))) {
+            detectedTfs.add("JFR");
+        }
+    }
+
     public String getTestFlag() {
         String testFlag = "";
         checkCRIU();
         checkVTstandard();
+        checkJFR();
         String envTf = System.getenv("TEST_FLAG");
         String paddedTf = null;
         if (envTf != null) {
