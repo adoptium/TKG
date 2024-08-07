@@ -108,7 +108,7 @@ endif
 # compile tools
 #######################################
 include moveDmp.mk
-COMPILE_TOOLS_CMD=ant -f .$(D)scripts$(D)build_tools.xml -DTEST_JDK_HOME=$(TEST_JDK_HOME) -DTEST_ROOT=$(TEST_ROOT) -DLIB_DIR=$(LIB_DIR)
+COMPILE_TOOLS_CMD=ant -f .$(D)scripts$(D)build_tools.xml $(Q)-DTEST_JDK_HOME=$(TEST_JDK_HOME)$(Q) $(Q)-DTEST_ROOT=$(TEST_ROOT)$(Q) $(Q)-DLIB_DIR=$(LIB_DIR)$(Q)
 
 compileTools:
 	$(RM) -r $(COMPILATION_OUTPUT); \
