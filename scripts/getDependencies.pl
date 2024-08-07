@@ -342,8 +342,7 @@ if ($task eq "clean") {
 				$url_custom .= $jars_info[$i]{dir};
 			}
 
-			$url_custom .= '/' unless $url_custom =~ /\/$/;
-			$url = ""$url_custom$jars_info[$i]{fname}";
+			$url = "$url_custom/$jars_info[$i]{fname}";
 
 			if (defined $shaurl && $shaurl ne '') {
 				$shaurl = "$url_custom/$shafn";
