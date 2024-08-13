@@ -225,8 +225,11 @@ public class TestDivider {
 		String group = getGroup();
 		String level = getLevel();
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		String URL = constructURL(impl, plat, group, level);
 		String osName = System.getProperty("os.name").toLowerCase();
+		if (osName.contains("mac")) {
+			plat = plat.replace("_xl", "");
+		}
+		String URL = constructURL(impl, plat, group, level);
 		String command;
 
 		if (osName.contains("win")) {
