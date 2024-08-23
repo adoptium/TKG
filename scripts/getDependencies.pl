@@ -187,9 +187,7 @@ my %base = (
 	maven => {
 		url => 'https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz',
 		fname => 'apache-maven-bin.tar.gz',
-		shaurl => 'https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz.sha512',
-		shafn => 'apache_maven_3.9.8_bin.tar.gz.sha512',
-		shaalg => '512'
+		sha1 => '7f15c63c129f036dd5c96b1a591ed8d888f75617'
 	});
 
 my %system_jars = (
