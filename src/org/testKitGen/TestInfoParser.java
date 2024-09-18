@@ -155,6 +155,8 @@ public class TestInfoParser {
 				Variation var = parseVariation(subTestName, variations.get(i), ti.getPlatform(), ti.getPlatformRequirementsList());
 				listOfVars.add(var);
 			}
+		} else {
+			System.out.println("Warning: JVM_OPTIONS specified, ignoring variations for " + testCaseName + ".");
 		}
 		if (variations.size() == 0) {
 			String subTestName = ti.getTestCaseName() + "_0";
