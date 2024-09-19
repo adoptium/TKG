@@ -147,12 +147,16 @@ public class TestInfoParser {
 		getElements(ti.getPlatformRequirementsList(), "platformRequirementsList", "platformRequirements", null, ti.getTestCaseName());
 
 		List<String> variations = new ArrayList<String>();
-		getElements(variations, "variations", "variation", null, ti.getTestCaseName());
 		List<Variation> listOfVars = new ArrayList<Variation>();
-		for (int i = 0; i < variations.size(); i++) {
-			String subTestName = ti.getTestCaseName() + "_" + i;
-			Variation var = parseVariation(subTestName, variations.get(i), ti.getPlatform(), ti.getPlatformRequirementsList());
-			listOfVars.add(var);
+		if (System.getenv("JVM_OPTIONS") == null) {
+			getElements(variations, "variations", "variation", null, ti.getTestCaseName());
+			for (int i = 0; i < variations.size(); i++) {
+				String subTestName = ti.getTestCaseName() + "_" + i;
+				Variation var = parseVariation(subTestName, variations.get(i), ti.getPlatform(), ti.getPlatformRequirementsList());
+				listOfVars.add(var);
+			}
+		} else {
+			System.out.println("Warning: JVM_OPTIONS specified, ignoring variations for " + testCaseName + ".");
 		}
 		if (variations.size() == 0) {
 			String subTestName = ti.getTestCaseName() + "_0";
