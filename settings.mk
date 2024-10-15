@@ -419,7 +419,6 @@ OPENDJK_METHODHANDLES_ENABLED?=$(shell $(JAVA_COMMAND) -XshowSettings:properties
 ifneq (,$(findstring true,$(OPENDJK_METHODHANDLES_ENABLED)))
 	export EXCLUDE_FILE:=$(EXCLUDE_FILE),$(TEST_ROOT)$(D)TestConfig$(D)resources$(D)excludes$(D)feature_ojdkmh_exclude.txt
 endif
-# Issue to track excluded tests in x86-64_linux_vt_standard build: https://github.com/eclipse-openj9/openj9/issues/12878
 VALUE_TYPE_STANDARD_BUILD?=$(shell $(JAVA_COMMAND) -version 2>&1 | grep 'vtstandard')
 ifneq (,$(findstring vtstandard,$(VALUE_TYPE_STANDARD_BUILD)))
 	export EXCLUDE_FILE:=$(EXCLUDE_FILE),$(TEST_ROOT)$(D)TestConfig$(D)resources$(D)excludes$(D)feature_vtstandard_exclude.txt
