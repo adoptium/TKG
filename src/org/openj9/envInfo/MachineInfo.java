@@ -65,6 +65,7 @@ public class MachineInfo {
 	public static final String[] DOCKER_VERSION_CMD = new String[] {"bash", "-c", "docker --version"};
 	public static final String[] PODMAN_VERSION_CMD = new String[] {"bash", "-c", "podman --version"};
 	public static final String[] MAVEN_VERSION_CMD = new String[] {"bash", "-c", "mvn -v"};
+	public static final String[] BASH_VERSION_CMD = new String[] {"bash", "-c", "bash --version"};
 
 
 	// Console
@@ -264,6 +265,7 @@ public class MachineInfo {
 		putInfo(new Info("dockerVersion", DOCKER_VERSION_CMD, ce.execute(DOCKER_VERSION_CMD), null));
 		putInfo(new Info("podmanVersion", PODMAN_VERSION_CMD, ce.execute(PODMAN_VERSION_CMD), null));
 		putInfo(new Info("mavenVersion", MAVEN_VERSION_CMD, ce.execute(MAVEN_VERSION_CMD), null));
+		putInfo(new Info("bashVersion", BASH_VERSION_CMD, ce.execute(BASH_VERSION_CMD), null));
 	}
 
 	private void getSpaceInfo() {

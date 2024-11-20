@@ -88,11 +88,15 @@ public class TestInfoParser {
 			ti.addFeature(featElements[0].toLowerCase(), featElements[1].toLowerCase());
 		}
 		Set<String> testFlags = new HashSet<>(arg.getTestFlag());
+		boolean requiredFeatureFound = false;
+		boolean hasRequiredFeature = false; 
 		for (Map.Entry<String,String> entry : ti.getFeatures().entrySet()) {
 			String featureOpt = entry.getValue().toLowerCase();
 			if (featureOpt.equals("required")) {
-				if (!isFeatureInTestFlags(testFlags, entry.getKey())) {
-					return null;
+				hasRequiredFeature = true;
+				if (isFeatureInTestFlags(testFlags, entry.getKey())) {
+					requiredFeatureFound = true;
+					break;
 				}
 			} else if (featureOpt.equals("nonapplicable")) {
 				// Do not generate make target if the test is not applicable for one feature defined in TEST_FLAG
@@ -106,7 +110,9 @@ public class TestInfoParser {
 				System.exit(1);
 			}
 		}
-
+		if (hasRequiredFeature && !requiredFeatureFound) {
+			return null;
+		}
 		if (testFlags.contains("aot")) {
 			for (Map.Entry<String,String> entry : ti.getFeatures().entrySet()) {
 				if (doesFeatureMatchTestFlag("aot", entry.getKey())) {
@@ -147,12 +153,16 @@ public class TestInfoParser {
 		getElements(ti.getPlatformRequirementsList(), "platformRequirementsList", "platformRequirements", null, ti.getTestCaseName());
 
 		List<String> variations = new ArrayList<String>();
-		getElements(variations, "variations", "variation", null, ti.getTestCaseName());
 		List<Variation> listOfVars = new ArrayList<Variation>();
-		for (int i = 0; i < variations.size(); i++) {
-			String subTestName = ti.getTestCaseName() + "_" + i;
-			Variation var = parseVariation(subTestName, variations.get(i), ti.getPlatform(), ti.getPlatformRequirementsList());
-			listOfVars.add(var);
+		if (System.getenv("JVM_OPTIONS") == null) {
+			getElements(variations, "variations", "variation", null, ti.getTestCaseName());
+			for (int i = 0; i < variations.size(); i++) {
+				String subTestName = ti.getTestCaseName() + "_" + i;
+				Variation var = parseVariation(subTestName, variations.get(i), ti.getPlatform(), ti.getPlatformRequirementsList());
+				listOfVars.add(var);
+			}
+		} else {
+			System.out.println("Warning: JVM_OPTIONS specified, ignoring variations for " + testCaseName + ".");
 		}
 		if (variations.size() == 0) {
 			String subTestName = ti.getTestCaseName() + "_0";
