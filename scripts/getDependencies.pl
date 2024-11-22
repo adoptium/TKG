@@ -248,6 +248,12 @@ my %system_jars = (
 		dir => 'mauve',
 		fname => 'mauve.jar',
 		is_system_test => 1
+	},
+	tools => {
+		url => 'https://ci.adoptium.net/job/systemtest.getDependency/lastSuccessfulBuild/artifact/systemtest_prereqs/tools/tools.jar',
+		dir => 'tools',
+		fname => 'tools.jar',
+		is_system_test => 1
 	});
 
 my %jars_to_use;
