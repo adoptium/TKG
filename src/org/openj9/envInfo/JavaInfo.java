@@ -259,7 +259,7 @@ public class JavaInfo {
         checkJFR();
         String envTf = System.getenv("TEST_FLAG");
         String paddedTf = null;
-        if (envTf != null) {
+        if (envTf != null && !envTf.isEmpty()) {
             testFlag = envTf;
             paddedTf =  "," + envTf + ",";
         }

@@ -154,7 +154,8 @@ public class TestInfoParser {
 
 		List<String> variations = new ArrayList<String>();
 		List<Variation> listOfVars = new ArrayList<Variation>();
-		if (System.getenv("JVM_OPTIONS") == null) {
+		String jvmOptions = System.getenv("JVM_OPTIONS");
+		if (jvmOptions == null || jvmOptions.isEmpty()) {
 			getElements(variations, "variations", "variation", null, ti.getTestCaseName());
 			for (int i = 0; i < variations.size(); i++) {
 				String subTestName = ti.getTestCaseName() + "_" + i;
