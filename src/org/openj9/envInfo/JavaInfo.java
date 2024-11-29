@@ -55,7 +55,7 @@ public class JavaInfo {
             return null;
         }
 
-        if (osArch.contains("amd64") || osArch.contains("x86")) {
+        if (osArch.contains("amd64") || osArch.contains("x86") || osArch.contains("i386")) {
             spec += "_x86";
         } else if (osArch.contains("ppc") || osArch.contains("powerpc")) {
             spec += "_ppc";
@@ -246,13 +246,20 @@ public class JavaInfo {
         }
     }
 
+    public void checkJFR() {
+        if ("true".equalsIgnoreCase(System.getProperty("org.eclipse.openj9.jfr.isJFREnabled"))) {
+            detectedTfs.add("JFR");
+        }
+    }
+
     public String getTestFlag() {
         String testFlag = "";
         checkCRIU();
         checkVTstandard();
+        checkJFR();
         String envTf = System.getenv("TEST_FLAG");
         String paddedTf = null;
-        if (envTf != null) {
+        if (envTf != null && !envTf.isEmpty()) {
             testFlag = envTf;
             paddedTf =  "," + envTf + ",";
         }

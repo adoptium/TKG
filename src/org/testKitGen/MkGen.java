@@ -96,7 +96,24 @@ public class MkGen {
 				f.write(testTargetName + ": TEST_GROUP=" + testInfo.getLevelStr() + "\n");
 				f.write(testTargetName + ": TEST_ITERATIONS=" + testInfo.getIterations() + "\n");
 				f.write(testTargetName + ": AOT_ITERATIONS=" + testInfo.getAotIterations() + "\n");
-
+				
+				// Set special openjdk problem list for JVM options that contains FIPS profile
+				// This feature is ignored if TEST_FLAG contains FIPS
+				if (arg.getBuildList().contains("openjdk")) {
+					String jvmOpts = var.getJvmOptions();
+					String customprofileStr = "-Dsemeru.customprofile=";
+					if (!arg.getTestFlag().contains("FIPS") && !jvmOpts.isEmpty() && jvmOpts.contains(customprofileStr)) {
+						String[] splited = jvmOpts.split("\\s+");
+						for (int i = 0; i < splited.length; i++) {
+							if (splited[i].contains(customprofileStr)) {
+								String fipsProfile = splited[i].replace(customprofileStr, "").trim();
+								f.write(testTargetName + ": FIPS_VARIATION_PROBLEM_LIST_FILE=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)/ProblemList-" + fipsProfile + ".txt$(Q)\n");
+								break;
+							}
+						}
+					}
+				}
+				
 				f.write(testTargetName + ":\n");
 				f.write(indent + "@echo \"\" | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
 				f.write(indent
