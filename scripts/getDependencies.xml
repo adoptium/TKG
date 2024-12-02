@@ -21,12 +21,25 @@
 	<!-- set default LIB property to all -->
 	<property name="LIB" value="all"/>
 	<target name="getJtregVersion">
+		<condition property="jtregOnZ">
+			<and>
+				<contains string="${SPEC}" substring="zos"/>
+				<matches pattern="^(11|17)$" string="${JDK_VERSION}"/>
+			</and>
+		</condition>
 		<if>
 			<!-- versions 8-10, 12-16 -->
 			<matches pattern="^([89]|1[02-6])$" string="${JDK_VERSION}"/>
 			<then>
 				<property name="jtregTar" value="jtreg_5_1_b01"/>
 			</then>
+			<elseif>
+				<!-- versions 11, 17 on z/OS -->
+				<isset property="jtregOnZ"/>
+				<then>
+					<property name="jtregTar" value="jtreg_6_1"/>
+				</then>
+			</elseif>
 			<elseif>
 				<!-- versions 11, 17-23 -->
 				<matches pattern="^(11|1[7-9]|2[0-3])$" string="${JDK_VERSION}"/>
@@ -39,6 +52,7 @@
 				<property name="jtregTar" value="jtreg_7_4_1"/>
 			</else>
 		</if>
+		<echo message="jtreg version used is : ${jtregTar}"/>
 
 		<if>
 			<or>
