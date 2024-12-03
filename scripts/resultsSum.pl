@@ -351,6 +351,7 @@ sub resultReporter {
 		my $timeStamp = gmtime();
 
 		#add AQACert.log content in TAP file
+		$tapPath =~ s[\\][/]g;
 		my $AQACert = $tapPath."../AQACert.log";
 		my $AQACertContent = `cat $AQACert`;
 		$AQACertContent =~ s/\n/\n# /g;
