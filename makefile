@@ -41,12 +41,6 @@ UNAME_OS := $(shell $(UNAME) -s | cut -f1 -d_)
 $(info UNAME_OS is $(UNAME_OS))
 ifeq ($(findstring CYGWIN,$(UNAME_OS)), CYGWIN)
 	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
-else ifeq ($(UNAME_OS),OS/390)
-ifeq ($(shell test $(JDK_VERSION) -ge 21; echo $$?),0)
-# Pass -Dfile.encoding=IBM-1047 to create autoGen.mk contents readable on z/OS for JDK21+
-JVM_OPTIONS=-Dfile.encoding=IBM-1047
-$(info JVM_OPTIONS is "-Dfile.encoding=IBM-1047")
-endif
 endif
 
 export LIB_DIR:=$(subst \,/,$(LIB_DIR))
@@ -89,7 +83,7 @@ compile: buildListGen
 # If AUTO_DETECT is turned on, compile and execute envDetector in build_envInfo.xml.
 #######################################
 envDetect: compileTools
-	${TEST_JDK_HOME}$(D)bin$(D)java $(JVM_OPTIONS) -cp .$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector
+	${TEST_JDK_HOME}$(D)bin$(D)java -cp .$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector
 
 #######################################
 # Generate refined BUILD_LIST.
