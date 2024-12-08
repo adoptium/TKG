@@ -16,6 +16,7 @@ package org.openj9.envInfo;
 
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.io.IOException;
 import java.io.BufferedWriter;
 
@@ -82,7 +83,11 @@ public class EnvDetector {
 		 */
 		BufferedWriter output = null;
 		try {
-			output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("autoGenEnv.mk")));
+			if (javaVersion.matches("2\\d") && SPECInfo.contains("zos")) {
+				output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("autoGenEnv.mk"), Charset.forName("IBM-1047")));
+			} else {
+				output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("autoGenEnv.mk")));
+			}
 			output.write("########################################################\n");
 			output.write("# This is an auto generated file. Please do NOT modify!\n");
 			output.write("########################################################\n");
