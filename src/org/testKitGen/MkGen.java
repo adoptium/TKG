@@ -14,8 +14,12 @@
 
 package org.testKitGen;
 
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +31,7 @@ public class MkGen {
 	private List<String> subdirs;
 	private String makeFile;
 	private PlaylistInfo pli;
+	private Writer writer;
 
 	public MkGen(Arguments arg, TestTarget tt, PlaylistInfo pli, String makeFile, List<String> dirList, List<String> subdirs) {
 		this.arg = arg;
@@ -46,7 +51,7 @@ public class MkGen {
 	}
 
 	private void writeVars() {
-		try (FileWriter f = new FileWriter(makeFile)) {
+		try (Writer f = getWriterObject(makeFile)) {
 			String realtiveRoot = "";
 			int subdirlevel = dirList.size();
 			if (subdirlevel == 0) {
@@ -72,7 +77,7 @@ public class MkGen {
 		}
 	}
 
-	private void writeSingleTest(List<String> testsInPlaylist, TestInfo testInfo, FileWriter f) throws IOException {
+	private void writeSingleTest(List<String> testsInPlaylist, TestInfo testInfo, Writer f) throws IOException {
 		for (Variation var : testInfo.getVars()) {
 			// Generate make target
 			String testTargetName = var.getSubTestName();
@@ -227,7 +232,7 @@ public class MkGen {
 	}
 
 	private void writeTargets() {
-		try (FileWriter f = new FileWriter(makeFile, true)) {
+		try (Writer f = getWriterObject(makeFile)) {
 			if (!pli.getIncludeList().isEmpty()) {
 				for (String include : pli.getIncludeList()) {
 					f.write("-include " + include + "\n\n");
@@ -250,5 +255,19 @@ public class MkGen {
 			e.printStackTrace();
 			System.exit(1);
 		}	
+	}
+
+	public Writer getWriterObject(String filetype) {
+		try {
+			if (arg.getSpec().toLowerCase().contains("zos") && (arg.getJdkVersion().matches("2\\d"))) {
+				writer = new OutputStreamWriter(new FileOutputStream(filetype, true), Charset.forName("IBM-1047"));
+			} else {
+				writer = new FileWriter(filetype, true);
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		return writer;
 	}
 }
