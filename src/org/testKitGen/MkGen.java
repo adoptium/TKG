@@ -14,15 +14,13 @@
 
 package org.testKitGen;
 
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.openj9.envInfo.Utility;;
 
 public class MkGen {
 	private Arguments arg;
@@ -31,7 +29,6 @@ public class MkGen {
 	private List<String> subdirs;
 	private String makeFile;
 	private PlaylistInfo pli;
-	private Writer writer;
 
 	public MkGen(Arguments arg, TestTarget tt, PlaylistInfo pli, String makeFile, List<String> dirList, List<String> subdirs) {
 		this.arg = arg;
@@ -51,7 +48,7 @@ public class MkGen {
 	}
 
 	private void writeVars() {
-		try (Writer f = getWriterObject(makeFile)) {
+		try (Writer f = Utility.getWriterObject(arg.getJdkVersion(), arg.getSpec(), makeFile)) {
 			String realtiveRoot = "";
 			int subdirlevel = dirList.size();
 			if (subdirlevel == 0) {
@@ -232,7 +229,7 @@ public class MkGen {
 	}
 
 	private void writeTargets() {
-		try (Writer f = getWriterObject(makeFile)) {
+		try (Writer f = Utility.getWriterObject(arg.getJdkVersion(), arg.getSpec(), makeFile)) {
 			if (!pli.getIncludeList().isEmpty()) {
 				for (String include : pli.getIncludeList()) {
 					f.write("-include " + include + "\n\n");
@@ -255,19 +252,5 @@ public class MkGen {
 			e.printStackTrace();
 			System.exit(1);
 		}	
-	}
-
-	public Writer getWriterObject(String filetype) {
-		try {
-			if (arg.getSpec().toLowerCase().contains("zos") && (arg.getJdkVersion().matches("2\\d"))) {
-				writer = new OutputStreamWriter(new FileOutputStream(filetype, true), Charset.forName("IBM-1047"));
-			} else {
-				writer = new FileWriter(filetype, true);
-			}
-		} catch(IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		return writer;
 	}
 }

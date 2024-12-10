@@ -14,11 +14,8 @@
 
 package org.openj9.envInfo;
 
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.io.IOException;
-import java.io.BufferedWriter;
+import java.io.Writer;
 
 public class EnvDetector {
 	static boolean isMachineInfo = false;
@@ -81,13 +78,9 @@ public class EnvDetector {
 		/**
 		 * autoGenEnv.mk file will be created to store auto detected java info.
 		 */
-		BufferedWriter output = null;
+		Writer output = null;
 		try {
-			if ((javaVersionInfo >= 21) && SPECInfo.contains("zos")) {
-				output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("autoGenEnv.mk"), Charset.forName("IBM-1047")));
-			} else {
-				output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("autoGenEnv.mk")));
-			}
+			output = Utility.getWriterObject(String.valueOf(javaVersionInfo), SPECInfo, "autoGenEnv.mk");
 			output.write("########################################################\n");
 			output.write("# This is an auto generated file. Please do NOT modify!\n");
 			output.write("########################################################\n");
@@ -99,11 +92,7 @@ public class EnvDetector {
 			output.write(JDK_VENDOR);
 			output.write(TEST_FLAG);
 			output.close();
-			if ((javaVersionInfo >= 21) && SPECInfo.contains("zos")) {
-				output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log"), Charset.forName("IBM-1047")));
-			} else {
-				output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("AQACert.log")));
-			}
+			output = Utility.getWriterObject(String.valueOf(javaVersionInfo), SPECInfo, "AQACert.log");
 			output.write(JAVA_VERSION);
 			output.write(RELEASE_INFO);
 			output.close();

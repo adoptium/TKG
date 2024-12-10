@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
+import org.openj9.envInfo.Utility;;
+
 public class UtilsGen {
 	private Arguments arg;
 	private ModesDictionary md;
@@ -42,7 +44,7 @@ public class UtilsGen {
 	}
 
 	private void generateUtil() {
-		try (Writer f = mg.getWriterObject(utilsMk)) {
+		try (Writer f = Utility.getWriterObject(arg.getJdkVersion(), arg.getSpec(), utilsMk)) {
 			f.write(Constants.HEADERCOMMENTS);
 			f.write("TOTALCOUNT := " + TestInfo.numOfTests() + "\n");
 			f.write("PLATFORM=\n");
@@ -58,7 +60,7 @@ public class UtilsGen {
 	}
 
 	private void generateRerun() {
-		try (Writer f = mg.getWriterObject(rerunMk)) {
+		try (Writer f = Utility.getWriterObject(arg.getJdkVersion(), arg.getSpec(), rerunMk)) {
 			f.write(Constants.HEADERCOMMENTS);
 			String ignoreOnRerunStr = String.join(",", ignoreOnRerunList);
 			f.write("IGNORE_ON_RERUN=");
