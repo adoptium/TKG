@@ -15,13 +15,16 @@
 package org.testKitGen;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
+
+import org.openj9.envInfo.Utility;;
 
 public class UtilsGen {
 	private Arguments arg;
 	private ModesDictionary md;
+	private MkGen mg;
 	private String utilsMk;
 	private String rerunMk;
 	private List<String> ignoreOnRerunList;
@@ -29,6 +32,7 @@ public class UtilsGen {
 	public UtilsGen(Arguments arg, ModesDictionary md, List<String> ignoreOnRerunList) {
 		this.arg = arg;
 		this.md = md;
+		this.mg = new MkGen(arg, null, null, rerunMk, ignoreOnRerunList, ignoreOnRerunList);
 		this.utilsMk = arg.getProjectRootDir() + "/TKG/" + Constants.UTILSMK;
 		this.rerunMk = arg.getProjectRootDir() + "/TKG/" + Constants.RERUNMK;
 		this.ignoreOnRerunList = ignoreOnRerunList;
@@ -40,7 +44,7 @@ public class UtilsGen {
 	}
 
 	private void generateUtil() {
-		try (FileWriter f = new FileWriter(utilsMk)) {
+		try (Writer f = Utility.getWriterObject(arg.getJdkVersion(), arg.getSpec(), utilsMk)) {
 			f.write(Constants.HEADERCOMMENTS);
 			f.write("TOTALCOUNT := " + TestInfo.numOfTests() + "\n");
 			f.write("PLATFORM=\n");
@@ -56,7 +60,7 @@ public class UtilsGen {
 	}
 
 	private void generateRerun() {
-		try (FileWriter f = new FileWriter(rerunMk)) {
+		try (Writer f = Utility.getWriterObject(arg.getJdkVersion(), arg.getSpec(), rerunMk)) {
 			f.write(Constants.HEADERCOMMENTS);
 			String ignoreOnRerunStr = String.join(",", ignoreOnRerunList);
 			f.write("IGNORE_ON_RERUN=");

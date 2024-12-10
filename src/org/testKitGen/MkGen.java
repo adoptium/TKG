@@ -14,11 +14,13 @@
 
 package org.testKitGen;
 
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.openj9.envInfo.Utility;;
 
 public class MkGen {
 	private Arguments arg;
@@ -46,7 +48,7 @@ public class MkGen {
 	}
 
 	private void writeVars() {
-		try (FileWriter f = new FileWriter(makeFile)) {
+		try (Writer f = Utility.getWriterObject(arg.getJdkVersion(), arg.getSpec(), makeFile)) {
 			String realtiveRoot = "";
 			int subdirlevel = dirList.size();
 			if (subdirlevel == 0) {
@@ -72,7 +74,7 @@ public class MkGen {
 		}
 	}
 
-	private void writeSingleTest(List<String> testsInPlaylist, TestInfo testInfo, FileWriter f) throws IOException {
+	private void writeSingleTest(List<String> testsInPlaylist, TestInfo testInfo, Writer f) throws IOException {
 		for (Variation var : testInfo.getVars()) {
 			// Generate make target
 			String testTargetName = var.getSubTestName();
@@ -244,7 +246,7 @@ public class MkGen {
 	}
 
 	private void writeTargets() {
-		try (FileWriter f = new FileWriter(makeFile, true)) {
+		try (Writer f = Utility.getWriterObject(arg.getJdkVersion(), arg.getSpec(), makeFile)) {
 			if (!pli.getIncludeList().isEmpty()) {
 				for (String include : pli.getIncludeList()) {
 					f.write("-include " + include + "\n\n");
