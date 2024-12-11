@@ -449,3 +449,7 @@ resultsSummary:
 	@$(ECHO) $(Q)All tests finished, run result summary:$(Q)
 	$(CD) $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(Q); \
 	perl $(Q)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --platFile=$(Q)$(PLATFROMFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --jdkVendor=$(Q)$(JDK_VENDOR)$(Q) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(Q)$(CUSTOM_TARGET)$(Q) --testTarget=$(TESTTARGET) --tapPath=$(TESTOUTPUT)$(D) --tapName=$(TAP_NAME) --comment=$(Q)$(RESULT_COMMENT)$(Q)
+
+shaInfor:
+	$(CD) $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(Q); \
+	bash $(Q)getSHA.sh$(Q) --repo_dir $(Q)$(TEST_ROOT)$(D)openjdk-jdk --output_file ${TEST_ROOT}$(D)TKG$(D)SHA.txt
