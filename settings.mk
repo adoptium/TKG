@@ -12,7 +12,7 @@
 # limitations under the License.
 ##############################################################################
 
-.PHONY: help rmResultFile resultsSummary
+.PHONY: help rmResultFile shaInfor resultsSummary
 
 help:
 	@echo "This makefile is used to build and execute JVM tests. You should specify the following"
@@ -364,7 +364,7 @@ $(SUBDIRS_TESTTARGET):
 
 $(TESTTARGET): $(SUBDIRS_TESTTARGET)
 
-_$(TESTTARGET): setup_$(TESTTARGET) rmResultFile $(TESTTARGET) resultsSummary teardown_$(TESTTARGET)
+_$(TESTTARGET): setup_$(TESTTARGET) rmResultFile $(TESTTARGET) shaInfor resultsSummary teardown_$(TESTTARGET)
 	@$(ECHO) $@ done
 
 .PHONY: _$(TESTTARGET) $(TESTTARGET) $(SUBDIRS) $(SUBDIRS_TESTTARGET)
@@ -443,13 +443,16 @@ endif
 rmResultFile:
 	@$(RM) $(Q)$(TEMPRESULTFILE)$(Q)
 
+shaInfor:
+	@$(ECHO_NEWLINE)
+	@$(ECHO_NEWLINE)
+	@$(ECHO) $(Q)Collect all REPOs sha $(Q)
+	$(CD) $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(Q); \
+	bash $(Q)getSHAs.sh$(Q) --test_root_dir $(Q)$(TEST_ROOT)$(Q) --shas_file $(Q)$(TEST_ROOT)$(D)TKG$(D)SHAs.txt$(Q) 
+
 resultsSummary:
 	@$(ECHO_NEWLINE)
 	@$(ECHO_NEWLINE)
 	@$(ECHO) $(Q)All tests finished, run result summary:$(Q)
 	$(CD) $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(Q); \
 	perl $(Q)resultsSum.pl$(Q) --failuremk=$(Q)$(FAILEDTARGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --platFile=$(Q)$(PLATFROMFILE)$(Q) --diagnostic=$(DIAGNOSTICLEVEL) --jdkVersion=$(JDK_VERSION) --jdkImpl=$(JDK_IMPL) --jdkVendor=$(Q)$(JDK_VENDOR)$(Q) --spec=$(SPEC) --buildList=$(BUILD_LIST) --customTarget=$(Q)$(CUSTOM_TARGET)$(Q) --testTarget=$(TESTTARGET) --tapPath=$(TESTOUTPUT)$(D) --tapName=$(TAP_NAME) --comment=$(Q)$(RESULT_COMMENT)$(Q)
-
-shaInfor:
-	$(CD) $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(Q); \
-	bash $(Q)getSHA.sh$(Q) --repo_dir $(Q)$(TEST_ROOT)$(D)openjdk-jdk --output_file ${TEST_ROOT}$(D)TKG$(D)SHA.txt
