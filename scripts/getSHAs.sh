@@ -22,7 +22,6 @@ usage ()
 	echo 'Usage : '
 	echo '                --test_root_dir: optional'
 	echo '                --shas_file: optional, the file to write the sha info to. Default is to ../SHAs.txt'
-
 }
 
 parseCommandLineArgs()
@@ -62,6 +61,7 @@ getSHAs()
 		touch "$SHAs_FILE"
 	fi
 
+	# Get SHA for non-external tests by find .git dir
 	cd "$TEST_ROOT" || exit
 	find "$TEST_ROOT" -type d -name ".git" | while read -r gitDir; do
 		repoDir=$(dirname "$gitDir")
@@ -69,7 +69,33 @@ getSHAs()
 		# append the info into $SHAs_FILR
 		{ echo "================================================"; echo "timestamp: $(timestamp)"; echo "repo dir: $repoDir"; echo "git repo: "; git remote show origin -n | grep "Fetch URL:"; echo "sha:"; git rev-parse HEAD; }  2>&1 | tee -a "$SHAs_FILE"
 	done
+	
+	cd "$TEST_ROOT" || exit
+	# Get SHA for external tests by test.properties
+	if [[ "$BUILD_LIST" == *"external"* ]]; then
+		for subDir in "$JVM_TEST_ROOT"/external/*/; do
+			if [[ $(find "$subDir" -type f -name 'Dockerfile.*') ]]; then
+				propertiesFile="$subDir/test.properties"
+				if [[ -f "$propertiesFile" ]]; then
+					# read github_url and tag_version
+					github_url=$(grep '^github_url=' "$propertiesFile" | cut -d"=" -f2 | tr -d '"')
+					tag_version=$(grep '^tag_version=' "$propertiesFile" | cut -d"=" -f2 | tr -d '"')
+
+					if [[ -z "$github_url" || -z "$tag_version" ]]; then
+						echo "No github_url or tag_version in $propertiesFile"
+						continue
+					fi
+
+					# Retrieve the SHA using github_url and tag_version
+					sha=$(git ls-remote "$github_url" "refs/tags/$tag_version" | awk '{print $1}')
+					# append the info into $SHAs_FILR
+					{ echo "================================================"; echo "timestamp: $(timestamp)"; echo "repo dir: $subDir"; echo "git repo: $github_url"; echo "sha:$sha";}  2>&1 | tee -a "$SHAs_FILE"
+				fi
+			fi
+		done
+    fi
 }
+
 parseCommandLineArgs "$@"
 getSHAs
 cd "$workDIR" || exit
