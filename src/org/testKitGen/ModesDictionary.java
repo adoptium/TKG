@@ -29,12 +29,14 @@ import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.openj9.envInfo.JavaInfo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ModesDictionary {
 	private Arguments arg;
+	private JavaInfo jInfo;
 	private String modesXml;
 	private String ottawaCsv;
 	private Map<String, String> spec2platMap;
@@ -44,6 +46,7 @@ public class ModesDictionary {
 
 	public ModesDictionary(Arguments arg) {
 		this.arg = arg;
+		jInfo = new JavaInfo();
 		modesXml= arg.getProjectRootDir() + "/TKG/" + Constants.MODESXML;
 		ottawaCsv = arg.getProjectRootDir() + "/TKG/" + Constants.OTTAWACSV;
 		spec2platMap = new HashMap<String, String>();
@@ -98,7 +101,7 @@ public class ModesDictionary {
 		ArrayList<String> specs = new ArrayList<String>();
 		int lineNum = 0;
 		BufferedReader reader = null;
-		if (arg.getSpec().toLowerCase().contains("zos") && !(arg.getJdkVersion().matches("[2-9][0-9]"))) {
+		if (arg.getSpec().toLowerCase().contains("zos") && !(jInfo.getJDKVersion() >= 21)) {
 			reader = Files.newBufferedReader(Paths.get(ottawaCsv), Charset.forName("IBM-1047"));
 		} else {
 			reader = Files.newBufferedReader(Paths.get(ottawaCsv));
