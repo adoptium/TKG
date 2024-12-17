@@ -101,7 +101,7 @@ public class ModesDictionary {
 		ArrayList<String> specs = new ArrayList<String>();
 		int lineNum = 0;
 		BufferedReader reader = null;
-		if (arg.getSpec().toLowerCase().contains("zos") && !(arg.getJdkVersion().matches("[2-9][0-9]"))) {
+		if (arg.getSpec().toLowerCase().contains("zos") && !(jInfo.getJDKVersion() >= 21)) {
 			reader = Files.newBufferedReader(Paths.get(ottawaCsv), Charset.forName("IBM-1047"));
 		} else {
 			reader = Files.newBufferedReader(Paths.get(ottawaCsv));
