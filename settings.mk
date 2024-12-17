@@ -12,7 +12,7 @@
 # limitations under the License.
 ##############################################################################
 
-.PHONY: help rmResultFile shaInfor resultsSummary
+.PHONY: help rmResultFile shaInfo resultsSummary
 
 help:
 	@echo "This makefile is used to build and execute JVM tests. You should specify the following"
@@ -364,7 +364,7 @@ $(SUBDIRS_TESTTARGET):
 
 $(TESTTARGET): $(SUBDIRS_TESTTARGET)
 
-_$(TESTTARGET): setup_$(TESTTARGET) rmResultFile $(TESTTARGET) shaInfor resultsSummary teardown_$(TESTTARGET)
+_$(TESTTARGET): setup_$(TESTTARGET) rmResultFile $(TESTTARGET) shaInfo resultsSummary teardown_$(TESTTARGET)
 	@$(ECHO) $@ done
 
 .PHONY: _$(TESTTARGET) $(TESTTARGET) $(SUBDIRS) $(SUBDIRS_TESTTARGET)
@@ -443,7 +443,7 @@ endif
 rmResultFile:
 	@$(RM) $(Q)$(TEMPRESULTFILE)$(Q)
 
-shaInfor:
+shaInfo:
 	@$(ECHO_NEWLINE)
 	@$(ECHO_NEWLINE)
 	@$(ECHO) $(Q)Collect all REPOs sha $(Q)
