@@ -46,5 +46,10 @@ compile:
 	$(MKTREE) $(COMPILATION_OUTPUT); \
 	($(COMPILE_CMD) 2>&1; echo $$? ) | tee $(Q)$(COMPILATION_LOG)$(Q); \
 	$(MOVE_TDUMP)
+	@$(ECHO_NEWLINE)
+	@$(ECHO_NEWLINE)
+	@$(ECHO) $(Q)RECORD TEST REPOs SHA $(Q)
+	$(CD) $(Q)$(TEST_ROOT)$(D)TKG$(D)scripts$(Q); \
+	bash $(Q)getSHAs.sh$(Q) --test_root_dir $(Q)$(TEST_ROOT)$(Q) --shas_file $(Q)$(TEST_ROOT)$(D)TKG$(D)SHAs.txt$(Q) 
 
 .PHONY: compile
