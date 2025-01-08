@@ -21,7 +21,7 @@ usage ()
 	echo 'This script use git command to get all shas in the provided TEST_ROOT and write the info into the SHAs file'
 	echo 'Usage : '
 	echo '                --test_root_dir: optional'
-	echo '                --shas_file: optianal, the file to write the sha info to. Default is to ../SHAs.txt'
+	echo '                --shas_file: optional, the file to write the sha info to. Default is to ../SHAs.txt'
 
 }
 
@@ -44,7 +44,7 @@ parseCommandLineArgs()
 		esac
 	done
 	if [ -z "$TEST_ROOT" ] || [ -z "$SHAs_FILE" ] || [ ! -d "$TEST_ROOT" ]; then
-		echo "Error, please see the usage and also check if $TEST_ROOT is existing"
+		echo "Error, please see the usage and also check if $TEST_ROOT exists"
 		usage
 		exit 1
 	fi
