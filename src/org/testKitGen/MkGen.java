@@ -14,18 +14,14 @@
 
 package org.testKitGen;
 
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.openj9.envInfo.JavaInfo;
-import org.openj9.envInfo.Utility;
-
 public class MkGen {
 	private Arguments arg;
-	private JavaInfo jInfo;
 	private TestTarget tt;
 	private List<String> dirList;
 	private List<String> subdirs;
@@ -34,7 +30,6 @@ public class MkGen {
 
 	public MkGen(Arguments arg, TestTarget tt, PlaylistInfo pli, String makeFile, List<String> dirList, List<String> subdirs) {
 		this.arg = arg;
-		this.jInfo = new JavaInfo();
 		this.tt = tt;
 		this.dirList = dirList;
 		this.subdirs = subdirs;
@@ -51,7 +46,7 @@ public class MkGen {
 	}
 
 	private void writeVars() {
-		try (Writer f = Utility.getWriterObject(jInfo.getJDKVersion(), arg.getSpec(), makeFile)) {
+		try (FileWriter f = new FileWriter(makeFile)) {
 			String realtiveRoot = "";
 			int subdirlevel = dirList.size();
 			if (subdirlevel == 0) {
@@ -77,7 +72,7 @@ public class MkGen {
 		}
 	}
 
-	private void writeSingleTest(List<String> testsInPlaylist, TestInfo testInfo, Writer f) throws IOException {
+	private void writeSingleTest(List<String> testsInPlaylist, TestInfo testInfo, FileWriter f) throws IOException {
 		for (Variation var : testInfo.getVars()) {
 			// Generate make target
 			String testTargetName = var.getSubTestName();
@@ -249,7 +244,7 @@ public class MkGen {
 	}
 
 	private void writeTargets() {
-		try (Writer f = Utility.getWriterObject(jInfo.getJDKVersion(), arg.getSpec(), makeFile)) {
+		try (FileWriter f = new FileWriter(makeFile, true)) {
 			if (!pli.getIncludeList().isEmpty()) {
 				for (String include : pli.getIncludeList()) {
 					f.write("-include " + include + "\n\n");
