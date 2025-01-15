@@ -32,6 +32,7 @@ ECHO_NEWLINE = $(ECHO) $(Q)$(Q)
 MKDIR     = mkdir
 MKTREE    = mkdir -p
 PWD       = pwd
+CP        = cp
 EXECUTABLE_SUFFIX =
 RUN_SCRIPT = sh
 RUN_SCRIPT_STRING = "sh -c"
@@ -393,6 +394,7 @@ setup_%: testEnvSetup
 	fi
 
 	@$(MKTREE) $(Q)$(TESTOUTPUT)$(Q)
+	@$(CP) $(Q)$(TEST_ROOT)$(D)TKG$(D)SHAs.txt$(Q) $(Q)$(TESTOUTPUT)$(D)$(Q)
 	@$(ECHO) Running $(TESTTARGET) ...
 	@if [ $(TOTALCOUNT) -ne 0 ]; then \
 		$(ECHO) There are $(TOTALCOUNT) test targets in $(TESTTARGET); \
