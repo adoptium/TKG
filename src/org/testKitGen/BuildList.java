@@ -15,21 +15,26 @@
 package org.testKitGen;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.openj9.envInfo.JavaInfo;
+import org.openj9.envInfo.Utility;
+
 public class BuildList {
 	private Arguments arg;
+	private JavaInfo jInfo;
 	private Set<String> originalSet = new HashSet<>();
 	private Set<String> newSet = new HashSet<>();
 	private String buildInfomk;
 
 	public BuildList(Arguments arg) {
 		this.arg = arg;
+		this.jInfo = new JavaInfo();
 		buildInfomk = arg.getProjectRootDir() + "/TKG/" + Constants.BUILDINFOMK;
 		initializeSet();
 	}
@@ -92,7 +97,7 @@ public class BuildList {
 	}
 
 	public void generateList() {
-		try (FileWriter f = new FileWriter(buildInfomk)) {
+		try (Writer f = Utility.getWriterObject(jInfo.getJDKVersion(), arg.getSpec(), buildInfomk)) {
 			f.write(Constants.HEADERCOMMENTS);
 			f.write("REFINED_BUILD_LIST := " + getStr() + "\n");
 			System.out.println("Generated " + buildInfomk + "\n");
