@@ -361,11 +361,11 @@ sub resultReporter {
 		my $host = hostname;
 		print $fhOut "# Hostname: " . $host . "\n\n";
 
-		#add SHA.txt content in TAP file
-		my $SHAFile = $tapPath."../SHA.txt";
+		#add SHAs.txt content in TAP file
+		my $SHAFile = $tapPath."../SHAs.txt";
 		my $SHAContent = `cat $SHAFile`;
 		$SHAContent =~ s/\n/\n# /g;
-		print $fhOut "#SHA.txt content: \n# " . $SHAContent . "\n";
+		print $fhOut "#SHAs.txt content: \n# " . $SHAContent . "\n";
 
 		print $fhOut "# Timestamp: " . $timeStamp . " UTC \n";
 
