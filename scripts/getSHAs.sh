@@ -73,7 +73,10 @@ getSHAs()
 	cd "$TEST_ROOT" || exit
 	# Get SHA for external tests by test.properties
 	if [[ "$BUILD_LIST" == *"external"* ]]; then
-		for subDir in "$JVM_TEST_ROOT"/external/*/; do
+		for subDir in "$TEST_ROOT"/external/*/; do
+			echo "subdir is $subDir"
+			ls "$subDir"
+			find "$subDir" -type f -name 'Dockerfile.*'
 			if [[ $(find "$subDir" -type f -name 'Dockerfile.*') ]]; then
 				propertiesFile="$subDir/test.properties"
 				if [[ -f "$propertiesFile" ]]; then
