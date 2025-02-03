@@ -74,9 +74,10 @@ getSHAs()
 	# Get SHA for external tests by test.properties
 	if [[ "$BUILD_LIST" == *"external"* ]]; then
 		for subDir in "$TEST_ROOT"/external/*/; do
+			 # find "$subDir" -type f -name 'Dockerfile.*'
 			if [[ $(find "$subDir" -type f -name 'Dockerfile.*') ]]; then
-				testDir=$(realpath "$(dirname "$subDir")")
-				propertiesFile="$testDir/test.properties"
+				propertiesFile="$subDir/test.properties"
+				testDir=$(realpath "$subDir")			
 				if [[ -f "$propertiesFile" ]]; then
 					# read github_url and tag_version
 					github_url=$(grep '^github_url=' "$propertiesFile" | cut -d"=" -f2 | tr -d '"')
