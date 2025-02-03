@@ -64,7 +64,7 @@ getSHAs()
 	# Get SHA for non-external tests by find .git dir
 	cd "$TEST_ROOT" || exit
 	find "$TEST_ROOT" -type d -name ".git" | while read -r gitDir; do
-		repoDir=$(dirname "$gitDir")
+		repoDir=$(realpath "$(dirname "$gitDir")")
 		cd "$repoDir" || continue
 		# append the info into $SHAs_FILR
 		{ echo "================================================"; echo "timestamp: $(timestamp)"; echo "repo dir: $repoDir"; echo "git repo: "; git remote show origin -n | grep "Fetch URL:"; echo "sha:"; git rev-parse HEAD; }  2>&1 | tee -a "$SHAs_FILE"
@@ -74,11 +74,9 @@ getSHAs()
 	# Get SHA for external tests by test.properties
 	if [[ "$BUILD_LIST" == *"external"* ]]; then
 		for subDir in "$TEST_ROOT"/external/*/; do
-			echo "subdir is $subDir"
-			ls "$subDir"
-			find "$subDir" -type f -name 'Dockerfile.*'
 			if [[ $(find "$subDir" -type f -name 'Dockerfile.*') ]]; then
-				propertiesFile="$subDir/test.properties"
+				testDir=$(realpath "$(dirname "$subDir")")
+				propertiesFile="$testDir/test.properties"
 				if [[ -f "$propertiesFile" ]]; then
 					# read github_url and tag_version
 					github_url=$(grep '^github_url=' "$propertiesFile" | cut -d"=" -f2 | tr -d '"')
@@ -92,7 +90,7 @@ getSHAs()
 					# Retrieve the SHA using github_url and tag_version
 					sha=$(git ls-remote "$github_url" "refs/tags/$tag_version" | awk '{print $1}')
 					# append the info into $SHAs_FILR
-					{ echo "================================================"; echo "timestamp: $(timestamp)"; echo "repo dir: $subDir"; echo "git repo: $github_url"; echo "sha:$sha";}  2>&1 | tee -a "$SHAs_FILE"
+					{ echo "================================================"; echo "timestamp: $(timestamp)"; echo "test dir: $testDir"; echo "git repo: $github_url"; echo "sha:$sha";}  2>&1 | tee -a "$SHAs_FILE"
 				fi
 			fi
 		done
