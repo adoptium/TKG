@@ -22,7 +22,6 @@ usage ()
 	echo 'Usage : '
 	echo '                --test_root_dir: optional'
 	echo '                --shas_file: optional, the file to write the sha info to. Default is to ../SHAs.txt'
-
 }
 
 parseCommandLineArgs()
@@ -50,8 +49,9 @@ parseCommandLineArgs()
 	fi
 }
 
-timestamp() {
-  date +"%Y%m%d-%H%M%S"
+timestamp()
+{
+	date +"%Y%m%d-%H%M%S"
 }
 
 getSHAs()
@@ -70,7 +70,7 @@ getSHAs()
 		{ echo "================================================"; echo "timestamp: $(timestamp)"; echo "repo dir: $repoDir"; echo "git repo: "; git remote show origin -n | grep "Fetch URL:"; echo "sha:"; git rev-parse HEAD; }  2>&1 | tee -a "$SHAs_FILE"
 	done
 }
+
 parseCommandLineArgs "$@"
 getSHAs
 cd "$workDIR" || exit
-

@@ -17,18 +17,16 @@ OUTPUT_FILE="../testenv.properties"
 REPO_NAME=""
 REPO_SHA=""
 
-
 usage ()
 {
 	echo 'This script use git command to get sha in the provided REPO_DIR HEAD and write the info into the OUTPUT_FILE'
 	echo 'Usage : '
 	echo '                --repo_dir: local git repo dir'
-	echo '                --output_file: the file to write the sha info to. Default is to ../SHA.txt'
+	echo '                --output_file: the file to write the sha info to. Default is to ../SHAs.txt'
 	echo '                --repo_name: git repo name. It will be used as a parameter name in testenv.properties'
 	echo '                --repo_sha: git repo sha. If this value is not provided, use git command to get the repo sha. Otherwise, use the provided sha.'
 	echo '                USE_TESTENV_PROPERTIES: env variable. If set to false, regenerate testenv.properties to capture the repo and sha. Otherwise, do nothing. The existing testenv.properties file will be used.'
 	echo '                JDK_IMPL: env variable. Only used for openjdk tests. If JDK_IMPL = openj9, append OPENJ9 in REPO_NAME for openjdk repo . i.e., JDK11_OPENJ9. Otherwise, REPO_NAME is unchanged.'
-
 }
 
 parseCommandLineArgs()
@@ -62,7 +60,8 @@ parseCommandLineArgs()
 	fi
 }
 
-getTestenvProperties() {
+getTestenvProperties()
+{
 	if [[ "$USE_TESTENV_PROPERTIES" != true  ]]; then
 		echo "Check sha in $REPO_DIR and store the info in $OUTPUT_FILE"
 		if [ ! -e ${OUTPUT_FILE} ]; then
