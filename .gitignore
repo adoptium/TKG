@@ -33,7 +33,7 @@ tempTestTargetResult
 failedtargets.mk
 autoGenEnv.mk
 buildInfo.mk
-SHA.txt
+SHAs.txt
 
 .DS_Store
 
