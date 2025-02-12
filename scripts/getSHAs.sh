@@ -90,8 +90,10 @@ getSHAs()
 
 					# Retrieve the SHA using github_url and tag_version
 					sha=$(git ls-remote "$github_url" "refs/tags/$tag_version" | awk '{print $1}')
-					# append the info into $SHAs_FILR
-					{ echo "================================================"; echo "timestamp: $(timestamp)"; echo "test dir: $testDir"; echo "git repo: $github_url"; echo "sha:$sha";}  2>&1 | tee -a "$SHAs_FILE"
+					if [ -n "${sha}" ]; then
+						# append the info into $SHAs_FILE
+						{ echo "================================================"; echo "timestamp: $(timestamp)"; echo "test dir: $testDir"; echo "git repo: $github_url"; echo "sha:$sha";}  2>&1 | tee -a "$SHAs_FILE"
+					fi
 				fi
 			fi
 		done
