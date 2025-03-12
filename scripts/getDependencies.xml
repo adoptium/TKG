@@ -59,7 +59,7 @@
 			</elseif>
 			<else>
 				<!-- versions 25+ -->
-				<property name="jtregTar" value="jtreg_7_5_1"/>
+				<property name="jtregTar" value="jtreg_7_5_1_1"/>
 			</else>
 		</if>
 		<echo message="jtreg version used is : ${jtregTar}"/>
