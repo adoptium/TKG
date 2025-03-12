@@ -193,42 +193,44 @@ sub resultReporter {
 							}
 						}
 						my $failureTests = "";
-						if ($diagnostic ne 'failure' || ($buildList !~ /openjdk/ && $buildList !~ /jck/)) {
-							$tapString .= $output;
-						} else { #rerun jdk or jck* custom target only work for diagnostic=failure
-							my @lines = split('\\n', $output);
-							if ($buildList =~ /openjdk/) {
-								for my $i (0 .. $#lines) {
-									if ( $lines[$i] =~ /[-]{50}/) {
-										if ( ($lines[$i+1] =~ /(TEST: )(.*?)(\.java|\.sh|#.*)$/) || ($lines[$i+1] =~ /(Test results: .*)(failed|error)(: \d{1,}$)/) ) {
-											$i++;
-											$failureTests .= $lines[$i] . "\n";
+						if ($diagnostic ne 'noDetails') {
+							if ($diagnostic ne 'failure' || ($buildList !~ /openjdk/ && $buildList !~ /jck/)) {
+								$tapString .= $output;
+							} else { #rerun jdk or jck* custom target only work for diagnostic=failure
+								my @lines = split('\\n', $output);
+								if ($buildList =~ /openjdk/) {
+									for my $i (0 .. $#lines) {
+										if ( $lines[$i] =~ /[-]{50}/) {
+											if ( ($lines[$i+1] =~ /(TEST: )(.*?)(\.java|\.sh|#.*)$/) || ($lines[$i+1] =~ /(Test results: .*)(failed|error)(: \d{1,}$)/) ) {
+												$i++;
+												$failureTests .= $lines[$i] . "\n";
+											}
 										}
 									}
-								}
-							} elsif ($buildList =~ /jck/) {
-								my $testResult = "";
-								for my $i (0 .. $#lines) {
-									$lines[$i] =~ s/^\s+|\s+$//g; 
-									if ( $lines[$i] =~ /(.*?)(\.html|#.*)(.*?)(Failed|Error\.)(.*?)/) {
-										my @testsInfo = split(/\s+/, $lines[$i]);
-										my $testName = $testsInfo[0];
-										$testName =~ s/#.*//;
-										$failureTests .= '        ' ."TEST: " . $testName . "\n";
-									} elsif ( $lines[$i] =~  /(Test results: .*)(skipped|failed|error)(: \d{1,}$)/) {
-										$testResult = $lines[$i];
+								} elsif ($buildList =~ /jck/) {
+									my $testResult = "";
+									for my $i (0 .. $#lines) {
+										$lines[$i] =~ s/^\s+|\s+$//g; 
+										if ( $lines[$i] =~ /(.*?)(\.html|#.*)(.*?)(Failed|Error\.)(.*?)/) {
+											my @testsInfo = split(/\s+/, $lines[$i]);
+											my $testName = $testsInfo[0];
+											$testName =~ s/#.*//;
+											$failureTests .= '        ' ."TEST: " . $testName . "\n";
+										} elsif ( $lines[$i] =~  /(Test results: .*)(skipped|failed|error)(: \d{1,}$)/) {
+											$testResult = $lines[$i];
+										}
 									}
-								}
-								$failureTests .= '        ' .$testResult . "\n"; 
+									$failureTests .= '        ' .$testResult . "\n"; 
 
-							}
-							if ( $failureTests eq "" ) {
-								# Output of dump or other non-test failures
-								$tapString .= $output;
-							} else {
-								$tapString .= "    output:\n      |\n";
-								$tapString .= "        Failed test cases: \n" . $failureTests;
-								$tapString .= $jckFailedDuration ;
+								}
+								if ( $failureTests eq "" ) {
+									# Output of dump or other non-test failures
+									$tapString .= $output;
+								} else {
+									$tapString .= "    output:\n      |\n";
+									$tapString .= "        Failed test cases: \n" . $failureTests;
+									$tapString .= $jckFailedDuration ;
+								}
 							}
 						}
 						
