@@ -75,9 +75,9 @@ my %base = (
 		sha1 => 'a0f58cad836a410f6ba133aaa209aea7e54aaf8a'
 	},
 	byte_buddy => {
-		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.15.4/byte-buddy-1.15.4.jar',
+		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.17.4/byte-buddy-1.17.4.jar',
 		fname => 'byte-buddy.jar',
-		sha1 => 'e8bd42992701720649765383ff570f415190b83f'
+		sha1 => 'ffb8488d93290eff074fb542a596e4c5a26d0315'
 	},
 	byte_buddy_agent => {
 		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.15.4/byte-buddy-agent-1.15.4.jar',
