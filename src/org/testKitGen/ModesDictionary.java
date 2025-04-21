@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -104,7 +103,7 @@ public class ModesDictionary {
 		if (arg.getSpec().toLowerCase().contains("zos") && !(jInfo.getJDKVersion() >= 21)) {
 			reader = Files.newBufferedReader(Paths.get(ottawaCsv), Charset.forName("IBM-1047"));
 		} else {
-			reader = Files.newBufferedReader(Paths.get(ottawaCsv));
+			reader = Files.newBufferedReader(Paths.get(ottawaCsv), Charset.defaultCharset());
 		}
 		String line = reader.readLine();
 		while (line != null) {
@@ -135,8 +134,11 @@ public class ModesDictionary {
 							}
 						}
 						// remove INGORESPECS from invalidSpecs array
-						invalidSpecs = new ArrayList<String>(invalidSpecs.stream()
-								.filter(c -> !Constants.INGORESPECS.contains(c)).collect(Collectors.toList()));
+						for(String spec : specs) {
+							if (!Constants.INGORESPECS.contains(spec)) {
+								invalidSpecs.add(spec);
+							}
+						}
 						// if invalidSpecs array is empty, set it to none
 						if (invalidSpecs.size() == 0) {
 							invalidSpecs.add("none");

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import com.sun.management.OperatingSystemMXBean;
+import com.ibm.lang.management.OperatingSystemMXBean;
 
 public class MachineInfo {
 	public static final String[] UNAME_CMD = new String[] {"uname", "-a"};
@@ -283,7 +283,7 @@ public class MachineInfo {
 
 	private void getPhysicalMemoryInfo() {
 		OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-		putInfo(new Info("Total Physical Memory Size", new String[] {"osBean.getTotalPhysicalMemorySize()"}, String.valueOf(osBean.getTotalPhysicalMemorySize()), null));
+		putInfo(new Info("Total Physical Memory Size", new String[] {"osBean.getTotalPhysicalMemorySize()"}, String.valueOf(osBean.getTotalPhysicalMemory()), null));
 		putInfo(new Info("Free Physical Memory Size", new String[] {"osBean.getFreePhysicalMemorySize()"}, String.valueOf(osBean.getFreePhysicalMemorySize()), null));
 	}
 

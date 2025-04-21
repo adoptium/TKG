@@ -35,12 +35,18 @@ public class DirectoryWalker {
 
 	public boolean traverse() {
 		String absoluteDir = arg.getProjectRootDir();
-		String currentDir = String.join("/", dirList);
+		StringBuilder currentDir = new StringBuilder();
+		for (int i=0; i < dirList.size(); i++) {
+			currentDir.append(dirList.get(i));
+			if (i < dirList.size()-1) {
+				currentDir.append("/");
+			}
+		}
 		if (!dirList.isEmpty()) {
-			absoluteDir = absoluteDir + '/' + currentDir;
+			absoluteDir = absoluteDir + '/' + currentDir.toString();
 		}
 
-		if (!bl.isRelated(currentDir)) {
+		if (!bl.isRelated(currentDir.toString())) {
 			return false;
 		}
 
@@ -51,7 +57,7 @@ public class DirectoryWalker {
 		List<String> subDirsWithTest = new ArrayList<String>();
 		for (File entry : dir) {
 			File file = new File(absoluteDir + '/' + entry.getName());
-			if (bl.contains(currentDir) && file.isFile() && entry.getName().equals(Constants.PLAYLIST)) {
+			if (bl.contains(currentDir.toString()) && file.isFile() && entry.getName().equals(Constants.PLAYLIST)) {
 				playlistXML = file;
 			} else if (file.isDirectory()) {
 				dirList.add(entry.getName());

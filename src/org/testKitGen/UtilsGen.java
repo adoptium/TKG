@@ -63,8 +63,15 @@ public class UtilsGen {
 
 	private void generateRerun() {
 		try (Writer f = Utility.getWriterObject(jInfo.getJDKVersion(), arg.getSpec(), rerunMk)) {
+			StringBuilder ignoreOnRerun = new StringBuilder();
 			f.write(Constants.HEADERCOMMENTS);
-			String ignoreOnRerunStr = String.join(",", ignoreOnRerunList);
+			for (int i=0; i < ignoreOnRerunList.size(); i++) {
+				ignoreOnRerun.append(ignoreOnRerunList.get(i));
+				if (i < ignoreOnRerunList.size()-1) {
+					ignoreOnRerun.append(",");
+				}
+			}
+			String ignoreOnRerunStr = ignoreOnRerun.toString();
 			f.write("IGNORE_ON_RERUN=");
 			if (ignoreOnRerunList != null && !ignoreOnRerunList.isEmpty()) {
 				f.write(ignoreOnRerunStr);

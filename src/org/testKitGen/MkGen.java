@@ -54,6 +54,8 @@ public class MkGen {
 		try (Writer f = Utility.getWriterObject(jInfo.getJDKVersion(), arg.getSpec(), makeFile)) {
 			String realtiveRoot = "";
 			int subdirlevel = dirList.size();
+			String subDir = null;
+			StringBuilder subdir = new StringBuilder();
 			if (subdirlevel == 0) {
 				realtiveRoot = ".";
 			} else {
@@ -61,7 +63,13 @@ public class MkGen {
 					realtiveRoot = realtiveRoot + ((i == subdirlevel) ? ".." : "..$(D)");
 				}
 			}
-
+			for (int i=0; i < subdirs.size(); i++) {
+				subdir.append(subdirs.get(i));
+				if (i < subdirs.size()-1) {
+					subdir.append(" ");
+				}
+			}
+			subDir = subdir.toString();
 			f.write(Constants.HEADERCOMMENTS + "\n");
 			f.write("-include testVars.mk\n\n");
 			f.write("D=/\n\n");
@@ -69,7 +77,7 @@ public class MkGen {
 			f.write("\tTEST_ROOT := " + arg.getProjectRootDir() + "\n");
 
 			f.write("endif\n\n");
-			f.write("SUBDIRS = " + String.join(" ", subdirs) + "\n\n");
+			f.write("SUBDIRS = " + subDir + "\n\n");
 			f.write("include $(TEST_ROOT)$(D)TKG$(D)" + Constants.SETTINGSMK + "\n\n");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -82,7 +90,7 @@ public class MkGen {
 			// Generate make target
 			String testTargetName = var.getSubTestName();
 			String indent = "\t";
-
+			StringBuilder target = new StringBuilder();
 			if (var.getStatus() == Variation.PrintStatus.PRINT_CMD) {
 				if (!testInfo.getCapabilities().isEmpty()) {
 					List<String> capabilityReqs_HashKeys = new ArrayList<>(testInfo.getCapabilities().keySet());
@@ -92,8 +100,13 @@ public class MkGen {
 						f.write(condition_capsReqs + "=$(" + capa_key + ")\n");
 					}
 				}
-
-				String jvmtestroot = "$(JVM_TEST_ROOT)$(D)" + String.join("$(D)", dirList);
+				for (int i=0; i < dirList.size(); i++) {
+					target.append(dirList.get(i));
+					if (i < dirList.size()-1) {
+						target.append("$(D)");
+					}
+				}
+				String jvmtestroot = "$(JVM_TEST_ROOT)$(D)" + target;
 				f.write(testTargetName + ": TEST_RESROOT=" + jvmtestroot + "\n");
 				f.write(testTargetName + ": JVM_OPTIONS?=" + testInfo.getAotOptions() + "$(RESERVED_OPTIONS) "
 						+ (var.getJvmOptions().isEmpty() ? "" : (var.getJvmOptions() + " ")) + "$(EXTRA_OPTIONS)\n");

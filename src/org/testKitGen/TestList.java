@@ -50,15 +50,15 @@ public class TestList {
 				} else {
 					var.setStatus(Variation.PrintStatus.PRINT_DISABLED);
 				}
-				testMap.replace(name, true);
-				testMap.replace(subName, true);
+				testMap.put(name, true);
+				testMap.put(subName, true);
 			}
 			String foundEchoDisabled = matchTarget(testMap, echoDisabledName, echoDisabledSubName);
 			if (foundEchoDisabled != null) {
 				if (var.isDisabled()) {
 					var.setStatus(Variation.PrintStatus.PRINT_DISABLED);
-					testMap.replace(echoDisabledName, true);
-					testMap.replace(echoDisabledSubName, true);
+					testMap.put(echoDisabledName, true);
+					testMap.put(echoDisabledSubName, true);
 				}
 				var.setPrefix("echo.disabled.");
 			}
@@ -66,8 +66,8 @@ public class TestList {
 			if (foundDisabled != null) {
 				if (var.isDisabled()) {
 					var.setStatus(Variation.PrintStatus.PRINT_CMD);
-					testMap.replace(disabledName, true);
-					testMap.replace(disabledSubName, true);
+					testMap.put(disabledName, true);
+					testMap.put(disabledSubName, true);
 				}
 				var.setPrefix("disabled.");
 			}

@@ -42,6 +42,7 @@ public class TestDivider {
 	private int numOfTests;
 	private String parallelmk;
 	private int defaultAvgTestTime;
+	private static Pattern p;
 
 	public TestDivider(Arguments arg, TestTarget tt) {
 		this.arg = arg;
@@ -55,9 +56,17 @@ public class TestDivider {
 	}
 
 	private void divideOnTestTime(List<List<String>> parallelLists, List<Integer> testListTime, int testTime, Queue<Map.Entry<String, Integer>> durationQueue) {
-		Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
-			(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
-		);
+		Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<Map.Entry<Integer, Integer>>(11,
+				new Comparator<Map.Entry<Integer, Integer>>() {
+					@Override
+            		public int compare(Map.Entry<Integer, Integer> a, Map.Entry<Integer, Integer> b) {
+						if (a.getValue() == b.getValue()) {
+							return a.getKey().compareTo(b.getKey());
+						} else {
+							return a.getValue().compareTo(b.getValue());
+						}
+					}
+				});
 		int limitFactor = testTime;
 		int index = 0;
 		while (!durationQueue.isEmpty()) {
@@ -90,9 +99,17 @@ public class TestDivider {
 	}
 
 	private void divideOnMachineNum(List<List<String>> parallelLists, List<Integer> testListTime, int numOfMachines, Queue<Map.Entry<String, Integer>> durationQueue) {
-		Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<>(
-			(a, b) -> a.getValue() == b.getValue() ? a.getKey().compareTo(b.getKey()) : a.getValue().compareTo(b.getValue())
-		);
+		Queue<Map.Entry<Integer, Integer>> machineQueue = new PriorityQueue<Map.Entry<Integer, Integer>>(11,
+			new Comparator<Map.Entry<Integer, Integer>>() {
+				@Override
+				public int compare(Map.Entry<Integer, Integer> a, Map.Entry<Integer, Integer> b) {
+					if (a.getValue() == b.getValue()) {
+						return a.getKey().compareTo(b.getKey());
+					} else {
+						return a.getValue().compareTo(b.getValue());
+					}
+				}
+			});
 		for (int i = 0; i < numOfMachines; i++) {
 			parallelLists.add(new ArrayList<String>());
 			testListTime.add(0);
@@ -192,14 +209,21 @@ public class TestDivider {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		System.out.println("Attempting to get test duration data from cached files.");
 		String fileName = "";
+		StringBuilder constantGroup = new StringBuilder();
+		for (int i=0; i < Constants.ALLGROUPS.size(); i++) {
+			constantGroup.append(Constants.ALLGROUPS.get(i));
+			if (i < Constants.ALLGROUPS.size()-1) {
+				constantGroup.append("|");
+			}
+		}
 		if (group.equals("")) {
-			fileName = "Test_openjdk" + arg.getJdkVersion() + "_" + impl + "_(" + String.join("|", Constants.ALLGROUPS) + ")_" + plat + ".json";
+			fileName = "Test_openjdk" + arg.getJdkVersion() + "_" + impl + "_(" + constantGroup.toString() + ")_" + plat + ".json";
 		} else {
 			fileName = "Test_openjdk" + arg.getJdkVersion() + "_" + impl + "_" + group + "_" + plat + ".json";
 		}
 
 		File directory = new File(arg.getProjectRootDir() + "/TKG/" + Constants.TRSSCACHE_DIR);
-		Pattern p = Pattern.compile(fileName);
+		p = Pattern.compile(fileName);
 		File[] files = directory.listFiles(new FileFilter() {
 			public boolean accept(File f) {
 				return p.matcher(f.getName()).matches();
@@ -274,9 +298,17 @@ public class TestDivider {
 	}
 
 	private Queue<Map.Entry<String, Integer>> createDurationQueue() {
-		Queue<Map.Entry<String, Integer>> durationQueue = new PriorityQueue<>(
-			(a, b) -> a.getValue() == b.getValue() ? b.getKey().compareTo(a.getKey()) : b.getValue().compareTo(a.getValue())
-		);
+		Queue<Map.Entry<String, Integer>> durationQueue = new PriorityQueue<Map.Entry<String, Integer>>(11,
+			new Comparator<Map.Entry<String, Integer>>() {
+				@Override
+				public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {
+					if (a.getValue() == b.getValue()) {
+						return b.getKey().compareTo(a.getKey());
+					} else {
+						return b.getValue().compareTo(a.getValue());
+					}
+				}
+			});
 
 		List<String> allTests = new ArrayList<String>();
 		allTests.addAll(testsToExecute);
