@@ -28,6 +28,10 @@
 
 	<import file="./getDependencies.xml"/>
 
+	<condition property="isZOS" value="true">
+		<equals arg1="${os.name}" arg2="z/OS"/>
+	</condition>
+
 	<var name="build.list" value= "" />
 	<if>
 		<equals arg1="${BUILD_LIST}" arg2=""/>
@@ -97,7 +101,10 @@
 	</target>
 
 	<target name="stage_test_material" depends="-create_test_directory">
-		<copy todir="${ascii.test.dir}">
+		<condition property="copy-encoding" value="IBM-1047" else="UTF-8">
+			<isset property="isZOS"/>
+		</condition>
+		<copy todir="${ascii.test.dir}" outputencoding="${copy-encoding}">
 			<fileset dir="${ascii.workspace.dir}">
 				<include name="TKG/**" />
 				<include name="*.mk" />
