@@ -400,7 +400,14 @@ teardown_%: testEnvTeardown
 	@$(ECHO)
 
 ifndef JCL_VERSION
+# Set JCL_VERSION to current for IBM Java 8
+ifeq (ibm, $(JDK_IMPL))
+ifeq (8,$(JDK_VERSION))
+export JCL_VERSION:=current
+endif
+else
 export JCL_VERSION:=latest
+endif
 else
 export JCL_VERSION:=$(JCL_VERSION)
 endif
