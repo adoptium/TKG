@@ -404,6 +404,8 @@ ifndef JCL_VERSION
 ifeq (ibm, $(JDK_IMPL))
 ifeq (8,$(JDK_VERSION))
 export JCL_VERSION:=current
+else
+export JCL_VERSION:=latest
 endif
 else
 export JCL_VERSION:=latest
