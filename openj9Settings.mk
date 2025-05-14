@@ -56,6 +56,7 @@ endif
 
 # if JCL_VERSION is current check for default locations for native test libs
 # otherwise, native test libs are under NATIVE_TEST_LIBS
+# ADD_JVM_LIB_DIR_TO_LIBPATH contains commands that will be expanded and executed at the playlist level.
 ifneq (, $(findstring current, $(JCL_VERSION)))
 	ifeq (8, $(JDK_VERSION))
 		ifneq (,$(findstring win,$(SPEC)))
@@ -65,7 +66,12 @@ ifneq (, $(findstring current, $(JCL_VERSION)))
 			JAVA_SHARED_LIBRARIES_DIR:=$(TEST_JRE_LIB_DIR)$(D)$(ARCH_DIR)$(D)$(VM_SUBDIR)
 			J9VM_PATH=$(TEST_JRE_LIB_DIR)$(D)$(ARCH_DIR)$(D)j9vm
 		endif
-		ADD_JVM_LIB_DIR_TO_LIBPATH:=export LIBPATH=$(Q)$(LIBPATH)$(P)$(TEST_JRE_LIB_DIR)$(D)$(VM_SUBDIR)$(P)$(JAVA_SHARED_LIBRARIES_DIR)$(P)$(TEST_JRE_BIN)$(D)j9vm$(Q);
+		LIBPATH_VAL=$(Q)$(LIBPATH)$(P)$(TEST_JRE_LIB_DIR)$(D)$(VM_SUBDIR)$(P)$(JAVA_SHARED_LIBRARIES_DIR)$(P)$(TEST_JRE_BIN)$(D)j9vm$(Q)
+		CHECK_VM_SUBDIR=
+		ifeq (default, $(VM_SUBDIR))
+			CHECK_VM_SUBDIR=LIBPATH_VAL=$(LIBPATH_VAL); echo $(Q)$(JVM_OPTIONS)$(Q) | grep -q -- '-Xcompressedrefs' && LIBPATH_VAL=$$(echo $(Q)$$LIBPATH_VAL$(Q) | sed 's|/default:|/compressedrefs:|g; s|\\default;|\\compressedrefs;|g')
+		endif
+		ADD_JVM_LIB_DIR_TO_LIBPATH=$(CHECK_VM_SUBDIR) ; echo Set LIBPATH to $$LIBPATH_VAL && export LIBPATH=$$LIBPATH_VAL;
 	else
 		ifneq (,$(findstring win,$(SPEC)))
 			JAVA_SHARED_LIBRARIES_DIR:=$(TEST_JDK_BIN)$(D)$(VM_SUBDIR)
