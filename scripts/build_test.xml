@@ -97,13 +97,24 @@
 	</target>
 
 	<target name="stage_test_material" depends="-create_test_directory">
-		<copy todir="${ascii.test.dir}">
-			<fileset dir="${ascii.workspace.dir}">
-				<include name="TKG/**" />
-				<include name="*.mk" />
-			</fileset>
-		</copy>
-
+		<if>
+			<equals arg1="${os.name}" arg2="z/OS" />
+			<then>
+				<exec executable="cp" failonerror="true">
+					<arg value="-rf" />
+					<arg value="${ascii.workspace.dir}" />
+					<arg value="${ascii.test.dir}" />
+				</exec>
+			</then>
+			<else>
+				<copy todir="${ascii.test.dir}">
+					<fileset dir="${ascii.workspace.dir}">
+						<include name="TKG/**" />
+						<include name="*.mk" />
+					</fileset>
+				</copy>
+			</else>
+		</if>
 		<chmod dir="${ascii.test.dir}/TKG" perm="755"/>
 
 		<chmod file="${ascii.test.dir}/*.mk" perm="755"/>
