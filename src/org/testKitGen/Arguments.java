@@ -233,7 +233,9 @@ public class Arguments {
 				if (impl.equals("openj9")) {
 					buildImpl = "j9";
 				} else if (impl.equals("hotspot")) {
-					buildImpl = "hs";
+					buildImpl =  "hs";
+				} else {
+					buildImpl = impl;
 				}
 			} else if (arglc.startsWith("--vendor=")) {
 				vendor = arglc.substring(arg.indexOf("=") + 1);
