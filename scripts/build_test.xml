@@ -102,7 +102,7 @@
 			<then>
 				<exec executable="cp" failonerror="true">
 					<arg value="-rf" />
-					<arg value="${ascii.workspace.dir}" />
+					<arg value="${ascii.workspace.dir}/TKG" />
 					<arg value="${ascii.test.dir}" />
 				</exec>
 			</then>
