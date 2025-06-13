@@ -57,9 +57,16 @@
 					<property name="jtregTar" value="jtreg_7_4_1"/>
 				</then>
 			</elseif>
+			<elseif>
+				<!-- version 25 -->
+				<matches pattern="^25$" string="${JDK_VERSION}"/>
+				<then>
+					<property name="jtregTar" value="jtreg_7_5_1_1"/>
+				</then>
+			</elseif>
 			<else>
-				<!-- versions 25+ -->
-				<property name="jtregTar" value="jtreg_7_5_1_1"/>
+				<!-- versions 26+ -->
+				<property name="jtregTar" value="jtreg_7_5_2_1"/>
 			</else>
 		</if>
 		<echo message="jtreg version used is : ${jtregTar}"/>
