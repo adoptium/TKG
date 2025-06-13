@@ -205,7 +205,7 @@ my %base = (
 	},
   dacapo => {
     url => 'https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin-minimal.zip',
-    fname => 'dacapo-23.11-MR2-chopin-minimal.zip', 
+    fname => 'dacapo.zip', 
     sha1 => '2dd4704900e43f4e22c70255b555c02177ef07c4'
   });
 
