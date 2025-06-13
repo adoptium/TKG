@@ -202,7 +202,12 @@ my %base = (
 		url => 'https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz',
 		fname => 'apache-maven-bin.tar.gz',
 		sha1 => '7f15c63c129f036dd5c96b1a591ed8d888f75617'
-	});
+	},
+  dacapo => {
+    url => 'https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin-minimal.zip',
+    fname => 'dacapo-23.11-MR2-chopin-minimal.zip', 
+    sha1 => '2dd4704900e43f4e22c70255b555c02177ef07c4'
+  });
 
 my %system_jars = (
 	json_simple => {
