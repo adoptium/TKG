@@ -199,9 +199,9 @@ my %base = (
 		sha1 => '200da75e67689e8a604ec6fe9a6f55b2c000b6ce'
 	},
 	maven => {
-		url => 'https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz',
+		url => 'https://dlcdn.apache.org/maven/maven-3/3.9.10/binaries/apache-maven-3.9.10-bin.tar.gz',
 		fname => 'apache-maven-bin.tar.gz',
-		sha1 => '7f15c63c129f036dd5c96b1a591ed8d888f75617'
+		sha1 => 'b06edaf09ae03e77d65a9fa6ffc2f6db311b8334'
 	},
 	dacapo => {
 		url => 'https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin-minimal.zip',
