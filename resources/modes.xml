@@ -17,7 +17,7 @@
 -->
 
 	<mode number="100">
-		<description>JIT off, optthruput GC (J9)</description>
+		<description>JIT off, optthruput GC (J9) with -Xcheck:jni:all,pedantic,abortonerror</description>
 		<settings>
 			<setting type="either">
 				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xint"/>
@@ -30,6 +30,10 @@
 			<setting type="either">
 				<clArg>-Xnocompressedrefs</clArg>
 				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xnocompressedrefs"/>
+			</setting>
+			<setting type="either">
+				<clArg>-Xcheck:jni:all,pedantic,abortonerror</clArg>
+				<envVar name="OPENJ9_JAVA_OPTIONS" value="-Xcheck:jni:all,pedantic,abortonerror"/>
 			</setting>
 		</settings>
 	</mode>
