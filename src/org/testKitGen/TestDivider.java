@@ -112,7 +112,7 @@ public class TestDivider {
 	}
 
 	private String constructURL(String impl, String plat, String group, String level) {
-		int limit = 10; // limit the number of builds used to calculate the average duration
+		int limit = 100; // limit the number of builds used to calculate the average duration
 		String URL = (arg.getTRSSURL().isEmpty() ? Constants.TRSS_URL : arg.getTRSSURL()) + "/api/getTestAvgDuration?limit=" + limit + "&jdkVersion=" + arg.getJdkVersion() + "&impl=" + impl + "&platform=" + plat;
 
 		if (tt.isSingleTest()) {
