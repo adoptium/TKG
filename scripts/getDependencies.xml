@@ -40,7 +40,7 @@
 				-->
 				<isset property="jtregOnZ"/>
 				<then>
-					<property name="jtregTar" value="jtreg_6_1"/>
+					<property name="jtregTar" value="jtreg_8_2"/>
 				</then>
 			</elseif>
 			<elseif>

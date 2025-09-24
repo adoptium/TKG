@@ -195,6 +195,13 @@ my %base = (
 		shafn => 'jtreg_7_5_2_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
+	jtreg_8_2 => {
+		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8+2.tar.gz',
+		fname => 'jtreg_8_2.tar.gz',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8+2.tar.gz.sha256sum.txt',
+		shafn => 'jtreg_8_2.tar.gz.sha256sum.txt',
+		shaalg => '256'
+	},
 	jython => {
 		url => 'https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
 		fname => 'jython-standalone.jar',
