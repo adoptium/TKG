@@ -35,12 +35,12 @@
 			</then>
 			<elseif>
 				<!-- 
-				# versions 11,17 on z/OS need to use jtreg6.1, due to encoding issues with jtreg7.*.
+				# versions 11,17 on z/OS need to use jtreg8_2 which uses defaultCharste() to parse TEST.group files.
 				# For more details, refer openj9-openjdk-jdk17-zos/issues/928.
 				-->
 				<isset property="jtregOnZ"/>
 				<then>
-					<property name="jtregTar" value="jtreg_6_1"/>
+					<property name="jtregTar" value="jtreg_8_2"/>
 				</then>
 			</elseif>
 			<elseif>
