@@ -25,7 +25,7 @@ variation:Mode108,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,ye
 variation:Mode109,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,no,yes,yes,no,yes,yes,yes,yes,yes
 variation:Mode109-CS,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,no,no,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes
 variation:Mode110,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
-variation:Mode110-CS,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
+variation:Mode110-CS,no,yes,no,yes,no,yes,no,yes,no,yes,no,yes,yes,no,yes,no,yes,no,no,yes,yes,no,yes,no,yes,no,no,yes,no,no,yes,yes,no,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
 variation:Mode112,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
 variation:Mode113,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,no,no,no,yes,no,yes,no,no,no,yes,yes,yes,yes
 variation:Mode114,yes,yes,no,yes,yes,yes,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,yes,yes,yes,no,no,yes,yes,yes,yes,no,yes,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes
