@@ -21,12 +21,6 @@
 	<!-- set default LIB property to all -->
 	<property name="LIB" value="all"/>
 	<target name="getJtregVersion">
-		<condition property="jtregOnZ">
-			<and>
-				<contains string="${SPEC}" substring="zos"/>
-				<matches pattern="^(11|17)$" string="${JDK_VERSION}"/>
-			</and>
-		</condition>
 		<if>
 			<!-- versions 8-10, 12-16 -->
 			<matches pattern="^([89]|1[02-6])$" string="${JDK_VERSION}"/>
@@ -34,11 +28,14 @@
 				<property name="jtregTar" value="jtreg_5_1_b01"/>
 			</then>
 			<elseif>
-				<!-- 
-				# versions 11,17 on z/OS need to use jtreg8_2 which uses defaultCharste() to parse TEST.group files.
-				# For more details, refer openj9-openjdk-jdk17-zos/issues/928.
+				<!--
+				# Versions 11, 17 on z/OS need to use jtreg8_2 which uses defaultCharste() to parse TEST.group files.
+				# For more details, see openj9-openjdk-jdk17-zos/issues/928.
 				-->
-				<isset property="jtregOnZ"/>
+				<and>
+					<contains string="${SPEC}" substring="zos"/>
+					<matches pattern="^(11|17)$" string="${JDK_VERSION}"/>
+				</and>
 				<then>
 					<property name="jtregTar" value="jtreg_8_2"/>
 				</then>
@@ -66,7 +63,7 @@
 			</elseif>
 			<else>
 				<!-- versions 26+ -->
-				<property name="jtregTar" value="jtreg_8_2"/>
+				<property name="jtregTar" value="jtreg_8_1_1"/>
 			</else>
 		</if>
 		<echo message="jtreg version used is : ${jtregTar}"/>
