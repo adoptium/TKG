@@ -83,12 +83,12 @@ my %base = (
 		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.15.4/byte-buddy-agent-1.15.4.jar',
 		fname => 'byte-buddy-agent.jar',
 		sha1 => '58e850dde88f3cf20f41f659440bef33f6c4fe02'
-	 },
+	},
 	objenesis => {
 		url => 'https://repo1.maven.org/maven2/org/objenesis/objenesis/3.3/objenesis-3.3.jar',
 		fname => 'objenesis.jar',
 		sha1 => '1049c09f1de4331e8193e579448d0916d75b7631'
-	 },
+	},
 	commons_cli => {
 		url => 'https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar',
 		fname => 'commons-cli.jar',
@@ -195,6 +195,13 @@ my %base = (
 		shafn => 'jtreg_8_2.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
+	jtreg_8_1_1 => {
+		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.1+1.tar.gz',
+		fname => 'jtreg_8_1_1.tar.gz',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.1+1.tar.gz.sha256sum.txt',
+		shafn => 'jtreg_8_1_1.tar.gz.sha256sum.txt',
+		shaalg => '256'
+	},
 	jython => {
 		url => 'https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.2/jython-standalone-2.7.2.jar',
 		fname => 'jython-standalone.jar',
@@ -212,7 +219,7 @@ my %base = (
 	},
 	dacapo => {
 		url => '-L https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin-minimal.zip',
-		fname => 'dacapo.zip', 
+		fname => 'dacapo.zip',
 		sha1 => '2dd4704900e43f4e22c70255b555c02177ef07c4'
 	});
 
