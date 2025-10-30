@@ -462,6 +462,7 @@ sub downloadFile {
 		} else {
 			$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl $curlOpts -k -o $filename $url 2>&1};
 		}
+		$returnCode = $?;
 		last if $returnCode == 0;
 	}
 
