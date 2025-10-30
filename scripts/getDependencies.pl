@@ -48,6 +48,7 @@ if (! -d $path) {
 
 # define directory path separator
 my $sep = File::Spec->catfile('', '');
+$customUrl = $ENV{'CUSTOM_URL'} if !defined($customUrl) || $customUrl eq '';
 
 print "--------------------------------------------\n";
 print "path is set to $path\n";
@@ -322,6 +323,7 @@ if ($task eq "clean") {
 		my $dir = $jars_info[$i]{dir} // "";
 		my $full_dir_path = File::Spec->catdir($path, $dir);
 		my $url_custom = $customUrl;
+		my $third_party_url = $url;
 
 		if (!-d $full_dir_path) {
 			make_path($full_dir_path, {chmod => 0755, verbose => 1}) or die "Failed to create directory: $full_dir_path: $!";
@@ -389,7 +391,22 @@ if ($task eq "clean") {
 		if ($ignoreChecksum && -e $filename) {
 			print "$filename exists, not downloading.\n";
 		} else {
-			downloadFile($url, $filename);
+			my $download_success = 0;
+			eval {
+				downloadFile($url, $filename);
+				$download_success = 1;
+			};
+			if (!$download_success) {
+				print "Warning: Download failed for $filename from custom URL $url\nDownloading $filename from third-party URL: $third_party_url\n";
+				eval {
+					downloadFile($third_party_url, $filename);
+					$download_success = 1;
+				};
+				if (!$download_success) {
+					print "Error: Failed to download $filename from third-party URL $third_party_url\n";
+					exit 1;
+				}
+			}
 
 			# if shaurl is provided, re-download the sha file and reset the expectedsha value
 			# as the dependent third party jar is newly downloadeded
