@@ -448,16 +448,23 @@ sub downloadFile {
 		qx(rm $filename);
 	}
 
-	# .txt SHA files are in ISO8859-1
-	# note _ENCODE_FILE_NEW flag is set for zos
-	if ('.txt' eq substr $filename, -length('.txt')) {
-		$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl $curlOpts -k -o $filename $url 2>&1};
-	} elsif ('.jar' eq substr $filename, -length('.jar')) {
-		$output = qx{_ENCODE_FILE_NEW=BINARY curl $curlOpts -k -o $filename $url 2>&1};
-	} else {
-		$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl $curlOpts -k -o $filename $url 2>&1};
+	my $returnCode = 99;
+        my download_attempts = 0;
+	while ($returnCode != 0 && $download_attempts < 10) {
+		$download_attempts++;
+		print "download attempt $download_attempts for $url\n";
+		# .txt SHA files are in ISO8859-1
+		# note _ENCODE_FILE_NEW flag is set for zos
+		if ('.txt' eq substr $filename, -length('.txt')) {
+			$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl $curlOpts -k -o $filename $url 2>&1};
+		} elsif ('.jar' eq substr $filename, -length('.jar')) {
+			$output = qx{_ENCODE_FILE_NEW=BINARY curl $curlOpts -k -o $filename $url 2>&1};
+		} else {
+			$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl $curlOpts -k -o $filename $url 2>&1};
+		}
+		last if $returnCode == 0;
 	}
-	my $returnCode = $?;
+
 	if ($returnCode == 0) {
 		print "--> file downloaded to $filename\n";
 	} else {
