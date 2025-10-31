@@ -449,7 +449,7 @@ sub downloadFile {
 	}
 
 	my $returnCode = 99;
-        my $download_attempts = 0;
+	my $download_attempts = 0;
 	while ($returnCode != 0 && $download_attempts < 10) {
 		$download_attempts++;
 		print "download attempt $download_attempts for $url\n";
