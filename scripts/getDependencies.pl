@@ -263,7 +263,7 @@ my %system_jars = (
 		is_system_test => 1
 	},
 	mauve => {
-		url => 'https://ci.adoptium.net/job/systemtest.getDependency/lastSuccessfulBuild/artifact/systemtest_prereqs/mauve/mauve.jar',
+		url => 'https://github.com/adoptium/aqa-triage-data/blob/main/AQAvit/mauve.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
 		is_system_test => 1
