@@ -58,7 +58,7 @@
 				<!-- version 25 -->
 				<matches pattern="^25$" string="${JDK_VERSION}"/>
 				<then>
-					<property name="jtregTar" value="jtreg_8_2"/>
+					<property name="jtregTar" value="jtreg_7_5_1_1"/>
 				</then>
 			</elseif>
 			<else>
