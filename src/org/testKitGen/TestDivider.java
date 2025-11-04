@@ -75,13 +75,10 @@ public class TestDivider {
 				parallelLists.add(new ArrayList<String>());
 				parallelLists.get(index).add(testName);
 				testListTime.add(testDuration);
-				if (testDuration < limitFactor) {
-					Map.Entry<Integer,Integer> entry = new AbstractMap.SimpleEntry<>(index, testDuration);
-					machineQueue.offer(entry);
-				} else {
-					/* If the test time is greater than the limiting factor, set it as the new limiting factor. */
-					limitFactor = testDuration;
-					System.out.println("Warning: Test " + testName + " has duration " + formatTime(testDuration) + ", which is greater than the specified test list execution time " + testTime + "m. So this value is used to limit the overall execution time.");
+				Map.Entry<Integer,Integer> entry = new AbstractMap.SimpleEntry<>(index, testDuration);
+				machineQueue.offer(entry);
+				if (testDuration > limitFactor) {
+					System.out.println("Warning: Test " + testName + " has duration " + formatTime(testDuration) + ", which is greater than the specified test list execution time " + formatTime(testTime) + ".");
 				}
 				index++;
 
