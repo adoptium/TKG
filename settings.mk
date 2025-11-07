@@ -169,10 +169,11 @@ ifdef JRE_IMAGE
    JRE_COMMAND:=$(Q)$(JRE_IMAGE)$(D)bin$(D)java$(Q)
 endif
 
-JAVA_TO_TEST = $(JAVA_COMMAND)
+TEST_JAVA_HOME:=$(Q)$(TEST_JDK_HOME)$(Q)
 ifeq ($(USE_JRE),1)
-  JAVA_TO_TEST = $(JRE_COMMAND)
+  TEST_JAVA_HOME:=$(Q)$(JRE_IMAGE)$(Q)
 endif
+JAVA_TO_TEST:=$(Q)$(TEST_JAVA_HOME)$(D)bin$(D)java$(Q)
 
 #######################################
 # common dir and jars
