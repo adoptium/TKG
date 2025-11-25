@@ -212,7 +212,7 @@ sub resultReporter {
 								my $testResult = "";
 								for my $i (0 .. $#lines) {
 									$lines[$i] =~ s/^\s+|\s+$//g; 
-									if (( $lines[$i] =~ /(.*?)(\.html|#.*)(.*?)(Failed|Error\.)(.*?)/) || ( $lines[$i] =~ /(.*?)(\.html|#.*)(: FAILED)/)) {
+									if (( $lines[$i] =~ /(.*?)(\.html|#.*)(.*?)(Failed|Error\.)(.*?)/) || ( $lines[$i] =~ /(api\/)(.*?)(\.html)( : FAILED)(.*?)/)) {
 										# We have a jck testcase result line with Failed|Error in it
 										my @testsInfo = split(/\s+/, $lines[$i]);
 										my $testName = $testsInfo[0];
