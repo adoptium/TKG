@@ -70,9 +70,9 @@ my %base = (
 		sha1 => '535f141f6c8fc65986a3469839a852a3266d1025'
 	},
 	asm => {
-		url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/9.0-beta/asm-9.0-beta.jar',
+		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0-beta/asm-9.0-beta.jar',
 		fname => 'asm.jar',
-		sha1 => 'a0f58cad836a410f6ba133aaa209aea7e54aaf8a'
+		sha1 => 'f12e96ff45956a8f5a5b963b60aca09d048d265b'
 	},
 	byte_buddy => {
 		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.17.4/byte-buddy-1.17.4.jar',
@@ -234,9 +234,10 @@ my %system_jars = (
 		is_system_test => 1
 	},
 	asm => {
-		url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/9.0/asm-9.0.jar',
+		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar',
 		dir => 'asm',
 		fname => 'asm.jar',
+		sha1 => '3c5e7b255ca393b04e9dccece9f4cc526b3f7377',
 		is_system_test => 1
 	},
 	cvsclient => {
