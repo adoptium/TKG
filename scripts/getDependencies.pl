@@ -318,6 +318,9 @@ if ($task eq "clean") {
 		my $sha1 = $jars_info[$i]{sha1};
 		my $dir = $jars_info[$i]{dir} // "";
 		my $full_dir_path = File::Spec->catdir($path, $dir);
+		if ($systemTest eq "true") {
+			$full_dir_path = File::Spec->catdir($path, "systemtest_prereqs" , $dir);
+		}
 		my $url_custom = $customUrl;
 
 		if (!-d $full_dir_path) {
