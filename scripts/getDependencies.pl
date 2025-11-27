@@ -72,7 +72,7 @@ my %base = (
 	asm => {
 		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0-beta/asm-9.0-beta.jar',
 		fname => 'asm.jar',
-		sha1 => 'f12e96ff45956a8f5a5b963b60aca09d048d265b'
+		sha1 => 'a0f58cad836a410f6ba133aaa209aea7e54aaf8a'
 	},
 	byte_buddy => {
 		url => 'https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.17.4/byte-buddy-1.17.4.jar',
@@ -237,7 +237,7 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar',
 		dir => 'asm',
 		fname => 'asm.jar',
-		sha1 => '3c5e7b255ca393b04e9dccece9f4cc526b3f7377',
+		sha1 => 'af582ff60bc567c42d931500c3fdc20e0141ddf9',
 		is_system_test => 1
 	},
 	cvsclient => {
