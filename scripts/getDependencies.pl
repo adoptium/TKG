@@ -286,10 +286,10 @@ my %system_jars = (
 
 my %jars_to_use;
 if ($systemTest eq "true") {
-	print "System Test jars will be downloaded.\n"
+	print "System Test jars will be downloaded.\n";
 	%jars_to_use = %system_jars;
 } else {
-	print "System Test jars will not be downloaded.\n"
+	print "System Test jars will not be downloaded.\n";
 	%jars_to_use = %base;
 }
 my @dependencies = split(',', $dependencyList);
