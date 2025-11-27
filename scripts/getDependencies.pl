@@ -237,7 +237,6 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar',
 		dir => 'asm',
 		fname => 'asm.jar',
-		sha1 => 'af582ff60bc567c42d931500c3fdc20e0141ddf9',
 		is_system_test => 1
 	},
 	cvsclient => {
