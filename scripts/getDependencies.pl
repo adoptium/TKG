@@ -29,12 +29,14 @@ my $task = "default";
 my $dependencyList = "all";
 my $customUrl = "";
 my $curlOpts = "";
+my $systemTest = "false";
 
 GetOptions ("path=s" => \$path,
 			"task=s" => \$task,
 			"dependencyList=s" => \$dependencyList,
 			"customUrl=s" => \$customUrl,
-			"curlOpts=s" => \$curlOpts)
+			"curlOpts=s" => \$curlOpts,
+			"systemTest=s" => \$systemTest)
 	or die("Error in command line arguments\n");
 
 if (not defined $path) {
@@ -283,9 +285,11 @@ my %system_jars = (
 	});
 
 my %jars_to_use;
-if ($path =~ /system_lib/) {
+if ($systemTest eq "true") {
+	print "System Test jars will be downloaded.\n"
 	%jars_to_use = %system_jars;
 } else {
+	print "System Test jars will not be downloaded.\n"
 	%jars_to_use = %base;
 }
 my @dependencies = split(',', $dependencyList);
