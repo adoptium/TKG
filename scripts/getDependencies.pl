@@ -237,6 +237,7 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar',
 		dir => 'asm',
 		fname => 'asm.jar',
+		sha1 => 'af582ff60bc567c42d931500c3fdc20e0141ddf9',
 		is_system_test => 1
 	},
 	cvsclient => {
@@ -283,7 +284,7 @@ my %system_jars = (
 	});
 
 my %jars_to_use;
-if ($path =~ /system_lib/ || (exists($ENV[BUILD_TYPE]) && $ENV{BUILD_TYPE} eq "systemtest")) {
+if ($path =~ /system_lib/ || (exists($ENV["BUILD_TYPE"]) && $ENV["BUILD_TYPE"] eq "systemtest")) {
 	print "System Test jars will be downloaded.\n";
 	%jars_to_use = %system_jars;
 } else {
@@ -316,7 +317,7 @@ if ($task eq "clean") {
 		my $sha1 = $jars_info[$i]{sha1};
 		my $dir = $jars_info[$i]{dir} // "";
 		my $full_dir_path = File::Spec->catdir($path, $dir);
-		if (exists($ENV[BUILD_TYPE]) && $ENV{BUILD_TYPE} eq "systemtest") {
+		if (exists($ENV["BUILD_TYPE"] && $ENV["BUILD_TYPE"] eq "systemtest") {
 			$full_dir_path = File::Spec->catdir($path, "systemtest_prereqs" , $dir);
 		}
 		my $url_custom = $customUrl;
