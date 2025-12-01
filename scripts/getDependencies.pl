@@ -317,7 +317,7 @@ if ($task eq "clean") {
 		my $sha1 = $jars_info[$i]{sha1};
 		my $dir = $jars_info[$i]{dir} // "";
 		my $full_dir_path = File::Spec->catdir($path, $dir);
-		if (exists($ENV["BUILD_TYPE"] && $ENV["BUILD_TYPE"] eq "systemtest") {
+		if (exists($ENV["BUILD_TYPE"]) && $ENV["BUILD_TYPE"] eq "systemtest") {
 			$full_dir_path = File::Spec->catdir($path, "systemtest_prereqs" , $dir);
 		}
 		my $url_custom = $customUrl;
