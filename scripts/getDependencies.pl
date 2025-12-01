@@ -283,7 +283,7 @@ my %system_jars = (
 	});
 
 my %jars_to_use;
-if ($path =~ /system_lib/ || $ENV{BUILD_TYPE} eq "systemtest") {
+if ($path =~ /system_lib/ || (exists($ENV[BUILD_TYPE]) && $ENV{BUILD_TYPE} eq "systemtest")) {
 	print "System Test jars will be downloaded.\n";
 	%jars_to_use = %system_jars;
 } else {
@@ -316,7 +316,7 @@ if ($task eq "clean") {
 		my $sha1 = $jars_info[$i]{sha1};
 		my $dir = $jars_info[$i]{dir} // "";
 		my $full_dir_path = File::Spec->catdir($path, $dir);
-		if ($ENV{BUILD_TYPE} eq "systemtest") {
+		if (exists($ENV[BUILD_TYPE]) && $ENV{BUILD_TYPE} eq "systemtest") {
 			$full_dir_path = File::Spec->catdir($path, "systemtest_prereqs" , $dir);
 		}
 		my $url_custom = $customUrl;
