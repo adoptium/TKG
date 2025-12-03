@@ -70,7 +70,7 @@ my %base = (
 		sha1 => '535f141f6c8fc65986a3469839a852a3266d1025'
 	},
 	asm => {
-		url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/9.0-beta/asm-9.0-beta.jar',
+		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0-beta/asm-9.0-beta.jar',
 		fname => 'asm.jar',
 		sha1 => 'a0f58cad836a410f6ba133aaa209aea7e54aaf8a'
 	},
@@ -234,9 +234,10 @@ my %system_jars = (
 		is_system_test => 1
 	},
 	asm => {
-		url => 'https://repository.ow2.org/nexus/content/repositories/releases/org/ow2/asm/asm/9.0/asm-9.0.jar',
+		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar',
 		dir => 'asm',
 		fname => 'asm.jar',
+		sha1 => 'af582ff60bc567c42d931500c3fdc20e0141ddf9',
 		is_system_test => 1
 	},
 	cvsclient => {
@@ -283,9 +284,11 @@ my %system_jars = (
 	});
 
 my %jars_to_use;
-if ($path =~ /system_lib/) {
+if ($path =~ /system_lib/ || (exists($ENV{"BUILD_TYPE"}) && $ENV{"BUILD_TYPE"} eq "systemtest")) {
+	print "System Test jars will be downloaded.\n";
 	%jars_to_use = %system_jars;
 } else {
+	print "System Test jars will not be downloaded.\n";
 	%jars_to_use = %base;
 }
 my @dependencies = split(',', $dependencyList);
@@ -314,6 +317,9 @@ if ($task eq "clean") {
 		my $sha1 = $jars_info[$i]{sha1};
 		my $dir = $jars_info[$i]{dir} // "";
 		my $full_dir_path = File::Spec->catdir($path, $dir);
+		if (exists($ENV{"BUILD_TYPE"}) && $ENV{"BUILD_TYPE"} eq "systemtest") {
+			$full_dir_path = File::Spec->catdir($path, "systemtest_prereqs" , $dir);
+		}
 		my $url_custom = $customUrl;
 
 		if (!-d $full_dir_path) {
