@@ -277,7 +277,7 @@ my %system_jars = (
 		is_system_test => 1
 	},
 	tools => {
-		url => 'https://ci.adoptium.net/job/systemtest.getDependency/lastSuccessfulBuild/artifact/systemtest_prereqs/tools/tools.jar',
+		url => 'https://api.adoptium.net/v3/binary/latest/8/ga/linux/x64/jdk/hotspot/normal/adoptium',
 		dir => 'tools',
 		fname => 'tools.jar',
 		is_system_test => 1
@@ -319,6 +319,7 @@ if ($task eq "clean") {
 		my $full_dir_path = File::Spec->catdir($path, $dir);
 		if (exists($ENV{"BUILD_TYPE"}) && $ENV{"BUILD_TYPE"} eq "systemtest") {
 			$full_dir_path = File::Spec->catdir($path, "systemtest_prereqs" , $dir);
+			next if(toolsJarDownloader "$fn" "$full_dir_path" "$url");
 		}
 		my $url_custom = $customUrl;
 
@@ -421,6 +422,22 @@ if ($task eq "clean") {
 	print "downloaded dependent third party jars successfully\n";
 } else {
 	die "ERROR: task unsatisfied!\n";
+}
+
+# The tools jar is stored within another jar (a JDK) which is accessed indirectly via an api.
+# This subroutine will access the api, download the outer jar, and extract the tools.jar.
+sub toolsJarDownloader {
+	my ( $filename, $dir, $url ) = @_;
+	if ("$filename" ne "tools.jar") {
+		# Return false
+		return 0;
+	}
+	qx{_ENCODE_FILE_NEW=BINARY curl -s --create-dirs -o "$dir/jdk8/jdk8.tar.gz" $url 2>&1};
+	qx{tar --directory "$dir/jdk8" -xzf "$dir/jdk8/jdk8.tar.gz" --strip-components 1};
+	qx{cp "$dir/jdk8/lib/tools.jar" "$dir"};
+	qx{rm -rf "$dir/jdk8"};
+	# return true
+	return 1;
 }
 
 sub getShaFromFile {
