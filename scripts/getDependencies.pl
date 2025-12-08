@@ -431,17 +431,17 @@ if ($task eq "clean") {
 # This subroutine will access the api, download the outer jar, and extract the tools.jar.
 sub toolsJarDownloader {
 	my ( $dir, $url ) = @_;
-	print "Checksum verification skipped for systemtest_prereqs/tools/tools.jar\n";
-	print "downloading $url\n";
-	print "download attempt 1 for $url\n";
-	qx{_ENCODE_FILE_NEW=BINARY curl -s --create-dirs -o "$dir/jdk8/jdk8.tar.gz" $url 2>&1};
-	print "debug 1\n";
+	print "Checksum verification skipped for systemtest_prereqs/tools/tools.jar \n";
+	print "downloading $url \n";
+	print "download attempt 1 for $url \n";
+	qx{_ENCODE_FILE_NEW=BINARY curl -fsS --create-dirs -o "$dir/jdk8/jdk8.tar.gz" $url 2>&1};
+	print "debug 1 \n";
 	qx{tar --directory "$dir/jdk8" -xzf "$dir/jdk8/jdk8.tar.gz" --strip-components 1};
-	print "debug 2\n";
+	print "debug 2 \n";
 	qx{cp "$dir/jdk8/lib/tools.jar" "$dir"};
-	print "debug 3\n";
+	print "debug 3 \n";
 	qx{rm -rf "$dir/jdk8"};
-	print "file downloaded to $dir/tools.jar\n";
+	print "file downloaded to $dir/tools.jar \n";
 }
 
 sub getShaFromFile {
