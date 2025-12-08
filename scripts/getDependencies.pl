@@ -431,12 +431,12 @@ if ($task eq "clean") {
 # This subroutine will access the api, download the outer jar, and extract the tools.jar.
 sub toolsJarDownloader {
 	my ( $dir, $url ) = @_;
-	print "Starting tools.jar download."
+	print "Starting tools.jar download.";
 	qx{_ENCODE_FILE_NEW=BINARY curl -s --create-dirs -o "$dir/jdk8/jdk8.tar.gz" $url 2>&1};
 	qx{tar --directory "$dir/jdk8" -xzf "$dir/jdk8/jdk8.tar.gz" --strip-components 1};
 	qx{cp "$dir/jdk8/lib/tools.jar" "$dir"};
 	qx{rm -rf "$dir/jdk8"};
-	print "tools.jar download complete."
+	print "tools.jar download complete.";
 }
 
 sub getShaFromFile {
