@@ -319,7 +319,7 @@ if ($task eq "clean") {
 		my $full_dir_path = File::Spec->catdir($path, $dir);
 		if (exists($ENV{"BUILD_TYPE"}) && $ENV{"BUILD_TYPE"} eq "systemtest") {
 			$full_dir_path = File::Spec->catdir($path, "systemtest_prereqs" , $dir);
-			next if(toolsJarDownloader "$fn" "$full_dir_path" "$url");
+			next if(toolsJarDownloader("$fn", "$full_dir_path", "$url"));
 		}
 		my $url_custom = $customUrl;
 
