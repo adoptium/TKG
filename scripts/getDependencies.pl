@@ -433,7 +433,6 @@ sub toolsJarDownloader {
 	my ( $dir, $url ) = @_;
 	print "Checksum verification skipped for systemtest_prereqs/tools/tools.jar \n";
 	print "downloading $url \n";
-	print "download attempt 1 for $url \n";
 	qx{_ENCODE_FILE_NEW=BINARY curl -LfsS --create-dirs -o "$dir/jdk8/jdk8.tar.gz" $url 2>&1};
 	qx{tar --directory "$dir/jdk8" -xzf "$dir/jdk8/jdk8.tar.gz" --strip-components 1};
 	qx{cp "$dir/jdk8/lib/tools.jar" "$dir"};
