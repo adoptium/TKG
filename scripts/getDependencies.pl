@@ -271,7 +271,7 @@ my %system_jars = (
 		is_system_test => 1
 	},
 	mauve => {
-		url => 'https://github.com/adoptium/aqa-triage-data/blob/main/AQAvit/mauve.jar',
+		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
 		is_system_test => 1
