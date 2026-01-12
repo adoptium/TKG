@@ -270,7 +270,6 @@ my %system_jars = (
 		sha1 => 'f396c75df02c008aff745ebbff234856e0788732',
 		is_system_test => 1
 	},
-	https://raw.githubusercontent.com/adamfarley/TKG/refs/heads/detect_github_html_assets/scripts/configure.pl
 	tools => {
 		url => 'https://api.adoptium.net/v3/binary/latest/8/ga/linux/x64/jdk/hotspot/normal/adoptium',
 		dir => 'tools',
