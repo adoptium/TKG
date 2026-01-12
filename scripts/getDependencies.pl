@@ -263,7 +263,7 @@ my %system_jars = (
 		fname => 'log4j-core.jar',
 		is_system_test => 1
 	},
- 	mauve => {
+	mauve => {
 		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
