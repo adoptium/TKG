@@ -317,8 +317,6 @@ if ($task eq "clean") {
 		my $url = $jars_info[$i]{url};
 		my $fn = $jars_info[$i]{fname};
 		my $sha1 = $jars_info[$i]{sha1};
-		print "file: $fn\n";
-		print "sha: $sha1\n";
 		my $dir = $jars_info[$i]{dir} // "";
 		my $full_dir_path = File::Spec->catdir($path, $dir);
 		if (exists($ENV{"BUILD_TYPE"}) && $ENV{"BUILD_TYPE"} eq "systemtest") {
@@ -329,6 +327,10 @@ if ($task eq "clean") {
 			}
 		}
 		my $url_custom = $customUrl;
+		
+		if ($fn eq "mauve.jar"){
+			$url_custom = "";
+		}
 
 		if (!-d $full_dir_path) {
 			make_path($full_dir_path, {chmod => 0755, verbose => 1}) or die "Failed to create directory: $full_dir_path: $!";
