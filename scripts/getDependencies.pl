@@ -267,6 +267,7 @@ my %system_jars = (
 		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
+		sha1 => '9d0d7dab1e62e80c4e77f3f12bb1e91bc47910f2',
 		is_system_test => 1
 	},
 	tools => {
@@ -383,36 +384,37 @@ if ($task eq "clean") {
 		# download the dependent third party jar
 
 		if ($ignoreChecksum && -e $filename) {
-			print "$filename exists, not downloading.\n";
-		} else {
-			downloadFile($url, $filename);
+			print "$filename exists, not downloading.\n"
+			next;
+		}
+		
+		downloadFile($url, $filename);
 
-			# if shaurl is provided, re-download the sha file and reset the expectedsha value
-			# as the dependent third party jar is newly downloadeded
-			if (!$ignoreChecksum) {
-				if ($shaurl) {
-					downloadFile($shaurl, $shafn);
-					$expectedsha = getShaFromFile($shafn, $fn);
-				}
-
-				if (!$expectedsha) {
-					die "ERROR: cannot get the expected sha for file $fn.\n";
-				}
-
-				# validate dependencies sha sum
-				$sha = Digest::SHA->new($shaalg);
-				$sha->addfile($filename);
-				$digest = $sha->hexdigest;
-
-				if ($digest ne $expectedsha) {
-					print "Expected sha is: $expectedsha,\n";
-					print "Actual sha is  : $digest.\n";
-					print "Please delete $filename and rerun the program!";
-					die "ERROR: sha checksum error.\n";
-				}
-			} else {
-				print "Checksum verification skipped for $filename\n";
+		# if shaurl is provided, re-download the sha file and reset the expectedsha value
+		# as the dependent third party jar is newly downloadeded
+		if (!$ignoreChecksum) {
+			if ($shaurl) {
+				downloadFile($shaurl, $shafn);
+				$expectedsha = getShaFromFile($shafn, $fn);
 			}
+
+			if (!$expectedsha) {
+				die "ERROR: cannot get the expected sha for file $fn.\n";
+			}
+
+			# validate dependencies sha sum
+			$sha = Digest::SHA->new($shaalg);
+			$sha->addfile($filename);
+			$digest = $sha->hexdigest;
+
+			if ($digest ne $expectedsha) {
+				print "Expected sha is: $expectedsha,\n";
+				print "Actual sha is  : $digest.\n";
+				print "Please delete $filename and rerun the program!";
+				die "ERROR: sha checksum error.\n";
+			}
+		} else {
+			print "Checksum verification skipped for $filename\n";
 		}
 	}
 	print "downloaded dependent third party jars successfully\n";
