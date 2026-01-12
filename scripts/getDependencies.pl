@@ -264,7 +264,7 @@ my %system_jars = (
 		is_system_test => 1
 	},
 	mauve => {
-		url => 'https://raw.githubusercontent.com/adamfarley/TKG/refs/heads/detect_github_html_assets/scripts/mauve_old.jar',
+		url => 'https://github.com/adamfarley/TKG/raw/refs/heads/detect_github_html_assets/scripts/mauve_old.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
 		sha1 => 'f396c75df02c008aff745ebbff234856e0788732',
