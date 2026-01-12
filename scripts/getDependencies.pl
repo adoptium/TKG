@@ -277,8 +277,6 @@ my %system_jars = (
 		is_system_test => 1
 	});
 
-
-
 my %jars_to_use;
 if ($path =~ /system_lib/ || (exists($ENV{"BUILD_TYPE"}) && $ENV{"BUILD_TYPE"} eq "systemtest")) {
 	print "System Test jars will be downloaded.\n";
