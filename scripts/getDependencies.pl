@@ -267,7 +267,7 @@ my %system_jars = (
 		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
-		sha1 => '9d0d7dab1e62e80c4e77f3f12bb1e91bc47910f2',
+		sha1 => 'f396c75df02c008aff745ebbff234856e0788732',
 		is_system_test => 1
 	},
 	tools => {
