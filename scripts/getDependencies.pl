@@ -263,11 +263,11 @@ my %system_jars = (
 		fname => 'log4j-core.jar',
 		is_system_test => 1
 	},
-	mauve => {
-		url => 'https://github.com/adamfarley/TKG/raw/refs/heads/detect_github_html_assets/scripts/mauve_old.jar',
+ 	mauve => {
+		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
-		sha1 => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+		sha1 => '9d0d7dab1e62e80c4e77f3f12bb1e91bc47910f2',
 		is_system_test => 1
 	},
 	tools => {
@@ -277,13 +277,7 @@ my %system_jars = (
 		is_system_test => 1
 	});
 
-# 	mauve => {
-#		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
-#		dir => 'mauve',
-#		fname => 'mauve.jar',
-#		sha1 => '9d0d7dab1e62e80c4e77f3f12bb1e91bc47910f2',
-#		is_system_test => 1
-#	},
+
 
 my %jars_to_use;
 if ($path =~ /system_lib/ || (exists($ENV{"BUILD_TYPE"}) && $ENV{"BUILD_TYPE"} eq "systemtest")) {
@@ -327,10 +321,6 @@ if ($task eq "clean") {
 			}
 		}
 		my $url_custom = $customUrl;
-		
-		if ($fn eq "mauve.jar"){
-			$url_custom = "";
-		}
 
 		if (!-d $full_dir_path) {
 			make_path($full_dir_path, {chmod => 0755, verbose => 1}) or die "Failed to create directory: $full_dir_path: $!";
