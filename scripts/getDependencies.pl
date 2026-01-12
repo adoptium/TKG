@@ -384,7 +384,7 @@ if ($task eq "clean") {
 		# download the dependent third party jar
 
 		if ($ignoreChecksum && -e $filename) {
-			print "$filename exists, not downloading.\n"
+			print "$filename exists, not downloading.\n";
 			next;
 		}
 		
