@@ -264,18 +264,27 @@ my %system_jars = (
 		is_system_test => 1
 	},
 	mauve => {
-		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
+		url => 'https://raw.githubusercontent.com/adamfarley/TKG/refs/heads/detect_github_html_assets/scripts/mauve_old.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
-		sha1 => '9d0d7dab1e62e80c4e77f3f12bb1e91bc47910f2',
+		sha1 => 'f396c75df02c008aff745ebbff234856e0788732',
 		is_system_test => 1
 	},
+	https://raw.githubusercontent.com/adamfarley/TKG/refs/heads/detect_github_html_assets/scripts/configure.pl
 	tools => {
 		url => 'https://api.adoptium.net/v3/binary/latest/8/ga/linux/x64/jdk/hotspot/normal/adoptium',
 		dir => 'tools',
 		fname => 'tools.jar',
 		is_system_test => 1
 	});
+
+# 	mauve => {
+#		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
+#		dir => 'mauve',
+#		fname => 'mauve.jar',
+#		sha1 => '9d0d7dab1e62e80c4e77f3f12bb1e91bc47910f2',
+#		is_system_test => 1
+#	},
 
 my %jars_to_use;
 if ($path =~ /system_lib/ || (exists($ENV{"BUILD_TYPE"}) && $ENV{"BUILD_TYPE"} eq "systemtest")) {
