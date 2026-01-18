@@ -188,7 +188,16 @@ public class MkGen {
 						f.write(indent + "itercnt=$$((itercnt+1)); \\\n");
 						f.write(indent + "done;");
 					}
-					f.write(indent + " } 2>&1 | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+
+					if (testTargetName.contains("jckinteractives")) {
+						// interactives running Arctic can hang when using "tee" due to unknown Arctic file handle left open
+						// See: https://github.com/adoptium/aqa-tests/issues/6752
+						// Workaround, direct output to file only, then cat it after...
+						f.write(indent + " } 2>&1 >> $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q); \\\n");
+						f.write(indent + "cat $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+					} else {
+						f.write(indent + " } 2>&1 | tee -a $(Q)$(TESTOUTPUT)$(D)TestTargetResult$(Q);\n");
+					}
 
 					if (!capKeys.isEmpty()) {
 						Collections.sort(capKeys, Collections.reverseOrder());
