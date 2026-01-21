@@ -180,6 +180,21 @@ endif
 
 TESTNG=$(LIB_DIR)$(D)testng.jar$(P)$(LIB_DIR)$(D)jcommander.jar
 RESOURCES_DIR=$(JVM_TEST_ROOT)$(D)TestConfig$(D)resources
+ifdef CUSTOM_JTREG_HOME
+    JTREG_HOME=$(CUSTOM_JTREG_HOME)
+    $(ECHO) "Custom jtreg home declared: $(JTREG_HOME)"
+else
+    JTREG_HOME=$(TEST_RESROOT)$(D)jtreg
+    $(ECHO) "Using standart jtreg home: $(JTREG_HOME)"
+endif
+ifdef CUSTOM_JTREG_JAR
+    JTREG_JAR=$(CUSTOM_JTREG_JAR)
+    $(ECHO) "Custom jtreg jar declared: $(JTREG_JAR)"
+else
+    JTREG_JAR=$(JTREG_HOME)$(D)lib$(D)jtreg.jar
+    $(ECHO) "Using standart jtreg jar: $(JTREG_JAR)"
+endif
+
 
 #######################################
 # cmdlinetester jars
