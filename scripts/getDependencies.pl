@@ -175,6 +175,13 @@ my %base = (
 		shafn => 'jtreg_7_4_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
+	jtreg_7_5_1_1 => {
+		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.5.1+1.tar.gz',
+		fname => 'jtreg_7_5_1_1.tar.gz',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.5.1+1.tar.gz.sha256sum.txt',
+		shafn => 'jtreg_7_5_1_1.tar.gz.sha256sum.txt',
+		shaalg => '256'
+	},
 	jtreg_8_2 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8+2.tar.gz',
 		fname => 'jtreg_8_2.tar.gz',
