@@ -27,13 +27,13 @@ my $path;
 # define task
 my $task = "default";
 my $dependencyList = "all";
-my $customUrl = "";
+my $testDependencyUrl = "";
 my $curlOpts = "";
 
 GetOptions ("path=s" => \$path,
 			"task=s" => \$task,
 			"dependencyList=s" => \$dependencyList,
-			"customUrl=s" => \$customUrl,
+			"testDependencyUrl=s" => \$testDependencyUrl,
 			"curlOpts=s" => \$curlOpts)
 	or die("Error in command line arguments\n");
 
@@ -48,7 +48,7 @@ if (! -d $path) {
 
 # define directory path separator
 my $sep = File::Spec->catfile('', '');
-$customUrl = $ENV{'CUSTOM_URL'} if !defined($customUrl) || $customUrl eq '';
+$testDependencyUrl = $ENV{'TEST_DEPENDENCY_URL'} if !defined($testDependencyUrl) || $testDependencyUrl eq '';
 
 print "--------------------------------------------\n";
 print "path is set to $path\n";
@@ -333,7 +333,7 @@ if ($task eq "clean") {
 				next;
 			}
 		}
-		my $url_custom = $customUrl;
+		my $url_custom = $testDependencyUrl;
 		my $third_party_url = $url;
 
 		if (!-d $full_dir_path) {
