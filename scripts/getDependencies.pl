@@ -208,6 +208,11 @@ my %base = (
 		fname => 'jython-standalone.jar',
 		sha1 => '15592c29538abd36d15570eda9fa055ed1a618ba'
 	},
+	liberty_runtime => {
+		url => 'https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/24.0.0.1/openliberty-24.0.0.1.zip',
+		fname => 'openliberty-runtime.zip',
+		sha1 => 'c59edb53e8e88e674b67f0941e1abfc30eb0cd49'
+	},
 	jcstress => {
 		url => 'https://builds.shipilev.net/jcstress/jcstress-tests-all-20240222.jar',
 		fname => 'jcstress-tests-all-20240222.jar',
@@ -404,12 +409,48 @@ if ($task eq "clean") {
 			next;
 		}
 		my $download_success = 0;
+		my $sha_verified = 0;
+		my $tried_custom_url = ($url_custom ne "" && $url ne $third_party_url);
+
+		# Try download from URL (custom or third-party)
 		eval {
 			downloadFile($url, $filename);
 			$download_success = 1;
 		};
+
+		# If download succeeded, verify SHA
+		if ($download_success && !$ignoreChecksum) {
+			my $expectedsha_check = $expectedsha;
+			if (!$expectedsha_check && $shaurl) {
+				eval {
+					downloadFile($shaurl, $shafn);
+					$expectedsha_check = getShaFromFile($shafn, $fn);
+				};
+			}
+
+			if ($expectedsha_check) {
+				$sha = Digest::SHA->new($shaalg);
+				$sha->addfile($filename);
+				$digest = $sha->hexdigest;
+
+				if ($digest eq $expectedsha_check) {
+					$sha_verified = 1;
+				} elsif ($tried_custom_url) {
+					print "Warning: SHA mismatch for $filename from custom URL\n";
+					print "Expected: $expectedsha_check, Got: $digest\n";
+					print "Falling back to third-party URL: $third_party_url\n";
+					$download_success = 0;  # Mark as failed to trigger fallback
+					unlink $filename;  # Delete bad file
+				}
+			}
+		}
+
+		# Fall back to third-party URL if custom URL failed or had SHA mismatch
 		if (!$download_success) {
-			print "Warning: Download failed for $filename from custom URL $url\nDownloading $filename from third-party URL: $third_party_url\n";
+			if (!$tried_custom_url) {
+				print "Error: Failed to download $filename from URL $url\n";
+				exit 1;
+			}
 			eval {
 				downloadFile($third_party_url, $filename);
 				$download_success = 1;
@@ -418,11 +459,11 @@ if ($task eq "clean") {
 				print "Error: Failed to download $filename from third-party URL $third_party_url\n";
 				exit 1;
 			}
+			$sha_verified = 0;  # Need to verify SHA again for third-party download
 		}
 
-		# if shaurl is provided, re-download the sha file and reset the expectedsha value
-		# as the dependent third party jar is newly downloadeded
-		if (!$ignoreChecksum) {
+		# Verify SHA for third-party download or if not yet verified
+		if (!$ignoreChecksum && !$sha_verified) {
 			if ($shaurl) {
 				downloadFile($shaurl, $shafn);
 				$expectedsha = getShaFromFile($shafn, $fn);
@@ -443,7 +484,7 @@ if ($task eq "clean") {
 				print "Please delete $filename and rerun the program!";
 				die "ERROR: sha checksum error.\n";
 			}
-		} else {
+		} elsif ($ignoreChecksum) {
 			print "Checksum verification skipped for $filename\n";
 		}
 	}
