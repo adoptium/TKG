@@ -333,7 +333,7 @@ if ($task eq "clean") {
 				next;
 			}
 		}
-		my $url_custom = $testDependencyUrl;
+		my $url_testDependency = $testDependencyUrl;
 		my $third_party_url = $url;
 
 		if (!-d $full_dir_path) {
@@ -345,19 +345,19 @@ if ($task eq "clean") {
 		my $shaurl = $jars_info[$i]{shaurl};
 		my $shafn = $jars_info[$i]{shafn};
 
-		# if url_custom is provided, use url_custom and reset $url and $shaurl
-		if ($url_custom ne "") {
+		# if url_testDependency is provided, use url_testDependency and reset $url and $shaurl
+		if ($url_testDependency ne "") {
 			if (defined $jars_info[$i]{is_system_test} && $jars_info[$i]{is_system_test} == 1) {
-				$url_custom =~ s/test.getDependency/systemtest.getDependency/;
-				$url_custom .= "systemtest_prereqs/";
-				$url_custom .= $jars_info[$i]{dir};
-				$url_custom .= '/' unless $url_custom =~ /\/$/;
+				$url_testDependency =~ s/test.getDependency/systemtest.getDependency/;
+				$url_testDependency .= "systemtest_prereqs/";
+				$url_testDependency .= $jars_info[$i]{dir};
+				$url_testDependency .= '/' unless $url_testDependency =~ /\/$/;
 			}
 
-			$url = "$url_custom/$jars_info[$i]{fname}";
+			$url = "$url_testDependency/$jars_info[$i]{fname}";
 
 			if (defined $shaurl && $shaurl ne '') {
-				$shaurl = "$url_custom/$shafn";
+				$shaurl = "$url_testDependency/$shafn";
 			}
 		}
 
@@ -409,7 +409,7 @@ if ($task eq "clean") {
 			$download_success = 1;
 		};
 		if (!$download_success) {
-			print "Warning: Download failed for $filename from custom URL $url\nDownloading $filename from third-party URL: $third_party_url\n";
+			print "Warning: Download failed for $filename from testDependency URL $url\nDownloading $filename from third-party URL: $third_party_url\n";
 			eval {
 				downloadFile($third_party_url, $filename);
 				$download_success = 1;
