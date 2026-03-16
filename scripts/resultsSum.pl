@@ -202,10 +202,17 @@ sub resultReporter {
 								if ($buildList =~ /openjdk/) {
 									for my $i (0 .. $#lines) {
 										if ( $lines[$i] =~ /[-]{50}/) {
-											if ( ($lines[$i+1] =~ /(TEST: )(.*?)(\.java|\.sh|#.*)$/) || ($lines[$i+1] =~ /(Test results: .*)(failed|error)/) ) {
-												# We have a failed TEST: line, or we have the Test results line containing failed|error
-												$i++;
-												$failureTests .= $lines[$i] . "\n";
+											# Look ahead for TEST: or Test results: line (may have extra lines in between)
+											for my $j ($i+1 .. $#lines) {
+												if ( ($lines[$j] =~ /(TEST: )(.*?)(\.java|\.sh|#.*)$/) || ($lines[$j] =~ /(Test results: .*)(failed|error)/) ) {
+													# We have a failed TEST: line, or we have the Test results line containing failed|error
+													$failureTests .= $lines[$j] . "\n";
+													# Skip past the found line to avoid reprocessing
+													$i = $j;
+													last;
+												}
+												# Stop searching if we hit another separator line or empty pattern
+												last if ($lines[$j] =~ /[-]{50}/ || $lines[$j] =~ /^={40,}/);
 											}
 										}
 									}
