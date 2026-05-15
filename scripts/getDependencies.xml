@@ -12,126 +12,95 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<project name="getDependency" default="getDependentLibs" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
+<project name="getDependency" default="getDependentLibs" basedir="."
+	xmlns:if="ant:if"
+	xmlns:unless="ant:unless">
 	<description>
 		Get Third Party Dependencies
 	</description>
 
-	<!-- set default LIB property to all -->
-	<property name="LIB" value="all"/>
 	<target name="getJtregVersion">
-		<if>
-			<!-- versions 8-10, 12-16 -->
+		<!-- versions 8-10, 12-16 -->
+		<condition property="jtregTar" value="jtreg_5_1_b01">
 			<matches pattern="^([89]|1[02-6])$" string="${JDK_VERSION}"/>
-			<then>
-				<property name="jtregTar" value="jtreg_5_1_b01"/>
-			</then>
-			<elseif>
-				<!--
-				# Versions 11, 17 on z/OS need to use jtreg8_2 which uses defaultCharste() to parse TEST.group files.
-				# For more details, see openj9-openjdk-jdk17-zos/issues/928.
-				-->
-				<and>
-					<contains string="${SPEC}" substring="zos"/>
-					<matches pattern="^(11|17)$" string="${JDK_VERSION}"/>
-				</and>
-				<then>
-					<property name="jtregTar" value="jtreg_8_2"/>
-				</then>
-			</elseif>
-			<elseif>
-				<!-- versions 11, 18-20, 22-23 -->
-				<matches pattern="^(11|1[89]|2[023])$" string="${JDK_VERSION}"/>
-				<then>
-					<property name="jtregTar" value="jtreg_7_3_1_1"/>
-				</then>
-			</elseif>
-			<elseif>
-				<!-- versions 17, 21 -->
-				<matches pattern="^(17|21)$" string="${JDK_VERSION}"/>
-				<then>
-					<property name="jtregTar" value="jtreg_7_5_2_1"/>
-				</then>
-			</elseif>
-			<elseif>
-				<!-- version 24 -->
-				<matches pattern="^24$" string="${JDK_VERSION}"/>
-				<then>
-					<property name="jtregTar" value="jtreg_7_4_1"/>
-				</then>
-			</elseif>
-			<elseif>
-				<!-- version 25 -->
-				<matches pattern="^25$" string="${JDK_VERSION}"/>
-				<then>
-					<property name="jtregTar" value="jtreg_8_2"/>
-				</then>
-			</elseif>
-			<elseif>
-				<!-- version 26 -->
-				<matches pattern="^26$" string="${JDK_VERSION}"/>
-				<then>
-					<property name="jtregTar" value="jtreg_8_1_1"/>
-				</then>
-			</elseif>
-			<else>
-				<!-- versions 27+ -->
-				<property name="jtregTar" value="jtreg_8_2_1_1"/>
-			</else>
-		</if>
+		</condition>
+		<!--
+		# Versions 11, 17 on z/OS need to use jtreg8_2 which uses defaultCharste() to parse TEST.group files.
+		# For more details, see openj9-openjdk-jdk17-zos/issues/928.
+		-->
+		<condition property="jtregTar" value="jtreg_8_2">
+			<and>
+				<contains string="${SPEC}" substring="zos"/>
+				<matches pattern="^(11|17)$" string="${JDK_VERSION}"/>
+			</and>
+		</condition>
+		<!-- versions 11, 18-20, 22-23 -->
+		<condition property="jtregTar" value="jtreg_7_3_1_1">
+			<matches pattern="^(11|1[89]|2[023])$" string="${JDK_VERSION}"/>
+		</condition>
+		<!-- versions 17, 21 -->
+		<condition property="jtregTar" value="jtreg_7_5_2_1">
+			<matches pattern="^(17|21)$" string="${JDK_VERSION}"/>
+		</condition>
+		<!-- version 24 -->
+		<condition property="jtregTar" value="jtreg_7_4_1">
+			<matches pattern="^24$" string="${JDK_VERSION}"/>
+		</condition>
+		<!-- version 25 -->
+		<condition property="jtregTar" value="jtreg_8_2">
+			<matches pattern="^25$" string="${JDK_VERSION}"/>
+		</condition>
+		<!-- version 26 -->
+		<condition property="jtregTar" value="jtreg_8_1_1">
+			<matches pattern="^26$" string="${JDK_VERSION}"/>
+		</condition>
+		<!-- versions 27+ (default) -->
+		<property name="jtregTar" value="jtreg_8_2_1_1"/>
+
 		<echo message="jtreg version used is : ${jtregTar}"/>
 
-		<if>
+		<condition property="openj9jtregtimeouthandler" value=",tohandler_simple">
 			<or>
 				<equals arg1="${JDK_IMPL}" arg2="ibm"/>
 				<equals arg1="${JDK_IMPL}" arg2="openj9"/>
 			</or>
-			<then>
-				<property name="openj9jtregtimeouthandler" value=",tohandler_simple"/>
-			</then>
-			<else>
-				<property name="openj9jtregtimeouthandler" value=""/>
-			</else>
-		</if>
-		<var name="LIB" unset="true"/>
+		</condition>
+		<property name="openj9jtregtimeouthandler" value=""/>
+
 		<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
 	</target>
 
 	<target name="getJtreg" depends="getJtregVersion,getDependentLibs">
 		<mkdir dir="${DEST}"/>
-		<if>
+		<condition property="jtreg.in.libdir">
 			<available file="${LIB_DIR}/${jtregTar}.tar.gz"/>
-			<then>
-				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
-			</then>
-			<elseif>
+		</condition>
+		<condition property="jtreg.is.custom">
+			<and>
+				<not><isset property="jtreg.in.libdir"/></not>
 				<available file="custom_jtreg.tar.gz"/>
-				<then>
-					<echo message="Using custom_jtreg.tar.gz"/>
-					<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
-				</then>
-			</elseif>
-		</if>
+			</and>
+		</condition>
+		<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz" if:set="jtreg.in.libdir"/>
+		<echo message="Using custom_jtreg.tar.gz" if:set="jtreg.is.custom"/>
+		<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz" if:set="jtreg.is.custom"/>
 		<exec executable="gzip" failonerror="true">
 			<arg line="-df ${jtregTar}.tar.gz"/>
 		</exec>
-		<if>
+		<condition property="is.zos">
 			<contains string="${SPEC}" substring="zos"/>
-			<then>
-				<exec executable="tar" failonerror="true">
-					<arg line="xfo ${jtregTar}.tar -C ${DEST}"/>
-				</exec>
-			</then>
-			<else>
-				<exec executable="sh" failonerror="true">
-					<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'"/>
-				</exec>
-			</else>
-		</if>
+		</condition>
+		<exec executable="tar" failonerror="true" if:set="is.zos">
+			<arg line="xfo ${jtregTar}.tar -C ${DEST}"/>
+		</exec>
+		<exec executable="sh" failonerror="true" unless:set="is.zos">
+			<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'"/>
+		</exec>
 	</target>
 
 	<target name="getDependentLibs" unless="skipDependency">
+		<!-- default LIB to all if not set by getJtregVersion or caller -->
+		<property name="LIB" value="all"/>
 		<exec executable="perl" failonerror="true">
 			<arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${LIB_DIR} -task default -dependencyList ${LIB}"/>
 		</exec>
