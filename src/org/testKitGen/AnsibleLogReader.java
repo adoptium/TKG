@@ -54,6 +54,7 @@ public class AnsibleLogReader {
         
         if (!ansibleLogExists()) {
             System.err.println("Ansible log file not found at: " + logPath);
+            System.out.println("================================================");
             return null;
         }
         
@@ -84,6 +85,7 @@ public class AnsibleLogReader {
             return lastLine.toString();
         } catch (IOException e) {
             System.err.println("Error reading ansible log file: " + e.getMessage());
+            System.out.println("================================================");
             e.printStackTrace();
             return null;
         }
@@ -94,6 +96,7 @@ public class AnsibleLogReader {
         
         if (lastLine == null || lastLine.trim().isEmpty()) {
             System.err.println("No last line found in ansible log.");
+            System.out.println("================================================");
             return null;
         }
         
@@ -107,6 +110,7 @@ public class AnsibleLogReader {
             return date + " " + time + " " + sha;
         } else {
             System.err.println("Unexpected format in last line: " + lastLine);
+            System.out.println("================================================");
             return null;
         }
     }
