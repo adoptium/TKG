@@ -22,8 +22,6 @@ public class MainRunner {
 	}
 
 	public static void main(String[] args) {
-
-		AnsibleLogReader.outputDateTimeAndSHA();
 		Arguments argInfo = Arguments.getInstance();
 		argInfo.parse(args);
 		BuildList bl = new BuildList(argInfo);
