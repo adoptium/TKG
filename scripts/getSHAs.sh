@@ -17,6 +17,7 @@
 TEST_ROOT=""
 SHAs_FILE=""
 workDIR=$(pwd)
+OS=$(uname)
 
 usage ()
 {
@@ -102,10 +103,10 @@ getSHAs()
 			fi
 		done
 	fi
-	
-	if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || "$OSTYPE" == "cygwin" ]]; then
-		# Windows: $HOME/ansible.log
-		ANSIBLE_LOG="$HOME/ansible.log"
+
+	if [[ "$OS" == *"CYGWIN"* || "$OS" == *"cygwin"* || "$OS" == *"WIN"* || "$OS" == *"win"* ]]; then
+		# Windows: c:\ansible.log
+		ANSIBLE_LOG="c:\ansible.log"
 	else
 		# Unix/Linux/Mac: /var/log/ansible.log
 		ANSIBLE_LOG="/var/log/ansible.log"
