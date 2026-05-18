@@ -122,7 +122,8 @@ getSHAs()
 			date="${fields[1]}"
 			time="${fields[2]}"
 			sha="${fields[3]}"
-			echo "Last executed playbook: $date $time $sha" | tee -a "$SHAs_FILE"
+			echo "================================================"
+			echo "Last executed infrastructure playbook: $date $time"; echo "SHA: $sha"; echo "================================================" | tee -a "$SHAs_FILE"
 		fi
 	fi
 }
