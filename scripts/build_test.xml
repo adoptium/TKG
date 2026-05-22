@@ -70,15 +70,13 @@
 	</macrodef>
 
 	<target name="-expand-build-list" if="build.list.needs.expansion">
-		<loadresource property="build.list.expanded">
-			<string value="${BUILD_LIST}"/>
-			<filterchain>
-				<tokenfilter>
-					<replaceregex pattern="([^,]+)" replace="\1/build.xml" flags="g"/>
-				</tokenfilter>
-			</filterchain>
-		</loadresource>
-		<property name="build.list" value="TestConfig/build.xml,${build.list.expanded}"/>
+		<exec executable="perl" outputproperty="build.list.expanded" failonerror="true">
+			<arg value="-e"/>
+			<arg value="my $b = $ENV{BUILD_LIST}; $b =~ s/([^,]+)/$1\/build.xml/g; print 'TestConfig/build.xml,' . $b;"/>
+			<env key="BUILD_LIST" value="${BUILD_LIST}"/>
+		</exec>
+		<property name="build.list" value="${build.list.expanded}"/>
+		<echo>build.list=${build.list}</echo>
 	</target>
 
 	<target name="build" depends="-expand-build-list,stage_test_material" description="using ${JDK_VERSION} to compile the source ">
