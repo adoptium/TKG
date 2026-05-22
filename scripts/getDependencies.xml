@@ -20,19 +20,20 @@
 	</description>
 
 	<target name="getJtregVersion">
-		<!-- versions 8-10, 12-16 -->
-		<condition property="jtregTar" value="jtreg_5_1_b01">
-			<matches pattern="^([89]|1[02-6])$" string="${JDK_VERSION}"/>
-		</condition>
 		<!--
 		# Versions 11, 17 on z/OS need to use jtreg8_2 which uses defaultCharste() to parse TEST.group files.
 		# For more details, see openj9-openjdk-jdk17-zos/issues/928.
+		# IMPORTANT: Platform-specific conditions must come FIRST due to Ant's first-write-wins property behavior.
 		-->
 		<condition property="jtregTar" value="jtreg_8_2">
 			<and>
 				<contains string="${SPEC}" substring="zos"/>
 				<matches pattern="^(11|17)$" string="${JDK_VERSION}"/>
 			</and>
+		</condition>
+		<!-- versions 8-10, 12-16 -->
+		<condition property="jtregTar" value="jtreg_5_1_b01">
+			<matches pattern="^([89]|1[02-6])$" string="${JDK_VERSION}"/>
 		</condition>
 		<!-- versions 11, 18-20, 22-23 -->
 		<condition property="jtregTar" value="jtreg_7_3_1_1">
