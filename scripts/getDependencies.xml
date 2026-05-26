@@ -47,14 +47,10 @@
 		<condition property="jtregTar" value="jtreg_7_4_1">
 			<matches pattern="^24$" string="${JDK_VERSION}"/>
 		</condition>
-		<!-- version 25 -->
-		<condition property="jtregTar" value="jtreg_8_2">
-			<matches pattern="^25$" string="${JDK_VERSION}"/>
-		</condition>
-		<!-- version 26 -->
-		<condition property="jtregTar" value="jtreg_8_1_1">
-			<matches pattern="^26$" string="${JDK_VERSION}"/>
-		</condition>
+		<!-- versions 25, 26 -->
+        <condition property="jtregTar" value="jtreg_8_2_1_1">
+            <matches pattern="^(25|26)$" string="${JDK_VERSION}"/>
+        </condition>
 		<!-- versions 27+ (default) -->
 		<property name="jtregTar" value="jtreg_8_2_1_1"/>
 
