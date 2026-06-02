@@ -15,6 +15,8 @@
 package org.openj9.envInfo;
 
 import java.io.File;
+import java.io.RandomAccessFile;
+import java.io.IOException;
 import java.nio.file.*;
 import java.util.Map;
 import java.util.Set;
@@ -98,6 +100,7 @@ public class MachineInfo {
 		getPhysicalMemoryInfo();
 		getSpaceInfo();
 		getOtherInfo();
+		getAnsibleLogInfo();
 		validateInfo();
 	}
 
@@ -293,5 +296,71 @@ public class MachineInfo {
 		putInfo(new Info("gdb version", GDB_VERSION_CMD, ce.execute(GDB_VERSION_CMD), null));
 		putInfo(new Info("lldb version", LLDB_VERSION_CMD, ce.execute(LLDB_VERSION_CMD), null));
 		putInfo(new Info("gclibc version", GCLIBC_VERSION_CMD, ce.execute(GCLIBC_VERSION_CMD), null));
+	}
+
+	private void getAnsibleLogInfo() {
+		String logPath;
+		String osName = System.getProperty("os.name").toLowerCase();
+		
+		// Determine the log file path based on the operating system
+		if (osName.contains("win")) {
+			logPath = "C:\\ansible.log";
+		} else {
+			logPath = "/var/log/ansible.log";
+		}
+		
+		String lastLine = readLastLineFromFile(logPath);
+		if (lastLine != null && !lastLine.isEmpty()) {
+			// Split by spaces and get the last 3 elements
+			String[] parts = lastLine.split("\\s+");
+			if (parts.length >= 3) {
+				String formattedLine = parts[parts.length - 3] + " " + parts[parts.length - 2] + " " + parts[parts.length - 1];
+				putInfo(new Info("Ansible Log", new String[] {"readLastLineFromFile(\"" + logPath + "\")"}, formattedLine, null));
+			} else {
+				// If less than 3 parts, use the entire line
+				putInfo(new Info("Ansible Log", new String[] {"readLastLineFromFile(\"" + logPath + "\")"}, lastLine, null));
+			}
+		}
+	}
+
+	private String readLastLineFromFile(String filePath) {
+		File file = new File(filePath);
+		
+		// Check if file exists
+		if (!file.exists() || !file.isFile()) {
+			return null;
+		}
+		
+		try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
+			long fileLength = raf.length();
+			if (fileLength == 0) {
+				return null;
+			}
+			
+			// Start from the end of the file
+			long pointer = fileLength - 1;
+			StringBuilder lastLine = new StringBuilder();
+			
+			// Read backwards to find the last line
+			while (pointer >= 0) {
+				raf.seek(pointer);
+				char c = (char) raf.read();
+				
+				// If we hit a newline and we have content, we've found the last line
+				if (c == '\n' || c == '\r') {
+					if (lastLine.length() > 0) {
+						break;
+					}
+				} else {
+					lastLine.insert(0, c);
+				}
+				pointer--;
+			}
+			
+			return lastLine.toString().trim();
+		} catch (IOException e) {
+			System.out.println("Warning: Could not read ansible log file: " + filePath);
+			return null;
+		}
 	}
 }
