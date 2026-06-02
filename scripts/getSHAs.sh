@@ -99,7 +99,6 @@ getSHAs()
 			fi
 		done
 	fi
-
 }
 
 parseCommandLineArgs "$@"
