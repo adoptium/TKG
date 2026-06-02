@@ -315,10 +315,10 @@ public class MachineInfo {
 			String[] parts = lastLine.split("\\s+");
 			if (parts.length >= 3) {
 				String formattedLine = parts[parts.length - 3] + " " + parts[parts.length - 2] + " " + parts[parts.length - 1];
-				putInfo(new Info("Ansible Log", new String[] {"readLastLineFromFile(\"" + logPath + "\")"}, formattedLine, null));
+				putInfo(new Info("Last executed infrastructure playbook", new String[] {"readLastLineFromFile(\"" + logPath + "\")"}, formattedLine, null));
 			} else {
 				// If less than 3 parts, use the entire line
-				putInfo(new Info("Ansible Log", new String[] {"readLastLineFromFile(\"" + logPath + "\")"}, lastLine, null));
+				putInfo(new Info("Last executed infrastructure playbook", new String[] {"readLastLineFromFile(\"" + logPath + "\")"}, lastLine, null));
 			}
 		}
 	}
