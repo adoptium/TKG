@@ -17,7 +17,6 @@
 TEST_ROOT=""
 SHAs_FILE=""
 workDIR=$(pwd)
-OS=$(uname)
 
 usage ()
 {
@@ -104,28 +103,6 @@ getSHAs()
 		done
 	fi
 
-	if [[ "$OS" == *"CYGWIN"* || "$OS" == *"cygwin"* || "$OS" == *"WIN"* || "$OS" == *"win"* ]]; then
-		# Windows: c:\ansible.log
-		ANSIBLE_LOG="c:\ansible.log"
-	else
-		# Unix/Linux/Mac: /var/log/ansible.log
-		ANSIBLE_LOG="/var/log/ansible.log"
-	fi
-	
-	if [ -f "$ANSIBLE_LOG" ]; then
-		# Read the last line of the ansible.log file
-		last_line=$(tail -n 1 "$ANSIBLE_LOG")
-		
-		# Split the line by whitespace and extract date (2nd), time (3rd), and SHA (4th)
-		read -r -a fields <<< "$last_line"
-		if [ ${#fields[@]} -ge 4 ]; then
-			date="${fields[1]}"
-			time="${fields[2]}"
-			sha="${fields[3]}"
-			echo "================================================"
-			echo "Last executed infrastructure playbook: $date $time"; echo "SHA: $sha"; echo "================================================" | tee -a "$SHAs_FILE"
-		fi
-	fi
 }
 
 parseCommandLineArgs "$@"
