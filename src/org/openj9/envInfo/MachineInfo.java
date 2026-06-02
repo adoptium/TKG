@@ -311,14 +311,10 @@ public class MachineInfo {
 		
 		String lastLine = readLastLineFromFile(logPath);
 		if (lastLine != null && !lastLine.isEmpty()) {
-			// Split by spaces and get the last 3 elements
 			String[] parts = lastLine.split("\\s+");
-			if (parts.length >= 3) {
+			if (parts.length >= 4) {
 				String formattedLine = parts[parts.length - 3] + " " + parts[parts.length - 2] + " " + parts[parts.length - 1];
 				putInfo(new Info("Last executed infrastructure playbook", new String[] {"readLastLineFromFile(\"" + logPath + "\")"}, formattedLine, null));
-			} else {
-				// If less than 3 parts, use the entire line
-				putInfo(new Info("Last executed infrastructure playbook", new String[] {"readLastLineFromFile(\"" + logPath + "\")"}, lastLine, null));
 			}
 		}
 	}
