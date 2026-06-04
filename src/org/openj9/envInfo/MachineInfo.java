@@ -313,6 +313,7 @@ public class MachineInfo {
 		
 		String lastLine = readLastLineFromFile(logPath);
 		if (lastLine != null && !lastLine.isEmpty()) {
+			// Split expected string: Start 2026-05-31 16:31:42 751c5150f7112ee3b4d7ef055bb6861638eb119c
 			String[] parts = lastLine.split("\\s+");
 			if (parts.length >= 4) {
 				String formattedLine = parts[parts.length - 3] + " " + parts[parts.length - 2] + " " + parts[parts.length - 1];
