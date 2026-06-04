@@ -48,7 +48,7 @@ if (! -d $path) {
 
 # define directory path separator
 my $sep = File::Spec->catfile('', '');
-$testDependencyUrl = $ENV{'TEST_DEPENDENCY_URL'} if !defined($testDependencyUrl) || $testDependencyUrl eq '';
+$testDependencyUrl = $ENV{'TEST_DEPENDENCY_URL'} if ($testDependencyUrl eq '' && defined($ENV{'TEST_DEPENDENCY_URL'}));
 
 print "--------------------------------------------\n";
 print "path is set to $path\n";
