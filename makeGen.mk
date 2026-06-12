@@ -41,14 +41,22 @@ include $(CURRENT_DIR)$(D)envSettings.mk
 autoconfig:
 	perl scripts$(D)configure.pl
 
+# MSYS2_ARG_CONV_EXCL=* disables MSYS2's automatic POSIX-to-Win path
+# rewriting of arguments handed to native Win32 binaries. The classpath
+# entries below are already in Windows form (LIB_DIR was cygpath -w'd in
+# the top-level makefile), so the rewriter would only corrupt them. We
+# scope this to the recipes that actually need it instead of exporting
+# globally, because the Apache Ant Unix wrapper script (used by other
+# recipes) relies on the rewriter to translate ANT_HOME's POSIX path.
+# Harmless under Cygwin (the variable is MSYS2-only).
 autogen: autoconfig
-	${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE) --spec=$(SPEC) --microArch=$(Q)$(MICROARCH)$(Q) --osLabel=$(Q)$(OS_LABEL)$(Q) --jdkVersion=$(JDK_VERSION) --impl=$(JDK_IMPL) --vendor=$(Q)$(JDK_VENDOR)$(Q) --buildList=${BUILD_LIST} --iterations=$(TKG_ITERATIONS) --aotIterations=$(AOT_ITERATIONS) --testFlag=$(TEST_FLAG) --testTarget=$(TESTTARGET) --testList=$(TESTLIST) --numOfMachines=$(NUM_MACHINES) --testTime=$(TEST_TIME) --TRSSURL=$(TRSS_URL) $(OPTS)
+	MSYS2_ARG_CONV_EXCL='*' ${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE) --spec=$(SPEC) --microArch=$(Q)$(MICROARCH)$(Q) --osLabel=$(Q)$(OS_LABEL)$(Q) --jdkVersion=$(JDK_VERSION) --impl=$(JDK_IMPL) --vendor=$(Q)$(JDK_VENDOR)$(Q) --buildList=${BUILD_LIST} --iterations=$(TKG_ITERATIONS) --aotIterations=$(AOT_ITERATIONS) --testFlag=$(TEST_FLAG) --testTarget=$(TESTTARGET) --testList=$(TESTLIST) --numOfMachines=$(NUM_MACHINES) --testTime=$(TEST_TIME) --TRSSURL=$(TRSS_URL) $(OPTS)
 
 AUTOGEN_FILES = $(wildcard $(CURRENT_DIR)$(D)jvmTest.mk)
 AUTOGEN_FILES += $(wildcard $(CURRENT_DIR)$(D)machineConfigure.mk)
 AUTOGEN_FILES += $(wildcard $(CURRENT_DIR)$(D)..$(D)*$(D)autoGenTest.mk)
 
 clean:
-	${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE)
+	MSYS2_ARG_CONV_EXCL='*' ${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE)
 
 .PHONY: autoconfig autogen clean
