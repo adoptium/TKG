@@ -38,7 +38,11 @@ endif
 
 UNAME := uname
 UNAME_OS := $(shell $(UNAME) -s | cut -f1 -d_)
-ifeq ($(findstring CYGWIN,$(UNAME_OS)), CYGWIN)
+# Under Cygwin and MSYS2 (MSYS/MINGW32/MINGW64/UCRT64/CLANGARM64) the JDK is
+# a native Win32 binary that does not understand POSIX paths like /c/...,
+# so translate LIB_DIR to a Windows-style path before it ends up on the
+# Java classpath. cygpath is available in both Cygwin and MSYS2.
+ifneq (,$(filter CYGWIN MSYS MINGW32 MINGW64 UCRT64 CLANGARM64,$(UNAME_OS)))
 	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
 endif
 
