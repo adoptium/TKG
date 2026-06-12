@@ -44,6 +44,14 @@ UNAME_OS := $(shell $(UNAME) -s | cut -f1 -d_)
 # Java classpath. cygpath is available in both Cygwin and MSYS2.
 ifneq (,$(filter CYGWIN MSYS MINGW32 MINGW64 UCRT64 CLANGARM64,$(UNAME_OS)))
 	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
+	# MSYS2 rewrites arguments that look like POSIX paths or path lists
+	# before handing them to native Windows binaries (e.g. java.exe). For
+	# classpath strings like "./bin/foo.jar;C:/path/bar.jar" this can
+	# corrupt the second entry so Java throws NoClassDefFoundError on
+	# classes that live in it. Disable the rewriter; LIB_DIR / TEST_ROOT
+	# are already cygpath -w'd, so paths are passed through verbatim.
+	# Harmless under Cygwin (the variable is MSYS2-only).
+	export MSYS2_ARG_CONV_EXCL := *
 endif
 
 export LIB_DIR:=$(subst \,/,$(LIB_DIR))
