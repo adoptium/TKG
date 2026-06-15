@@ -38,7 +38,9 @@ endif
 
 UNAME := uname
 UNAME_OS := $(shell $(UNAME) -s | cut -f1 -d_)
-ifeq ($(findstring CYGWIN,$(UNAME_OS)), CYGWIN)
+# Translate LIB_DIR for Cygwin/MSYS2 shells so the native Win32 JDK can
+# read it from the classpath.
+ifneq (,$(filter CYGWIN MSYS MINGW32 MINGW64 UCRT64 CLANGARM64,$(UNAME_OS)))
 	LIB_DIR:=$(shell cygpath -w $(LIB_DIR))
 endif
 

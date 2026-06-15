@@ -110,11 +110,12 @@ SCRIPT_SUFFIX=.bat
 PROPS_DIR=props_win
 endif
 
-# Environment variable OSTYPE is set to cygwin if running under cygwin.
+# OSTYPE is "cygwin" on Cygwin and "msys"/"msys2" on MSYS2 shells; treat
+# all of them as the same POSIX-on-Windows case.
 ifndef CYGWIN
 	OSTYPE?=$(shell echo $$OSTYPE)
-	ifeq ($(OSTYPE),cygwin)
-			CYGWIN:=1
+	ifneq (,$(filter cygwin msys msys2,$(OSTYPE)))
+		CYGWIN:=1
 	else
 		CYGWIN:=0
 	endif

@@ -41,14 +41,17 @@ include $(CURRENT_DIR)$(D)envSettings.mk
 autoconfig:
 	perl scripts$(D)configure.pl
 
+# MSYS2 rewrites POSIX-looking args before launching native Win32 binaries
+# and mangles the ;-separated classpath. Disable it for this java call only;
+# LIB_DIR is already cygpath -w'd. No-op on Cygwin.
 autogen: autoconfig
-	${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE) --spec=$(SPEC) --microArch=$(Q)$(MICROARCH)$(Q) --osLabel=$(Q)$(OS_LABEL)$(Q) --jdkVersion=$(JDK_VERSION) --impl=$(JDK_IMPL) --vendor=$(Q)$(JDK_VENDOR)$(Q) --buildList=${BUILD_LIST} --iterations=$(TKG_ITERATIONS) --aotIterations=$(AOT_ITERATIONS) --testFlag=$(TEST_FLAG) --testTarget=$(TESTTARGET) --testList=$(TESTLIST) --numOfMachines=$(NUM_MACHINES) --testTime=$(TEST_TIME) --TRSSURL=$(TRSS_URL) $(OPTS)
+	MSYS2_ARG_CONV_EXCL='*' ${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE) --spec=$(SPEC) --microArch=$(Q)$(MICROARCH)$(Q) --osLabel=$(Q)$(OS_LABEL)$(Q) --jdkVersion=$(JDK_VERSION) --impl=$(JDK_IMPL) --vendor=$(Q)$(JDK_VENDOR)$(Q) --buildList=${BUILD_LIST} --iterations=$(TKG_ITERATIONS) --aotIterations=$(AOT_ITERATIONS) --testFlag=$(TEST_FLAG) --testTarget=$(TESTTARGET) --testList=$(TESTLIST) --numOfMachines=$(NUM_MACHINES) --testTime=$(TEST_TIME) --TRSSURL=$(TRSS_URL) $(OPTS)
 
 AUTOGEN_FILES = $(wildcard $(CURRENT_DIR)$(D)jvmTest.mk)
 AUTOGEN_FILES += $(wildcard $(CURRENT_DIR)$(D)machineConfigure.mk)
 AUTOGEN_FILES += $(wildcard $(CURRENT_DIR)$(D)..$(D)*$(D)autoGenTest.mk)
 
 clean:
-	${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE)
+	MSYS2_ARG_CONV_EXCL='*' ${TEST_JDK_HOME}/bin/java -cp $(Q)$(TKG_JAR)$(P)$(JSON_SIMPLE)$(Q) org.testKitGen.MainRunner --mode=$(MODE)
 
 .PHONY: autoconfig autogen clean
