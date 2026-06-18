@@ -227,6 +227,247 @@ my %base = (
 		url => '-L https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin-minimal.zip',
 		fname => 'dacapo.zip',
 		sha1 => '2dd4704900e43f4e22c70255b555c02177ef07c4'
+	},
+	icu4j_61_1 => {
+		url => 'https://repo1.maven.org/maven2/com/ibm/icu/icu4j/61.1/icu4j-61.1.jar',
+		fname => 'icu4j-61_1.jar'
+	},
+	icu4j_localespi_61_1 => {
+		url => 'https://repo1.maven.org/maven2/com/ibm/icu/icu4j-localespi/61.1/icu4j-localespi-61.1.jar',
+		fname => 'icu4j-localespi-61_1.jar'
+	},
+	# Unicode 10.0.0 files
+	unicode_data_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-10.0.0.txt'
+	},
+	blocks_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-10.0.0.txt'
+	},
+	scripts_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-10.0.0.txt'
+	},
+	normalization_test_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-10.0.0.txt'
+	},
+	property_value_aliases_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-10.0.0.txt'
+	},
+	unihan_irg_sources_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/Unihan_IRGSources.txt',
+		fname => 'Unihan_IRGSources-10.0.0.txt'
+	},
+
+	# Unicode 11.0.0 files
+	unicode_data_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-11.0.0.txt'
+	},
+	blocks_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-11.0.0.txt'
+	},
+	scripts_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-11.0.0.txt'
+	},
+	normalization_test_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-11.0.0.txt'
+	},
+	property_value_aliases_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-11.0.0.txt'
+	},
+	unihan_irg_sources_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/Unihan_IRGSources.txt',
+		fname => 'Unihan_IRGSources-11.0.0.txt'
+	},
+
+	# Unicode 12.1.0 files
+	unicode_data_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-12.1.0.txt'
+	},
+	blocks_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/Blocks.txt',
+		fname => 'Blocks-12.1.0.txt'
+	},
+	scripts_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/Scripts.txt',
+		fname => 'Scripts-12.1.0.txt'
+	},
+	normalization_test_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-12.1.0.txt'
+	},
+	property_value_aliases_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-12.1.0.txt'
+	},
+	unihan_irg_sources_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/Unihan_IRGSources.txt',
+		fname => 'Unihan_IRGSources-12.1.0.txt'
+	},
+
+	# Unicode 13.0.0 files
+	unicode_data_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-13.0.0.txt'
+	},
+	blocks_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-13.0.0.txt'
+	},
+	scripts_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-13.0.0.txt'
+	},
+	normalization_test_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-13.0.0.txt'
+	},
+	property_value_aliases_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-13.0.0.txt'
+	},
+	unihan_irg_sources_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/Unihan_IRGSources.txt',
+		fname => 'Unihan_IRGSources-13.0.0.txt'
+	},
+
+	# Unicode 14.0.0 files
+	unicode_data_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-14.0.0.txt'
+	},
+	blocks_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-14.0.0.txt'
+	},
+	scripts_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-14.0.0.txt'
+	},
+	normalization_test_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-14.0.0.txt'
+	},
+	property_value_aliases_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-14.0.0.txt'
+	},
+	unihan_irg_sources_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/Unihan_IRGSources.txt',
+		fname => 'Unihan_IRGSources-14.0.0.txt'
+	},
+
+	# Unicode 15.0.0 files
+	unicode_data_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-15.0.0.txt'
+	},
+	blocks_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-15.0.0.txt'
+	},
+	scripts_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-15.0.0.txt'
+	},
+	normalization_test_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-15.0.0.txt'
+	},
+	property_value_aliases_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-15.0.0.txt'
+	},
+	unihan_irg_sources_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/Unihan_IRGSources.txt',
+		fname => 'Unihan_IRGSources-15.0.0.txt'
+	},
+
+	# Unicode 15.1.0 files
+	unicode_data_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-15.1.0.txt'
+	},
+	blocks_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/Blocks.txt',
+		fname => 'Blocks-15.1.0.txt'
+	},
+	scripts_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/Scripts.txt',
+		fname => 'Scripts-15.1.0.txt'
+	},
+	normalization_test_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-15.1.0.txt'
+	},
+	property_value_aliases_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-15.1.0.txt'
+	},
+	unihan_irg_sources_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/Unihan_IRGSources.txt',
+		fname => 'Unihan_IRGSources-15.1.0.txt'
+	},
+
+	# Unicode 16.0.0 files
+	unicode_data_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-16.0.0.txt'
+	},
+	blocks_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-16.0.0.txt'
+	},
+	scripts_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-16.0.0.txt'
+	},
+	normalization_test_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-16.0.0.txt'
+	},
+	property_value_aliases_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-16.0.0.txt'
+	},
+	unihan_irg_sources_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/Unihan_IRGSources.txt',
+		fname => 'Unihan_IRGSources-16.0.0.txt'
+	},
+
+	# Unicode 17.0.0 files
+	unicode_data_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-17.0.0.txt'
+	},
+	blocks_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-17.0.0.txt'
+	},
+	scripts_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-17.0.0.txt'
+	},
+	normalization_test_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-17.0.0.txt'
+	},
+	property_value_aliases_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-17.0.0.txt'
+	},
+	unihan_irg_sources_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/Unihan_IRGSources.txt',
+		fname => 'Unihan_IRGSources-17.0.0.txt'
 	});
 
 my %system_jars = (
