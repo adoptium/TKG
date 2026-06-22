@@ -238,7 +238,7 @@ my %base = (
 	},
 	unicode_gb18030_2022 => {
 		url => 'https://www.unicode.org/Public/mappings/iso10646/GB18030-2022.txt',
-		fname => 'UnicodeData-GB18030-2022.txt'
+		fname => 'GB18030-2022.txt'
 	},
 	unicode_unihan_17_0_0 => {
 		url => 'https://www.unicode.org/Public/17.0.0/ucd/Unihan.zip',
