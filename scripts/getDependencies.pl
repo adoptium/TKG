@@ -230,98 +230,99 @@ my %base = (
 	},
 	icu4j_61_1 => {
 		url => 'https://repo1.maven.org/maven2/com/ibm/icu/icu4j/61.1/icu4j-61.1.jar',
-		fname => 'icu4j-61_1.jar'
+		fname => 'icu4j-61_1-v2.jar'
 	},
 	icu4j_localespi_61_1 => {
 		url => 'https://repo1.maven.org/maven2/com/ibm/icu/icu4j-localespi/61.1/icu4j-localespi-61.1.jar',
-		fname => 'icu4j-localespi-61_1.jar'
+		fname => 'icu4j-localespi-61_1-v2.jar'
 	},
 	unicode_gb18030_2022 => {
 		url => 'https://www.unicode.org/Public/mappings/iso10646/GB18030-2022.txt',
-		fname => 'GB18030-2022.txt'
+		fname => 'GB18030-2022-v2.txt'
 	},
 	# Unihan individual files (optimized - download only Unihan_IRGSources.txt)
 	# Reduces bandwidth by 75% (1-2 MB vs 6-8 MB per version)
 	# Addresses mentor feedback: "For unihan only one file Unihan_IRGSources is needed"
+	# Note: -v2 suffix added to force fresh downloads and avoid corrupted cache
 	'Unihan_IRGSources-17.0.0.txt' => {
 		url => 'https://www.unicode.org/Public/17.0.0/ucd/Unihan_IRGSources.txt',
-		fname => 'Unihan_IRGSources-17.0.0.txt'
+		fname => 'Unihan_IRGSources-17.0.0-v2.txt'
 	},
 	'Unihan_IRGSources-16.0.0.txt' => {
 		url => 'https://www.unicode.org/Public/16.0.0/ucd/Unihan_IRGSources.txt',
-		fname => 'Unihan_IRGSources-16.0.0.txt'
+		fname => 'Unihan_IRGSources-16.0.0-v2.txt'
 	},
 	'Unihan_IRGSources-15.1.0.txt' => {
 		url => 'https://www.unicode.org/Public/15.1.0/ucd/Unihan_IRGSources.txt',
-		fname => 'Unihan_IRGSources-15.1.0.txt'
+		fname => 'Unihan_IRGSources-15.1.0-v2.txt'
 	},
 	'Unihan_IRGSources-15.0.0.txt' => {
 		url => 'https://www.unicode.org/Public/15.0.0/ucd/Unihan_IRGSources.txt',
-		fname => 'Unihan_IRGSources-15.0.0.txt'
+		fname => 'Unihan_IRGSources-15.0.0-v2.txt'
 	},
 	'Unihan_IRGSources-14.0.0.txt' => {
 		url => 'https://www.unicode.org/Public/14.0.0/ucd/Unihan_IRGSources.txt',
-		fname => 'Unihan_IRGSources-14.0.0.txt'
+		fname => 'Unihan_IRGSources-14.0.0-v2.txt'
 	},
 	'Unihan_IRGSources-13.0.0.txt' => {
 		url => 'https://www.unicode.org/Public/13.0.0/ucd/Unihan_IRGSources.txt',
-		fname => 'Unihan_IRGSources-13.0.0.txt'
+		fname => 'Unihan_IRGSources-13.0.0-v2.txt'
 	},
 	'Unihan_IRGSources-12.1.0.txt' => {
 		url => 'https://www.unicode.org/Public/12.1.0/ucd/Unihan_IRGSources.txt',
-		fname => 'Unihan_IRGSources-12.1.0.txt'
+		fname => 'Unihan_IRGSources-12.1.0-v2.txt'
 	},
 	'Unihan_IRGSources-12.0.0.txt' => {
 		url => 'https://www.unicode.org/Public/12.0.0/ucd/Unihan_IRGSources.txt',
-		fname => 'Unihan_IRGSources-12.0.0.txt'
+		fname => 'Unihan_IRGSources-12.0.0-v2.txt'
 	},
 	'Unihan_IRGSources-11.0.0.txt' => {
 		url => 'https://www.unicode.org/Public/11.0.0/ucd/Unihan_IRGSources.txt',
-		fname => 'Unihan_IRGSources-11.0.0.txt'
+		fname => 'Unihan_IRGSources-11.0.0-v2.txt'
 	},
 	'Unihan_IRGSources-10.0.0.txt' => {
 		url => 'https://www.unicode.org/Public/10.0.0/ucd/Unihan_IRGSources.txt',
-		fname => 'Unihan_IRGSources-10.0.0.txt'
+		fname => 'Unihan_IRGSources-10.0.0-v2.txt'
 	},
 	unicode_ucd_17_0_0 => {
 		url => 'https://www.unicode.org/Public/17.0.0/ucd/UCD.zip',
-		fname => 'UCD-17.0.0.zip'
+		fname => 'UCD-17.0.0-v2.zip'
 	},
 	unicode_ucd_16_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/16.0.0/UCD.zip',
-		fname => 'UCD-16.0.0.zip'
+		fname => 'UCD-16.0.0-v2.zip'
 	},
 	unicode_ucd_15_1_0 => {
 		url => 'https://www.unicode.org/Public/zipped/15.1.0/UCD.zip',
-		fname => 'UCD-15.1.0.zip'
+		fname => 'UCD-15.1.0-v2.zip'
 	},
 	unicode_ucd_15_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/15.0.0/UCD.zip',
-		fname => 'UCD-15.0.0.zip'
+		fname => 'UCD-15.0.0-v2.zip'
 	},
 	unicode_ucd_14_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/14.0.0/UCD.zip',
-		fname => 'UCD-14.0.0.zip'
+		fname => 'UCD-14.0.0-v2.zip'
 	},
 	unicode_ucd_13_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/13.0.0/UCD.zip',
-		fname => 'UCD-13.0.0.zip'
+		fname => 'UCD-13.0.0-v2.zip'
 	},
 	unicode_ucd_12_1_0 => {
 		url => 'https://www.unicode.org/Public/zipped/12.1.0/UCD.zip',
-		fname => 'UCD-12.1.0.zip'
+		fname => 'UCD-12.1.0-v2.zip'
 	},
 	unicode_ucd_12_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/12.0.0/UCD.zip',
-		fname => 'UCD-12.0.0.zip'
+		fname => 'UCD-12.0.0-v2.zip'
 	},
 	unicode_ucd_11_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/11.0.0/UCD.zip',
-		fname => 'UCD-11.0.0.zip'
+		fname => 'UCD-11.0.0-v2.zip'
 	},
 	unicode_ucd_10_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/10.0.0/UCD.zip',
-		fname => 'UCD-10.0.0.zip'
+		fname => 'UCD-10.0.0-v2.zip'
 	});
 
 	
