@@ -231,119 +231,142 @@ my %base = (
 	icu4j_61_1 => {
 		url => 'https://repo1.maven.org/maven2/com/ibm/icu/icu4j/61.1/icu4j-61.1.jar',
 		fname => 'icu4j-61_1.jar',
-		sha256 => '55c98eb1838b2a4bb9a07dc36bd378532d64d0cdcb7ceee914236866a7de4464'
+		sha1 => '55c98eb1838b2a4bb9a07dc36bd378532d64d0cdcb7ceee914236866a7de4464',
+		shaalg => '256'
 	},
 	icu4j_localespi_61_1 => {
 		url => 'https://repo1.maven.org/maven2/com/ibm/icu/icu4j-localespi/61.1/icu4j-localespi-61.1.jar',
 		fname => 'icu4j-localespi-61_1.jar',
-		sha256 => '99691e7562bcb211fc247ea27d4abf94486c5f373907da71a17bb358d97829b1'
+		sha1 => '99691e7562bcb211fc247ea27d4abf94486c5f373907da71a17bb358d97829b1',
+		shaalg => '256'
 	},
 	unicode_gb18030_2022 => {
 		url => 'https://www.unicode.org/Public/mappings/iso10646/GB18030-2022.txt',
 		fname => 'GB18030-2022.txt',
-		sha256 => '80c3fe2ae1062abf56456f52518bd670f9ec3917b7f85e152b347ac6b6faf880'
+		sha1 => '80c3fe2ae1062abf56456f52518bd670f9ec3917b7f85e152b347ac6b6faf880',
+		shaalg => '256'
 	},
 	# Unihan ZIP archives (contains Unihan_IRGSources.txt and other Unihan data files)
 	# SHA256 checksums ensure file integrity and prevent corrupted cache issues
 	unicode_unihan_17_0_0 => {
 		url => 'https://www.unicode.org/Public/17.0.0/ucd/Unihan.zip',
 		fname => 'Unihan-17.0.0.zip',
-		sha256 => 'f7a48b2b545acfaa77b2d607ae28747404ce02baefee16396c5d2d7a8ef34b5e'
+		sha1 => 'f7a48b2b545acfaa77b2d607ae28747404ce02baefee16396c5d2d7a8ef34b5e',
+		shaalg => '256'
 	},
 	unicode_unihan_16_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/16.0.0/Unihan.zip',
 		fname => 'Unihan-16.0.0.zip',
-		sha256 => 'b8f000df69de7828d21326a2ffea462b04bc7560022989f7cc704f10521ef3e0'
+		sha1 => 'b8f000df69de7828d21326a2ffea462b04bc7560022989f7cc704f10521ef3e0',
+		shaalg => '256'
 	},
 	unicode_unihan_15_1_0 => {
 		url => 'https://www.unicode.org/Public/zipped/15.1.0/Unihan.zip',
 		fname => 'Unihan-15.1.0.zip',
-		sha256 => 'a0226610e324bcf784ac380e11f4cbf533ee1e6b3d028b0991bf8c0dc3f85853'
+		sha1 => 'a0226610e324bcf784ac380e11f4cbf533ee1e6b3d028b0991bf8c0dc3f85853',
+		shaalg => '256'
 	},
 	unicode_unihan_15_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/15.0.0/Unihan.zip',
 		fname => 'Unihan-15.0.0.zip',
-		sha256 => '24b154691fc97cb44267b925d62064297086b3f896b57a8181c7b6d42702a026'
+		sha1 => '24b154691fc97cb44267b925d62064297086b3f896b57a8181c7b6d42702a026',
+		shaalg => '256'
 	},
 	unicode_unihan_14_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/14.0.0/Unihan.zip',
 		fname => 'Unihan-14.0.0.zip',
-		sha256 => '2ae4519b2b82cd4d15379c17e57bfb12c33c0f54da4977de03b2b04bcf11852d'
+		sha1 => '2ae4519b2b82cd4d15379c17e57bfb12c33c0f54da4977de03b2b04bcf11852d',
+		shaalg => '256'
 	},
 	unicode_unihan_13_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/13.0.0/Unihan.zip',
 		fname => 'Unihan-13.0.0.zip',
-		sha256 => 'e380194c4835ad85aa50e8750a58c1f605dbfc4aba9e3e3b0ca25b9530c02f64'
+		sha1 => 'e380194c4835ad85aa50e8750a58c1f605dbfc4aba9e3e3b0ca25b9530c02f64',
+		shaalg => '256'
 	},
 	unicode_unihan_12_1_0 => {
 		url => 'https://www.unicode.org/Public/zipped/12.1.0/Unihan.zip',
 		fname => 'Unihan-12.1.0.zip',
-		sha256 => '6e4553f3b5fffe0d312df324d020ef1278d9595932ae03f4e8a2d427de83cdcd'
+		sha1 => '6e4553f3b5fffe0d312df324d020ef1278d9595932ae03f4e8a2d427de83cdcd',
+		shaalg => '256'
 	},
 	unicode_unihan_12_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/12.0.0/Unihan.zip',
 		fname => 'Unihan-12.0.0.zip',
-		sha256 => '6e4553f3b5fffe0d312df324d020ef1278d9595932ae03f4e8a2d427de83cdcd'
+		sha1 => '6e4553f3b5fffe0d312df324d020ef1278d9595932ae03f4e8a2d427de83cdcd',
+		shaalg => '256'
 	},
 	unicode_unihan_11_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/11.0.0/Unihan.zip',
 		fname => 'Unihan-11.0.0.zip',
-		sha256 => '72079d9d64acd452e1496f67b975a82a989f0023f37aed092c51cf13567fc833'
+		sha1 => '72079d9d64acd452e1496f67b975a82a989f0023f37aed092c51cf13567fc833',
+		shaalg => '256'
 	},
 	unicode_unihan_10_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/10.0.0/Unihan.zip',
 		fname => 'Unihan-10.0.0.zip',
-		sha256 => '01232063a8529636cf155ba7a1dbad329cb2e63acde83a3d607b5eafa8f933a5'
+		sha1 => '01232063a8529636cf155ba7a1dbad329cb2e63acde83a3d607b5eafa8f933a5',
+		shaalg => '256'
 	},
 	unicode_ucd_17_0_0 => {
 		url => 'https://www.unicode.org/Public/17.0.0/ucd/UCD.zip',
 		fname => 'UCD-17.0.0.zip',
-		sha256 => '2066d1909b2ea93916ce092da1c0ee4808ea3ef8407c94b4f14f5b7eb263d28e'
+		sha1 => '2066d1909b2ea93916ce092da1c0ee4808ea3ef8407c94b4f14f5b7eb263d28e',
+		shaalg => '256'
 	},
 	unicode_ucd_16_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/16.0.0/UCD.zip',
 		fname => 'UCD-16.0.0.zip',
-		sha256 => 'c86dd81f2b14a43b0cc064aa5f89aa7241386801e35c59c7984e579832634eb2'
+		sha1 => 'c86dd81f2b14a43b0cc064aa5f89aa7241386801e35c59c7984e579832634eb2',
+		shaalg => '256'
 	},
 	unicode_ucd_15_1_0 => {
 		url => 'https://www.unicode.org/Public/zipped/15.1.0/UCD.zip',
 		fname => 'UCD-15.1.0.zip',
-		sha256 => 'cb1c663d053926500cd501229736045752713a066bd75802098598b7a7056177'
+		sha1 => 'cb1c663d053926500cd501229736045752713a066bd75802098598b7a7056177',
+		shaalg => '256'
 	},
 	unicode_ucd_15_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/15.0.0/UCD.zip',
 		fname => 'UCD-15.0.0.zip',
-		sha256 => '5fbde400f3e687d25cc9b0a8d30d7619e76cb2f4c3e85ba9df8ec1312cb6718c'
+		sha1 => '5fbde400f3e687d25cc9b0a8d30d7619e76cb2f4c3e85ba9df8ec1312cb6718c',
+		shaalg => '256'
 	},
 	unicode_ucd_14_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/14.0.0/UCD.zip',
 		fname => 'UCD-14.0.0.zip',
-		sha256 => '033a5276b5d7af8844589f8e3482f3977a8385e71d107d375055465178c23600'
+		sha1 => '033a5276b5d7af8844589f8e3482f3977a8385e71d107d375055465178c23600',
+		shaalg => '256'
 	},
 	unicode_ucd_13_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/13.0.0/UCD.zip',
 		fname => 'UCD-13.0.0.zip',
-		sha256 => '2f76973b4d36ae45584f5a45ec65b47138932d777dd23a5669c89535ef3da951'
+		sha1 => '2f76973b4d36ae45584f5a45ec65b47138932d777dd23a5669c89535ef3da951',
+		shaalg => '256'
 	},
 	unicode_ucd_12_1_0 => {
 		url => 'https://www.unicode.org/Public/zipped/12.1.0/UCD.zip',
 		fname => 'UCD-12.1.0.zip',
-		sha256 => '25ba51a0d4c6fa41047b7a5e5733068d4a734588f055f61e85f450097834a0a6'
+		sha1 => '25ba51a0d4c6fa41047b7a5e5733068d4a734588f055f61e85f450097834a0a6',
+		shaalg => '256'
 	},
 	unicode_ucd_12_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/12.0.0/UCD.zip',
 		fname => 'UCD-12.0.0.zip',
-		sha256 => 'b0e63d9bee7cae523001b2dc7f7873615773beec999f74c2b6b84ec9d2f0f0c5'
+		sha1 => 'b0e63d9bee7cae523001b2dc7f7873615773beec999f74c2b6b84ec9d2f0f0c5',
+		shaalg => '256'
 	},
 	unicode_ucd_11_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/11.0.0/UCD.zip',
 		fname => 'UCD-11.0.0.zip',
-		sha256 => '7a0f297f845b38454c1939ef773dbd0355ae6c00eaa34cdc84139de956a7b8a3'
+		sha1 => '7a0f297f845b38454c1939ef773dbd0355ae6c00eaa34cdc84139de956a7b8a3',
+		shaalg => '256'
 	},
 	unicode_ucd_10_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/10.0.0/UCD.zip',
 		fname => 'UCD-10.0.0.zip',
-		sha256 => 'cb26d649f8bac8b12f69e2fbcd77d1759ecdcd7c8e8f1c4385a9c5a36cf14891'
+		sha1 => 'cb26d649f8bac8b12f69e2fbcd77d1759ecdcd7c8e8f1c4385a9c5a36cf14891',
+		shaalg => '256'
 	});
 
 	
