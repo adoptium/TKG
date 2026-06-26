@@ -246,8 +246,6 @@ my %base = (
 		sha1 => '80c3fe2ae1062abf56456f52518bd670f9ec3917b7f85e152b347ac6b6faf880',
 		shaalg => '256'
 	},
-	# Unihan ZIP archives (contains Unihan_IRGSources.txt and other Unihan data files)
-	# SHA256 checksums ensure file integrity and prevent corrupted cache issues
 	unicode_unihan_17_0_0 => {
 		url => 'https://www.unicode.org/Public/17.0.0/ucd/Unihan.zip',
 		fname => 'Unihan-17.0.0.zip',
