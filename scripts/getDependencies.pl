@@ -288,12 +288,6 @@ my %base = (
 		sha1 => '6e4553f3b5fffe0d312df324d020ef1278d9595932ae03f4e8a2d427de83cdcd',
 		shaalg => '256'
 	},
-	unicode_unihan_12_0_0 => {
-		url => 'https://www.unicode.org/Public/zipped/12.0.0/Unihan.zip',
-		fname => 'Unihan-12.0.0.zip',
-		sha1 => '6e4553f3b5fffe0d312df324d020ef1278d9595932ae03f4e8a2d427de83cdcd',
-		shaalg => '256'
-	},
 	unicode_unihan_11_0_0 => {
 		url => 'https://www.unicode.org/Public/zipped/11.0.0/Unihan.zip',
 		fname => 'Unihan-11.0.0.zip',
