@@ -32,13 +32,25 @@ COMPILE_BUILD_LIST := ${BUILD_LIST}
 else
 COMPILE_BUILD_LIST := ${REFINED_BUILD_LIST}
 endif
+
+# Pre-expand BUILD_LIST in Make to avoid charset issues with Ant's <exec>
+# on z/OS JDK 21+.  Pure Make subst — works on all platforms.
+COMMA := ,
+ifeq ($(COMPILE_BUILD_LIST),)
+BUILD_LIST_EXPANDED := */build.xml
+else ifeq ($(COMPILE_BUILD_LIST),NULL)
+BUILD_LIST_EXPANDED := NULL
+else
+BUILD_LIST_EXPANDED := TestConfig/build.xml,$(subst $(COMMA),/build.xml$(COMMA),$(COMPILE_BUILD_LIST))/build.xml
+endif
+
 # TEST_FLAG can be empty, Windows ant does not like empty -D<param> values
 ifneq ($(TEST_FLAG),)
 TEST_FLAG_PARAM := -DTEST_FLAG=$(TEST_FLAG)
 else
 TEST_FLAG_PARAM :=
 endif
-COMPILE_CMD=ant -f scripts$(D)build_test.xml $(Q)-DTEST_ROOT=$(TEST_ROOT)$(Q) $(Q)-DBUILD_ROOT=$(BUILD_ROOT)$(Q) $(Q)-DJDK_VERSION=$(JDK_VERSION)$(Q) $(Q)-DJDK_IMPL=$(JDK_IMPL)$(Q) $(Q)-DJDK_VENDOR=$(JDK_VENDOR)$(Q) $(Q)-DJCL_VERSION=$(JCL_VERSION)$(Q) $(Q)-DBUILD_LIST=${COMPILE_BUILD_LIST}$(Q) $(Q)-DRESOURCES_DIR=${RESOURCES_DIR}$(Q) $(Q)-DSPEC=${SPEC}$(Q) $(Q)-DTEST_JDK_HOME=${TEST_JDK_HOME}$(Q) $(Q)-DJVM_VERSION=$(JVM_VERSION)$(Q) $(Q)-DLIB_DIR=$(LIB_DIR)$(Q) ${TEST_FLAG_PARAM}
+COMPILE_CMD=ant -f scripts$(D)build_test.xml $(Q)-DTEST_ROOT=$(TEST_ROOT)$(Q) $(Q)-DBUILD_ROOT=$(BUILD_ROOT)$(Q) $(Q)-DJDK_VERSION=$(JDK_VERSION)$(Q) $(Q)-DJDK_IMPL=$(JDK_IMPL)$(Q) $(Q)-DJDK_VENDOR=$(JDK_VENDOR)$(Q) $(Q)-DJCL_VERSION=$(JCL_VERSION)$(Q) $(Q)-DBUILD_LIST_EXPANDED=${BUILD_LIST_EXPANDED}$(Q) $(Q)-DRESOURCES_DIR=${RESOURCES_DIR}$(Q) $(Q)-DSPEC=${SPEC}$(Q) $(Q)-DTEST_JDK_HOME=${TEST_JDK_HOME}$(Q) $(Q)-DJVM_VERSION=$(JVM_VERSION)$(Q) $(Q)-DLIB_DIR=$(LIB_DIR)$(Q) ${TEST_FLAG_PARAM}
 
 
 compile:
