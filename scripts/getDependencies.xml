@@ -55,8 +55,12 @@
 		<condition property="jtregTar" value="jtreg_8_1_1">
 			<matches pattern="^26$" string="${JDK_VERSION}"/>
 		</condition>
-		<!-- versions 27+ (default) -->
-		<property name="jtregTar" value="jtreg_8_2_1_1"/>
+		<!-- version 27 -->
+		<condition property="jtregTar" value="jtreg_8_2_1_1">
+			<matches pattern="^27$" string="${JDK_VERSION}"/>
+		</condition>
+		<!-- versions 28+ (default) -->
+		<property name="jtregTar" value="jtreg_8_3_1"/>
 
 		<echo message="jtreg version used is : ${jtregTar}"/>
 
