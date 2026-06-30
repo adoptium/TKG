@@ -28,17 +28,10 @@
 
 	<import file="./getDependencies.xml"/>
 
-	<!-- Set build.list based on BUILD_LIST value -->
-	<condition property="build.list" value="*/build.xml">
-		<equals arg1="${BUILD_LIST}" arg2=""/>
-	</condition>
-	<condition property="build.list" value="NULL">
-		<equals arg1="${BUILD_LIST}" arg2="NULL"/>
-	</condition>
-	<condition property="build.list.needs.expansion" value="true">
-		<not><isset property="build.list"/></not>
-	</condition>
-	<echo> build.list is ${build.list} </echo>
+	<!-- BUILD_LIST_EXPANDED is pre-expanded by compile.mk (pure Make subst)
+	     to avoid charset issues with Ant exec on z/OS JDK 21+. -->
+	<property name="build.list" value="${BUILD_LIST_EXPANDED}"/>
+	<echo>build.list=${build.list}</echo>
 
 	<macrodef name="addTestenvProperties">
 		<attribute name="repoDir" default="." />
@@ -69,17 +62,7 @@
 		</sequential>
 	</macrodef>
 
-	<target name="-expand-build-list" if="build.list.needs.expansion">
-		<exec executable="perl" outputproperty="build.list.expanded" failonerror="true">
-			<arg value="-e"/>
-			<arg value="my $b = $ENV{BUILD_LIST}; $b =~ s/([^,]+)/$1\/build.xml/g; print 'TestConfig/build.xml,' . $b;"/>
-			<env key="BUILD_LIST" value="${BUILD_LIST}"/>
-		</exec>
-		<property name="build.list" value="${build.list.expanded}"/>
-		<echo>build.list=${build.list}</echo>
-	</target>
-
-	<target name="build" depends="-expand-build-list,stage_test_material" description="using ${JDK_VERSION} to compile the source ">
+	<target name="build" depends="stage_test_material" description="using ${JDK_VERSION} to compile the source ">
 		<subant target="">
 			<property name="build.dir" value="subant1.build" />
 			<property name="not.overloaded" value="not.overloaded" />
