@@ -234,7 +234,351 @@ my %base = (
 		url => '-L https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin-minimal.zip',
 		fname => 'dacapo.zip',
 		sha1 => '2dd4704900e43f4e22c70255b555c02177ef07c4'
+	},
+	icu4j_61_1 => {
+		url => 'https://repo1.maven.org/maven2/com/ibm/icu/icu4j/61.1/icu4j-61.1.jar',
+		fname => 'icu4j-61_1.jar',
+		sha1 => '55c98eb1838b2a4bb9a07dc36bd378532d64d0cdcb7ceee914236866a7de4464',
+		shaalg => '256'
+	},
+	icu4j_localespi_61_1 => {
+		url => 'https://repo1.maven.org/maven2/com/ibm/icu/icu4j-localespi/61.1/icu4j-localespi-61.1.jar',
+		fname => 'icu4j-localespi-61_1.jar',
+		sha1 => '99691e7562bcb211fc247ea27d4abf94486c5f373907da71a17bb358d97829b1',
+		shaalg => '256'
+	},
+	unicode_gb18030_2022 => {
+		url => 'https://www.unicode.org/Public/mappings/iso10646/GB18030-2022.txt',
+		fname => 'GB18030-2022.txt',
+		sha1 => '80c3fe2ae1062abf56456f52518bd670f9ec3917b7f85e152b347ac6b6faf880',
+		shaalg => '256'
+	},
+	unicode_unihan_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/Unihan.zip',
+		fname => 'Unihan-17.0.0.zip',
+		sha1 => 'f7a48b2b545acfaa77b2d607ae28747404ce02baefee16396c5d2d7a8ef34b5e',
+		shaalg => '256'
+	},
+	unicode_unihan_16_0_0 => {
+		url => 'https://www.unicode.org/Public/zipped/16.0.0/Unihan.zip',
+		fname => 'Unihan-16.0.0.zip',
+		sha1 => 'b8f000df69de7828d21326a2ffea462b04bc7560022989f7cc704f10521ef3e0',
+		shaalg => '256'
+	},
+	unicode_unihan_15_1_0 => {
+		url => 'https://www.unicode.org/Public/zipped/15.1.0/Unihan.zip',
+		fname => 'Unihan-15.1.0.zip',
+		sha1 => 'a0226610e324bcf784ac380e11f4cbf533ee1e6b3d028b0991bf8c0dc3f85853',
+		shaalg => '256'
+	},
+	unicode_unihan_15_0_0 => {
+		url => 'https://www.unicode.org/Public/zipped/15.0.0/Unihan.zip',
+		fname => 'Unihan-15.0.0.zip',
+		sha1 => '24b154691fc97cb44267b925d62064297086b3f896b57a8181c7b6d42702a026',
+		shaalg => '256'
+	},
+	unicode_unihan_14_0_0 => {
+		url => 'https://www.unicode.org/Public/zipped/14.0.0/Unihan.zip',
+		fname => 'Unihan-14.0.0.zip',
+		sha1 => '2ae4519b2b82cd4d15379c17e57bfb12c33c0f54da4977de03b2b04bcf11852d',
+		shaalg => '256'
+	},
+	unicode_unihan_13_0_0 => {
+		url => 'https://www.unicode.org/Public/zipped/13.0.0/Unihan.zip',
+		fname => 'Unihan-13.0.0.zip',
+		sha1 => 'e380194c4835ad85aa50e8750a58c1f605dbfc4aba9e3e3b0ca25b9530c02f64',
+		shaalg => '256'
+	},
+	unicode_unihan_12_1_0 => {
+		url => 'https://www.unicode.org/Public/zipped/12.1.0/Unihan.zip',
+		fname => 'Unihan-12.1.0.zip',
+		sha1 => '6e4553f3b5fffe0d312df324d020ef1278d9595932ae03f4e8a2d427de83cdcd',
+		shaalg => '256'
+	},
+	unicode_unihan_11_0_0 => {
+		url => 'https://www.unicode.org/Public/zipped/11.0.0/Unihan.zip',
+		fname => 'Unihan-11.0.0.zip',
+		sha1 => '72079d9d64acd452e1496f67b975a82a989f0023f37aed092c51cf13567fc833',
+		shaalg => '256'
+	},
+	unicode_unihan_10_0_0 => {
+		url => 'https://www.unicode.org/Public/zipped/10.0.0/Unihan.zip',
+		fname => 'Unihan-10.0.0.zip',
+		sha1 => '01232063a8529636cf155ba7a1dbad329cb2e63acde83a3d607b5eafa8f933a5',
+		shaalg => '256'
+	},
+	unicode_ucd_unicodedata_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-17.0.0.txt',
+		sha1 => '2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c',
+		shaalg => '256'
+	},
+	unicode_ucd_blocks_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-17.0.0.txt',
+		sha1 => 'c0edefaf1a19771e830a82735472716af6bf3c3975f6c2a23ffbe2580fbbcb15',
+		shaalg => '256'
+	},
+	unicode_ucd_scripts_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-17.0.0.txt',
+		sha1 => '9f5e50d3abaee7d6ce09480f325c706f485ae3240912527e651954d2d6b035bf',
+		shaalg => '256'
+	},
+	unicode_ucd_normalization_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-17.0.0.txt',
+		sha1 => '5019ffd530751a741900c849c0e010332f142a3612234639bd200b82138a87db',
+		shaalg => '256'
+	},
+	unicode_ucd_propvalaliases_17_0_0 => {
+		url => 'https://www.unicode.org/Public/17.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-17.0.0.txt',
+		sha1 => '64e9a5f76f7a1e8b5a47d6a1f9a26522a251208f5276bdfa1559dac7cf2e827a',
+		shaalg => '256'
+	},
+	unicode_ucd_unicodedata_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-16.0.0.txt',
+		sha1 => 'ff58e5823bd095166564a006e47d111130813dcf8bf234ef79fa51a870edb48f',
+		shaalg => '256'
+	},
+	unicode_ucd_blocks_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-16.0.0.txt',
+		sha1 => 'f3907b395d410f1b97342292ca6bc83dd12eb4b205f2a0c48efdef99e517d7b0',
+		shaalg => '256'
+	},
+	unicode_ucd_scripts_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-16.0.0.txt',
+		sha1 => '9e88f0a677df47311106340be8ede2ecdacd9c1c931831218d2be6d5508e0039',
+		shaalg => '256'
+	},
+	unicode_ucd_normalization_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-16.0.0.txt',
+		sha1 => 'd811971453e7075e1ad56fb1b301eece5aa80757b81f6156e74a1bfb3ae5ceb1',
+		shaalg => '256'
+	},
+	unicode_ucd_propvalaliases_16_0_0 => {
+		url => 'https://www.unicode.org/Public/16.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-16.0.0.txt',
+		sha1 => '440fd3e5460b9bfe31da67b6f923992e1989d31fe2ed91e091c4b8f8e2620bf9',
+		shaalg => '256'
+	},
+	unicode_ucd_unicodedata_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-15.1.0.txt',
+		sha1 => '2fc713e6a31a87c4850a37fe2caffa4218180fadb5de86b43a143ddb4581fb86',
+		shaalg => '256'
+	},
+	unicode_ucd_blocks_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/Blocks.txt',
+		fname => 'Blocks-15.1.0.txt',
+		sha1 => '443ee0524a775bf021777c296f5b591b5611c8aef6bc922887d27b0bc13892b5',
+		shaalg => '256'
+	},
+	unicode_ucd_scripts_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/Scripts.txt',
+		fname => 'Scripts-15.1.0.txt',
+		sha1 => '0eacb65169ae6eb1d399cd70826b3da15fff19f6f586eecf819b70c83b1d9b32',
+		shaalg => '256'
+	},
+	unicode_ucd_normalization_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-15.1.0.txt',
+		sha1 => '871238e37e3be0696ec2bd0891119a041b052da1a84485eda05a5438724b223e',
+		shaalg => '256'
+	},
+	unicode_ucd_propvalaliases_15_1_0 => {
+		url => 'https://www.unicode.org/Public/15.1.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-15.1.0.txt',
+		sha1 => '4b7411fc592c4985e5f03643aa0bddfdfd45250ff1790d358926614d20e37652',
+		shaalg => '256'
+	},
+	unicode_ucd_unicodedata_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-15.0.0.txt',
+		sha1 => '806e9aed65037197f1ec85e12be6e8cd870fc5608b4de0fffd990f689f376a73',
+		shaalg => '256'
+	},
+	unicode_ucd_blocks_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-15.0.0.txt',
+		sha1 => '529dc5d0f6386d52f2f56e004bbfab48ce2d587eea9d38ba546c4052491bd820',
+		shaalg => '256'
+	},
+	unicode_ucd_scripts_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-15.0.0.txt',
+		sha1 => 'cca85d830f46aece2e7c1459ef1249993dca8f2e46d51e869255be140d7ea4b0',
+		shaalg => '256'
+	},
+	unicode_ucd_normalization_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-15.0.0.txt',
+		sha1 => 'fb9ac8cc154a80cad6caac9897af55a4e75176af6f4e2bb6edc2bf8b1d57f326',
+		shaalg => '256'
+	},
+	unicode_ucd_propvalaliases_15_0_0 => {
+		url => 'https://www.unicode.org/Public/15.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-15.0.0.txt',
+		sha1 => '13a7666843abea5c6b7eb8c057c57ab9bb2ba96cfc936e204224dd67d71cafad',
+		shaalg => '256'
+	},
+	unicode_ucd_unicodedata_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-14.0.0.txt',
+		sha1 => '36018e68657fdcb3485f636630ffe8c8532e01c977703d2803f5b89d6c5feafb',
+		shaalg => '256'
+	},
+	unicode_ucd_blocks_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-14.0.0.txt',
+		sha1 => '598870dddef7b34b5a972916528c456aff2765b79cd4f9647fb58ceb767e7f17',
+		shaalg => '256'
+	},
+	unicode_ucd_scripts_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-14.0.0.txt',
+		sha1 => '52db475c4ec445e73b0b16915448c357614946ad7062843c563e00d7535c6510',
+		shaalg => '256'
+	},
+	unicode_ucd_normalization_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-14.0.0.txt',
+		sha1 => '7cb30cc2abe6c29c292b99095865d379ce1213045c78c4ff59c7e9391bbe2331',
+		shaalg => '256'
+	},
+	unicode_ucd_propvalaliases_14_0_0 => {
+		url => 'https://www.unicode.org/Public/14.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-14.0.0.txt',
+		sha1 => 'eb755757e20b72b330b2948df3cf2ff7adb0e31bb060140dc09dafb132ace2cd',
+		shaalg => '256'
+	},
+	unicode_ucd_unicodedata_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-13.0.0.txt',
+		sha1 => 'bdbffbbfc8ad4d3a6d01b5891510458f3d36f7170422af4ea2bed3211a73e8bb',
+		shaalg => '256'
+	},
+	unicode_ucd_blocks_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-13.0.0.txt',
+		sha1 => '81a82b6a9fcf1a9c12f588d7a1decd73a9afdc4cac95b0eb7e576e7942d6c19f',
+		shaalg => '256'
+	},
+	unicode_ucd_scripts_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-13.0.0.txt',
+		sha1 => '9a5ed1ec9b5f0d7147e9371ad792ab39203611af7637cff2aa4a5c663b172cde',
+		shaalg => '256'
+	},
+	unicode_ucd_normalization_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-13.0.0.txt',
+		sha1 => 'd60ee55dd9169444652e48d337109cc814ecc59a9d3122eedddf7de388f2e01d',
+		shaalg => '256'
+	},
+	unicode_ucd_propvalaliases_13_0_0 => {
+		url => 'https://www.unicode.org/Public/13.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-13.0.0.txt',
+		sha1 => '6b3902e9268cd843fe65cbdea992108c9528343ec0679f800b96f356bb553e5a',
+		shaalg => '256'
+	},
+	unicode_ucd_unicodedata_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-12.1.0.txt',
+		sha1 => '93ab1acd8fd9d450463b50ae77eab151a7cda48f98b25b56baed8070f80fc936',
+		shaalg => '256'
+	},
+	unicode_ucd_blocks_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/Blocks.txt',
+		fname => 'Blocks-12.1.0.txt',
+		sha1 => 'a28b205afe8625fffdb6544a5fe14cf02b91493d9900f07820fa2102a17548f7',
+		shaalg => '256'
+	},
+	unicode_ucd_scripts_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/Scripts.txt',
+		fname => 'Scripts-12.1.0.txt',
+		sha1 => 'e6313a8edfd24f36c7a006fbcf1d1b7245b5dd009c6dde80441f0da08b822c43',
+		shaalg => '256'
+	},
+	unicode_ucd_normalization_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-12.1.0.txt',
+		sha1 => '8cabbd6293c88ca05f0b601ade0fd16978ac670a077c0e0f419986ddd33c6941',
+		shaalg => '256'
+	},
+	unicode_ucd_propvalaliases_12_1_0 => {
+		url => 'https://www.unicode.org/Public/12.1.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-12.1.0.txt',
+		sha1 => 'efce54f7c715a332c19b3d14c6a0eea30c6cde91caf6ff0d21c755be933736f4',
+		shaalg => '256'
+	},
+	unicode_ucd_unicodedata_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-11.0.0.txt',
+		sha1 => '4997a3196eb79b4d0d6b8384560f6aeb46a062693f0abd5ba736abbff7976099',
+		shaalg => '256'
+	},
+	unicode_ucd_blocks_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-11.0.0.txt',
+		sha1 => '0b457b66c788a97c8521e265f0b793d4ed911356d39eb61029f9cef8554cd052',
+		shaalg => '256'
+	},
+	unicode_ucd_scripts_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-11.0.0.txt',
+		sha1 => 'e9f3c0aa3c4f892b589c809cf4ae051a39921417cda6fefdbe43717b92db76d5',
+		shaalg => '256'
+	},
+	unicode_ucd_normalization_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-11.0.0.txt',
+		sha1 => '0fdfc17093dd5482f8089cb11dcd936abdba34c4c9c324e5b8a4e5d8f943f6d3',
+		shaalg => '256'
+	},
+	unicode_ucd_propvalaliases_11_0_0 => {
+		url => 'https://www.unicode.org/Public/11.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-11.0.0.txt',
+		sha1 => '2a9cb9afe6a36a1a73ce2cedb540abd3fbf29f6afcda702d07fcbf561162a17a',
+		shaalg => '256'
+	},
+	unicode_ucd_unicodedata_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/UnicodeData.txt',
+		fname => 'UnicodeData-10.0.0.txt',
+		sha1 => '52423e4d7492167b62f518f68d54db88930abbbff7f11edfcaec8f726498cab1',
+		shaalg => '256'
+	},
+	unicode_ucd_blocks_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/Blocks.txt',
+		fname => 'Blocks-10.0.0.txt',
+		sha1 => '5ae1649a42ed8ae8cb885af79563f00a9ae17e602405a56ed8aca214da14eea7',
+		shaalg => '256'
+	},
+	unicode_ucd_scripts_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/Scripts.txt',
+		fname => 'Scripts-10.0.0.txt',
+		sha1 => 'd02e24e4c516e9090b6bc9c2d2c8f4c89510b6ed8c5e859d0a861b0dc5cf372d',
+		shaalg => '256'
+	},
+	unicode_ucd_normalization_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/NormalizationTest.txt',
+		fname => 'NormalizationTest-10.0.0.txt',
+		sha1 => '05307ec5bcbd3af3f1687b4da5443658bf72644a5cd4106c20d12b0a3a0818c9',
+		shaalg => '256'
+	},
+	unicode_ucd_propvalaliases_10_0_0 => {
+		url => 'https://www.unicode.org/Public/10.0.0/ucd/PropertyValueAliases.txt',
+		fname => 'PropertyValueAliases-10.0.0.txt',
+		sha1 => 'a6b0467c3cc7aa4e57d4e5cc7f6e9562b79cf4426dfe438517c28b368ed3e673',
+		shaalg => '256'
 	});
+
+	
 
 my %system_jars = (
 	json_simple => {
