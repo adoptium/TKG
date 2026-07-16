@@ -707,8 +707,11 @@ if ($task eq "clean") {
 				$url_testDependency =~ s/test.getDependency/systemtest.getDependency/;
 				$url_testDependency .= "systemtest_prereqs/";
 				$url_testDependency .= $jars_info[$i]{dir};
-				$url_testDependency .= '/' unless $url_testDependency =~ /\/$/;
 			}
+
+			# Ensure exactly one slash between the base URL and the filename,
+			# regardless of whether the caller provided a trailing slash.
+			$url_testDependency =~ s/\/$//;
 
 			$url = "$url_testDependency/$jars_info[$i]{fname}";
 
