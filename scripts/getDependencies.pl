@@ -595,6 +595,7 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1.jar',
 		dir => 'apache-ant/lib',
 		fname => 'ant-launcher.jar',
+		sha1 => 'c99d018fcc43a1540e465b9a097508b19075198c',
 		is_system_test => 1
 	},
 	asm => {
@@ -608,30 +609,35 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/netbeans/lib/cvsclient/20060125/cvsclient-20060125.jar',
 		dir => 'cvsclient',
 		fname => 'org-netbeans-lib-cvsclient.jar',
+		sha1 => 'cc80bd0085c79be7ed332cbdc1db77498bff1fda',
 		is_system_test => 1
 	},
 	hamcrest_core => {
 		url => 'https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar',
 		dir => 'junit',
 		fname => 'hamcrest-core.jar',
+		sha1 => '42a25dc3219429f0e5d060061f71acb49bf010a0',
 		is_system_test => 1
 	},
 	junit => {
 		url => 'https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar',
 		dir => 'junit',
 		fname => 'junit.jar',
+		sha1 => '2973d150c0dc1fefe998f834810d68f278ea58ec',
 		is_system_test => 1
 	},
 	log4j_api => {
 		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.jar',
 		dir => 'log4j',
 		fname => 'log4j-api.jar',
+		sha1 => '4a5aa7e55a29391c6f66e0b259d5189aa11e45d0',
 		is_system_test => 1
 	},
 	log4j_core => {
 		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.jar',
 		dir => 'log4j',
 		fname => 'log4j-core.jar',
+		sha1 => 'ba55c13d7ac2fd44df9cc8074455719a33f375b9',
 		is_system_test => 1
 	},
 	mauve => {
