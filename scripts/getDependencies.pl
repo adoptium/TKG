@@ -714,10 +714,6 @@ if ($task eq "clean") {
 				$url_testDependency .= $jars_info[$i]{dir};
 			}
 
-			# Ensure exactly one slash between the base URL and the filename,
-			# regardless of whether the caller provided a trailing slash.
-			$url_testDependency =~ s/\/+$//;
-
 			$url = "$url_testDependency/$jars_info[$i]{fname}";
 
 			if (defined $shaurl && $shaurl ne '') {
