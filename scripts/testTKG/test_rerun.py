@@ -23,6 +23,7 @@ def run_test():
     rt &= test_rerun_helper("all", ["testIgnoreOnRerun_0", "testIgnoreOnRerunSubDir_0", "testIgnoreOnRerunSubDir_1"], ["testRerun_0", "testDefault_0", "testIgnoreOnRerun_0", "testRerunSubDir_0", "testDefaultSubDir_0", "testIgnoreOnRerunSubDir_0", "testIgnoreOnRerunSubDir_1"])
     rt &= test_rerun_helper("system", ["testIgnoreOnRerunSubDir_0", "testIgnoreOnRerunSubDir_1"], ["testIgnoreOnRerunSubDir_0", "testIgnoreOnRerunSubDir_1"])
     rt &= test_rerun_helper("perf", [""], set())
+    rt &= test_empty_jvm_options_uses_variation()
 
     if not rt:
         return False
@@ -60,6 +61,23 @@ def test_rerun_helper(target, expected_ignore_on_rerun_list, expected_success):
         printError("\tIgnore on rerun list check failed!")
         printError(f"expected ignore on rerun list: {expected_ignore_on_rerun_list}; actual list:{ignore_on_rerun_list}")
         return False
+
+# validate empty JVM_OPTIONS still honours variation JVM options
+def test_empty_jvm_options_uses_variation():
+    buildList = "TKG/examples/rerun"
+    expected_variation_option = "-Xmx1024m"
+    command = "JVM_OPTIONS=\"\" make _testIgnoreOnRerunSubDir_1"
+    print(f"\t{command}")
+    result = subprocess.run(f"{EXPORT_BUILDLIST}={buildList}; {CD_TKG}; {MAKE_CLEAN}; {MAKE_COMPILE}; {command}", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, check=False)
+
+    stdout = result.stdout.decode()
+    jvm_options_line = re.search(r"JVM_OPTIONS:\s*(.+?)(?:\n|$)", stdout)
+    if jvm_options_line is not None and expected_variation_option in jvm_options_line.group(1):
+        print("\tEmpty JVM_OPTIONS override check successful!")
+        return True
+
+    printError("empty JVM_OPTIONS override check failed!")
+    return False
 
 if __name__ == "__main__":
     run_test()

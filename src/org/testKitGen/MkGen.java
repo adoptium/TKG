@@ -95,8 +95,9 @@ public class MkGen {
 
 				String jvmtestroot = "$(JVM_TEST_ROOT)$(D)" + String.join("$(D)", dirList);
 				f.write(testTargetName + ": TEST_RESROOT=" + jvmtestroot + "\n");
-				f.write(testTargetName + ": JVM_OPTIONS?=" + testInfo.getAotOptions() + "$(RESERVED_OPTIONS) "
-						+ (var.getJvmOptions().isEmpty() ? "" : (var.getJvmOptions() + " ")) + "$(EXTRA_OPTIONS)\n");
+				f.write(testTargetName + ": JVM_OPTIONS:=$(if $(strip $(JVM_OPTIONS)),$(JVM_OPTIONS),"
+						+ testInfo.getAotOptions() + "$(RESERVED_OPTIONS) "
+						+ (var.getJvmOptions().isEmpty() ? "" : (var.getJvmOptions() + " ")) + "$(EXTRA_OPTIONS))\n");
 
 				f.write(testTargetName + ": TEST_GROUP=" + testInfo.getLevelStr() + "\n");
 				f.write(testTargetName + ": TEST_ITERATIONS=" + testInfo.getIterations() + "\n");
