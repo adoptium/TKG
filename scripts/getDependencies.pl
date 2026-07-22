@@ -709,14 +709,14 @@ if ($task eq "clean") {
 		# if url_testDependency is provided, use url_testDependency and reset $url and $shaurl
 		if ($url_testDependency ne "") {
 			if (defined $jars_info[$i]{is_system_test} && $jars_info[$i]{is_system_test} == 1) {
-				$url_testDependency =~ s/test.getDependency/systemtest.getDependency/;
+				$url_testDependency =~ s/test\.getDependency/systemtest.getDependency/;
 				$url_testDependency .= "systemtest_prereqs/";
 				$url_testDependency .= $jars_info[$i]{dir};
 			}
 
 			# Ensure exactly one slash between the base URL and the filename,
 			# regardless of whether the caller provided a trailing slash.
-			$url_testDependency =~ s/\/$//;
+			$url_testDependency =~ s/\/+$//;
 
 			$url = "$url_testDependency/$jars_info[$i]{fname}";
 
