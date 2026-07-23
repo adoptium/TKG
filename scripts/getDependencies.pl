@@ -704,6 +704,7 @@ if ($task eq "clean") {
 			}
 		}
 		my $url_testDependency = $testDependencyUrl;
+		my $third_party_url = $url;
 
 		if (!-d $full_dir_path) {
 			make_path($full_dir_path, {chmod => 0755, verbose => 1}) or die "Failed to create directory: $full_dir_path: $!";
@@ -720,6 +721,7 @@ if ($task eq "clean") {
 				$url_testDependency =~ s/test.getDependency/systemtest.getDependency/;
 				$url_testDependency .= "systemtest_prereqs/";
 				$url_testDependency .= $jars_info[$i]{dir};
+				$url_testDependency .= '/' unless $url_testDependency =~ /\/$/;
 			}
 
 			$url = "$url_testDependency/$jars_info[$i]{fname}";
@@ -752,24 +754,71 @@ if ($task eq "clean") {
 			}
 		}
 
-		my $ignoreChecksum = (!defined $sha1 || $sha1 eq '') && (!defined $shaurl || $shaurl eq '');
-
-		# If file exists and SHA matches, skip download entirely.
-		# If no checksum is available and the file is present, skip download.
-		if (-e $filename && $expectedsha && $digest eq $expectedsha) {
+		if ($expectedsha && $digest eq $expectedsha) {
 			print "$filename exists with correct hash, not downloading\n";
 			next;
 		}
+
+		my $ignoreChecksum = (!defined $sha1 || $sha1 eq '') && (!defined $shaurl || $shaurl eq '');
+
 		if ($ignoreChecksum && -e $filename) {
 			print "$filename exists, not downloading.\n";
 			next;
 		}
 
-		downloadFile($url, $filename);
+		my $download_success = 0;
+		my $sha_verified = 0;
+		my $has_testDependency_url = ($url_testDependency ne "" && $url ne $third_party_url);
+
+		# Try download from testDependency URL or third-party URL
+		eval {
+			downloadFile($url, $filename);
+			$download_success = 1;
+		};
+
+		# If download succeeded, verify SHA
+		if ($download_success && !$ignoreChecksum) {
+			my $expectedsha_check = $expectedsha;
+			if (!$expectedsha_check && $shaurl) {
+				eval {
+					downloadFile($shaurl, $shafn);
+					$expectedsha_check = getShaFromFile($shafn, $fn);
+				};
+			}
+
+			if ($expectedsha_check) {
+				$sha = Digest::SHA->new($shaalg);
+				$sha->addfile($filename);
+				$digest = $sha->hexdigest;
+				if ($digest eq $expectedsha_check) {
+					$sha_verified = 1;
+					print "SHA verification passed for $filename\n";
+				} elsif ($has_testDependency_url) {
+					print "Warning: SHA mismatch for $filename from testDependency URL\n";
+					print "Expected: $expectedsha_check, Got: $digest\n";
+					$download_success = 0;  # Mark as failed to trigger fallback
+					unlink $filename;  # Delete bad file
+				}
+			}
+		}
+
+		# Fall back to third-party URL if testDependency URL failed or had SHA mismatch
+		if (!$download_success) {
+			print "Falling back to third-party URL: $third_party_url\n";
+			eval {
+				downloadFile($third_party_url, $filename);
+				$download_success = 1;
+			};
+			if (!$download_success) {
+				print "Error: Failed to download $filename from third-party URL $third_party_url\n";
+				exit 1;
+			}
+			$sha_verified = 0;  # Reset flag - must verify SHA for third-party download
+		}
 
 		# If shaurl is provided, download the sha file to get the expected checksum
 		# as the dependent third party jar may have been newly downloaded
-		if (!$ignoreChecksum) {
+		if (!$ignoreChecksum && !$sha_verified) {
 			if ($shaurl) {
 				downloadFile($shaurl, $shafn);
 				$expectedsha = getShaFromFile($shafn, $fn);
