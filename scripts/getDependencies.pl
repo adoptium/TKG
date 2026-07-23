@@ -595,7 +595,8 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1.jar',
 		dir => 'apache-ant/lib',
 		fname => 'ant-launcher.jar',
-		sha1 => 'c99d018fcc43a1540e465b9a097508b19075198c',
+		sha1 => '28cfb70020dfdb9e4e261ceed16c43aed715c1d11390e3ddbecda1e548253168',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	asm => {
@@ -609,35 +610,40 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/netbeans/lib/cvsclient/20060125/cvsclient-20060125.jar',
 		dir => 'cvsclient',
 		fname => 'org-netbeans-lib-cvsclient.jar',
-		sha1 => 'cc80bd0085c79be7ed332cbdc1db77498bff1fda',
+		sha1 => '89baed753b393d5074d4b9b4ba4b9692af6cd0713199998fb294b99942c820a3',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	hamcrest_core => {
 		url => 'https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar',
 		dir => 'junit',
 		fname => 'hamcrest-core.jar',
-		sha1 => '42a25dc3219429f0e5d060061f71acb49bf010a0',
+		sha1 => '66fdef91e9739348df7a096aa384a5685f4e875584cce89386a7a47251c4d8e9',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	junit => {
 		url => 'https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar',
 		dir => 'junit',
 		fname => 'junit.jar',
-		sha1 => '2973d150c0dc1fefe998f834810d68f278ea58ec',
+		sha1 => '59721f0805e223d84b90677887d9ff567dc534d7c502ca903c0c2b17f05c116a',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	log4j_api => {
 		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.jar',
 		dir => 'log4j',
 		fname => 'log4j-api.jar',
-		sha1 => '4a5aa7e55a29391c6f66e0b259d5189aa11e45d0',
+		sha1 => 'c8c33e7e8e05496dae69cf0caac8c3092cffd937a164526e92922d2d566d0a55',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	log4j_core => {
 		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.jar',
 		dir => 'log4j',
 		fname => 'log4j-core.jar',
-		sha1 => 'ba55c13d7ac2fd44df9cc8074455719a33f375b9',
+		sha1 => '419a8512895971b7b4f4f33e620d361254e5c9552b904b0474b09ddd4a6a220b',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	mauve => {
@@ -709,7 +715,7 @@ if ($task eq "clean") {
 		# if url_testDependency is provided, use url_testDependency and reset $url and $shaurl
 		if ($url_testDependency ne "") {
 			if (defined $jars_info[$i]{is_system_test} && $jars_info[$i]{is_system_test} == 1) {
-				$url_testDependency =~ s/test\.getDependency/systemtest.getDependency/;
+				$url_testDependency =~ s/test.getDependency/systemtest.getDependency/;
 				$url_testDependency .= "systemtest_prereqs/";
 				$url_testDependency .= $jars_info[$i]{dir};
 			}
@@ -737,33 +743,26 @@ if ($task eq "clean") {
 		if (!$expectedsha) {
 			if (defined $shafn && $shafn ne '') {
 				$shafn = $path . $sep . $shafn;
-				# if the sha file exists, parse the file and get the expected sha
+				# if the sha file exists locally, parse it and get the expected sha
 				if (-e $shafn) {
 					$expectedsha = getShaFromFile($shafn, $fn);
 				}
 			}
-
-			# if expectedsha is not set above and shaurl is provided, download the sha file
-			# and parse the file to get the expected sha
-			if (!$expectedsha && $shaurl) {
-				downloadFile($shaurl, $shafn);
-				$expectedsha = getShaFromFile($shafn, $fn);
-			}
-		}
-
-		if ($expectedsha && $digest eq $expectedsha) {
-			print "$filename exists with correct hash, not downloading\n";
-			next;
 		}
 
 		my $ignoreChecksum = (!defined $sha1 || $sha1 eq '') && (!defined $shaurl || $shaurl eq '');
-		# download the dependent third party jar
 
+		# If file exists and SHA matches, skip download entirely.
+		# If no checksum is available and the file is present, skip download.
+		if (-e $filename && $expectedsha && $digest eq $expectedsha) {
+			print "$filename exists with correct hash, not downloading\n";
+			next;
+		}
 		if ($ignoreChecksum && -e $filename) {
 			print "$filename exists, not downloading.\n";
 			next;
 		}
-		# download the dependent third party jar
+
 		downloadFile($url, $filename);
 
 		# If shaurl is provided, download the sha file to get the expected checksum
@@ -789,6 +788,8 @@ if ($task eq "clean") {
 				print "Please delete $filename and rerun the program!";
 				die "ERROR: sha checksum error.\n";
 			}
+		} elsif ($ignoreChecksum) {
+			print "Checksum verification skipped for $filename\n";
 		}
 	}
 	print "downloaded dependent third party jars successfully\n";
