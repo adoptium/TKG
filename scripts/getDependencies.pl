@@ -603,7 +603,8 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar',
 		dir => 'asm',
 		fname => 'asm.jar',
-		sha1 => 'af582ff60bc567c42d931500c3fdc20e0141ddf9',
+		sha1 => '0df97574914aee92fd349d0cb4e00f3345d45b2c239e0bb50f0a90ead47888e0',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	cvsclient => {
@@ -650,7 +651,8 @@ my %system_jars = (
 		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
-		sha1 => 'f396c75df02c008aff745ebbff234856e0788732',
+		sha1 => '3272a712acef69936abaac6357f1d7a4296f1798efdb72658ca77c41e082da8e',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	tools => {
