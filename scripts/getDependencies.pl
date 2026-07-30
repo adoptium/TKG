@@ -59,7 +59,8 @@ print "dependencyList is set to $dependencyList\n";
 # Contents in the hash should be:
 #   url - required. url to download the dependent jar
 #   fname - required. the dependent jar name
-#   sha1 - sha1 value for the dependent jar (can be skipped if both shaurl and shafn are provided)
+#   sha1 - optional. legacy sha1 value for the dependent jar
+#   sha256 - optional. sha256 value for the dependent jar
 #   shaurl - optional. url to download the sha file
 #   shafn  - optional. sha file name (has to be used with shaurl)
 #   shaalg - optional. sha is calculated based on shaalg (default value is sha1)
@@ -595,7 +596,7 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1.jar',
 		dir => 'apache-ant/lib',
 		fname => 'ant-launcher.jar',
-		sha1 => '28cfb70020dfdb9e4e261ceed16c43aed715c1d11390e3ddbecda1e548253168',
+		sha256 => '28cfb70020dfdb9e4e261ceed16c43aed715c1d11390e3ddbecda1e548253168',
 		shaalg => '256',
 		is_system_test => 1
 	},
@@ -603,7 +604,7 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar',
 		dir => 'asm',
 		fname => 'asm.jar',
-		sha1 => '0df97574914aee92fd349d0cb4e00f3345d45b2c239e0bb50f0a90ead47888e0',
+		sha256 => '0df97574914aee92fd349d0cb4e00f3345d45b2c239e0bb50f0a90ead47888e0',
 		shaalg => '256',
 		is_system_test => 1
 	},
@@ -611,7 +612,7 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/netbeans/lib/cvsclient/20060125/cvsclient-20060125.jar',
 		dir => 'cvsclient',
 		fname => 'org-netbeans-lib-cvsclient.jar',
-		sha1 => '89baed753b393d5074d4b9b4ba4b9692af6cd0713199998fb294b99942c820a3',
+		sha256 => '89baed753b393d5074d4b9b4ba4b9692af6cd0713199998fb294b99942c820a3',
 		shaalg => '256',
 		is_system_test => 1
 	},
@@ -619,7 +620,7 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar',
 		dir => 'junit',
 		fname => 'hamcrest-core.jar',
-		sha1 => '66fdef91e9739348df7a096aa384a5685f4e875584cce89386a7a47251c4d8e9',
+		sha256 => '66fdef91e9739348df7a096aa384a5685f4e875584cce89386a7a47251c4d8e9',
 		shaalg => '256',
 		is_system_test => 1
 	},
@@ -627,7 +628,7 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar',
 		dir => 'junit',
 		fname => 'junit.jar',
-		sha1 => '59721f0805e223d84b90677887d9ff567dc534d7c502ca903c0c2b17f05c116a',
+		sha256 => '59721f0805e223d84b90677887d9ff567dc534d7c502ca903c0c2b17f05c116a',
 		shaalg => '256',
 		is_system_test => 1
 	},
@@ -635,7 +636,7 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.jar',
 		dir => 'log4j',
 		fname => 'log4j-api.jar',
-		sha1 => 'c8c33e7e8e05496dae69cf0caac8c3092cffd937a164526e92922d2d566d0a55',
+		sha256 => 'c8c33e7e8e05496dae69cf0caac8c3092cffd937a164526e92922d2d566d0a55',
 		shaalg => '256',
 		is_system_test => 1
 	},
@@ -643,7 +644,7 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.jar',
 		dir => 'log4j',
 		fname => 'log4j-core.jar',
-		sha1 => '419a8512895971b7b4f4f33e620d361254e5c9552b904b0474b09ddd4a6a220b',
+		sha256 => '419a8512895971b7b4f4f33e620d361254e5c9552b904b0474b09ddd4a6a220b',
 		shaalg => '256',
 		is_system_test => 1
 	},
@@ -651,7 +652,7 @@ my %system_jars = (
 		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
-		sha1 => '3272a712acef69936abaac6357f1d7a4296f1798efdb72658ca77c41e082da8e',
+		sha256 => '3272a712acef69936abaac6357f1d7a4296f1798efdb72658ca77c41e082da8e',
 		shaalg => '256',
 		is_system_test => 1
 	},
@@ -693,7 +694,7 @@ if ($task eq "clean") {
 	for my $i (0 .. $#jars_info) {
 		my $url = $jars_info[$i]{url};
 		my $fn = $jars_info[$i]{fname};
-		my $sha1 = $jars_info[$i]{sha1};
+		my $checksum = $jars_info[$i]{sha256} // $jars_info[$i]{sha1};
 		my $dir = $jars_info[$i]{dir} // "";
 		my $full_dir_path = File::Spec->catdir($path, $dir);
 		if (exists($ENV{"BUILD_TYPE"}) && $ENV{"BUILD_TYPE"} eq "systemtest") {
@@ -743,7 +744,7 @@ if ($task eq "clean") {
 			$digest = $sha->hexdigest;
 		}
 
-		my $expectedsha = $jars_info[$i]{sha1};
+		my $expectedsha = $jars_info[$i]{sha256} // $jars_info[$i]{sha1};
 		if (!$expectedsha) {
 			if (defined $shafn && $shafn ne '') {
 				$shafn = $path . $sep . $shafn;
@@ -752,6 +753,13 @@ if ($task eq "clean") {
 					$expectedsha = getShaFromFile($shafn, $fn);
 				}
 			}
+
+			# if expectedsha is not set above and shaurl is provided, download the sha file
+			# and parse the file to get the expected sha so an existing valid file can be reused
+			if (!$expectedsha && $shaurl) {
+				downloadFile($shaurl, $shafn);
+				$expectedsha = getShaFromFile($shafn, $fn);
+			}
 		}
 
 		if ($expectedsha && $digest eq $expectedsha) {
@@ -759,7 +767,7 @@ if ($task eq "clean") {
 			next;
 		}
 
-		my $ignoreChecksum = (!defined $sha1 || $sha1 eq '') && (!defined $shaurl || $shaurl eq '');
+		my $ignoreChecksum = (!defined $checksum || $checksum eq '') && (!defined $shaurl || $shaurl eq '');
 
 		if ($ignoreChecksum && -e $filename) {
 			print "$filename exists, not downloading.\n";
