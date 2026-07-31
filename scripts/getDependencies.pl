@@ -753,13 +753,10 @@ if ($task eq "clean") {
 					$expectedsha = getShaFromFile($shafn, $fn);
 				}
 			}
-
-			# if expectedsha is not set above and shaurl is provided, download the sha file
-			# and parse the file to get the expected sha so an existing valid file can be reused
-			if (!$expectedsha && $shaurl) {
-				downloadFile($shaurl, $shafn);
-				$expectedsha = getShaFromFile($shafn, $fn);
-			}
+			# Note: do NOT fetch shaurl here. The remote sidecar is only fetched
+			# after a download (below) so we never make a network call just to
+			# decide whether to skip. Warm-cache reuse is handled by the inline
+			# sha256/sha1 value or a locally present sidecar file.
 		}
 
 		if ($expectedsha && $digest eq $expectedsha) {
