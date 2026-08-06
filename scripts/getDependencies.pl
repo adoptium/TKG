@@ -751,12 +751,11 @@ if ($task eq "clean") {
 				# if the sha file exists locally, parse it and get the expected sha
 				if (-e $shafn) {
 					$expectedsha = getShaFromFile($shafn, $fn);
+				} elsif ($shaurl) {
+					downloadFile($shaurl, $shafn);
+					$expectedsha = getShaFromFile($shafn, $fn);
 				}
 			}
-			# Note: do NOT fetch shaurl here. The remote sidecar is only fetched
-			# after a download (below) so we never make a network call just to
-			# decide whether to skip. Warm-cache reuse is handled by the inline
-			# sha256/sha1 value or a locally present sidecar file.
 		}
 
 		if ($expectedsha && $digest eq $expectedsha) {
