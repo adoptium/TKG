@@ -596,50 +596,64 @@ my %system_jars = (
 		url => 'https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1.jar',
 		dir => 'apache-ant/lib',
 		fname => 'ant-launcher.jar',
+		sha256 => '28cfb70020dfdb9e4e261ceed16c43aed715c1d11390e3ddbecda1e548253168',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	asm => {
 		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar',
 		dir => 'asm',
 		fname => 'asm.jar',
-		sha1 => 'af582ff60bc567c42d931500c3fdc20e0141ddf9',
+		sha256 => '0df97574914aee92fd349d0cb4e00f3345d45b2c239e0bb50f0a90ead47888e0',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	cvsclient => {
 		url => 'https://repo1.maven.org/maven2/org/netbeans/lib/cvsclient/20060125/cvsclient-20060125.jar',
 		dir => 'cvsclient',
 		fname => 'org-netbeans-lib-cvsclient.jar',
+		sha256 => '89baed753b393d5074d4b9b4ba4b9692af6cd0713199998fb294b99942c820a3',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	hamcrest_core => {
 		url => 'https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar',
 		dir => 'junit',
 		fname => 'hamcrest-core.jar',
+		sha256 => '66fdef91e9739348df7a096aa384a5685f4e875584cce89386a7a47251c4d8e9',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	junit => {
 		url => 'https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar',
 		dir => 'junit',
 		fname => 'junit.jar',
+		sha256 => '59721f0805e223d84b90677887d9ff567dc534d7c502ca903c0c2b17f05c116a',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	log4j_api => {
 		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.jar',
 		dir => 'log4j',
 		fname => 'log4j-api.jar',
+		sha256 => 'c8c33e7e8e05496dae69cf0caac8c3092cffd937a164526e92922d2d566d0a55',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	log4j_core => {
 		url => 'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.jar',
 		dir => 'log4j',
 		fname => 'log4j-core.jar',
+		sha256 => '419a8512895971b7b4f4f33e620d361254e5c9552b904b0474b09ddd4a6a220b',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	mauve => {
 		url => 'https://github.com/adoptium/aqa-triage-data/raw/main/AQAvit/mauve.jar',
 		dir => 'mauve',
 		fname => 'mauve.jar',
-		sha1 => 'f396c75df02c008aff745ebbff234856e0788732',
+		sha256 => '3272a712acef69936abaac6357f1d7a4296f1798efdb72658ca77c41e082da8e',
+		shaalg => '256',
 		is_system_test => 1
 	},
 	tools => {
@@ -734,17 +748,13 @@ if ($task eq "clean") {
 		if (!$expectedsha) {
 			if (defined $shafn && $shafn ne '') {
 				$shafn = $path . $sep . $shafn;
-				# if the sha file exists, parse the file and get the expected sha
+				# if the sha file exists locally, parse it and get the expected sha
 				if (-e $shafn) {
 					$expectedsha = getShaFromFile($shafn, $fn);
+				} elsif ($shaurl) {
+					downloadFile($shaurl, $shafn);
+					$expectedsha = getShaFromFile($shafn, $fn);
 				}
-			}
-
-			# if expectedsha is not set above and shaurl is provided, download the sha file
-			# and parse the file to get the expected sha
-			if (!$expectedsha && $shaurl) {
-				downloadFile($shaurl, $shafn);
-				$expectedsha = getShaFromFile($shafn, $fn);
 			}
 		}
 

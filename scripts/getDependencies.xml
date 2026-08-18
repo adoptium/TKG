@@ -37,16 +37,20 @@
 		<condition property="jtregTar" value="jtreg_7_3_1_1">
 			<matches pattern="^(11|1[89]|2[023])$" string="${JDK_VERSION}"/>
 		</condition>
-		<!-- versions 17, 21 -->
+		<!-- version 17 -->
 		<condition property="jtregTar" value="jtreg_7_5_2_1">
-			<matches pattern="^(17|21)$" string="${JDK_VERSION}"/>
+			<matches pattern="^17$" string="${JDK_VERSION}"/>
+		</condition>
+		<!-- version 21 -->
+		<condition property="jtregTar" value="jtreg_8_2_1_1">
+			<matches pattern="^21$" string="${JDK_VERSION}"/>
 		</condition>
 		<!-- version 24 -->
 		<condition property="jtregTar" value="jtreg_7_4_1">
 			<matches pattern="^24$" string="${JDK_VERSION}"/>
 		</condition>
 		<!-- version 25 -->
-		<condition property="jtregTar" value="jtreg_8_2">
+		<condition property="jtregTar" value="jtreg_8_2_1_1">
 			<matches pattern="^25$" string="${JDK_VERSION}"/>
 		</condition>
 		<!-- version 26 -->
@@ -62,13 +66,9 @@
 
 		<echo message="jtreg version used is : ${jtregTar}"/>
 
-		<condition property="openj9jtregtimeouthandler" value=",tohandler_simple">
-			<or>
-				<equals arg1="${JDK_IMPL}" arg2="ibm"/>
-				<equals arg1="${JDK_IMPL}" arg2="openj9"/>
-			</or>
+		<condition property="openj9jtregtimeouthandler" value=",tohandler_simple" else="">
+			<matches pattern="^(ibm|openj9)$" string="${JDK_IMPL}"/>
 		</condition>
-		<property name="openj9jtregtimeouthandler" value=""/>
 
 		<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
 	</target>
