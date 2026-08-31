@@ -252,11 +252,18 @@ public class JavaInfo {
         }
     }
 
+    public void checkRCP() {
+        if ("true".equalsIgnoreCase(System.getProperty("org.eclipse.openj9.rcp.isRCPEnabled"))) {
+            detectedTfs.add("RCP");
+        }
+    }
+
     public String getTestFlag() {
         String testFlag = "";
         checkCRIU();
         checkVTstandard();
         checkJFR();
+        checkRCP();
         String envTf = System.getenv("TEST_FLAG");
         String paddedTf = null;
         if (envTf != null && !envTf.isEmpty()) {
