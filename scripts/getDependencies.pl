@@ -129,8 +129,7 @@ my %base = (
 	asmtools => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/asmtools/asmtools-core-7.0.b10-ea.jar',
 		fname => 'asmtools.jar',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/asmtools/asmtools-core-7.0.b10-ea.jar.sha256sum.txt',
-		shafn => 'asmtools.jar.sha256sum.txt',
+		sha256 => '612209b8506fc6752be725ab7f6f8e6579bf10642f2a1f7261eea751c7c69cea',
 		shaalg => '256'
 	},
 	jaxb_api => {
@@ -146,8 +145,7 @@ my %base = (
 	tohandler_simple => {
 		url => 'https://openj9-jenkins.osuosl.org/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar',
 		fname => 'openj9jtregtimeouthandler.jar',
-		shaurl => 'https://openj9-jenkins.osuosl.org/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar.sha256sum.txt',
-		shafn => 'openj9jtregtimeouthandler.jar.sha256sum.txt',
+		sha256 => '82dfb52124abbb13926abaa26c27a253555f060cee049575fde927c69f7822d4',
 		shaalg => '256'
 	},
 	osgi => {
@@ -158,57 +156,49 @@ my %base = (
 	jtreg_5_1_b01 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg5.1-b01.tar.gz',
 		fname => 'jtreg_5_1_b01.tar.gz',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg5.1-b01.tar.gz.sha256sum.txt',
-		shafn => 'jtreg_5_1_b01.tar.gz.sha256sum.txt',
+		sha256 => 'b218a317e113dab972b2dba832b1871e9cc7a5e809c6445d7e155c9bfaa3b431',
 		shaalg => '256'
 	},
 	jtreg_7_3_1_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.3.1+1.tar.gz',
 		fname => 'jtreg_7_3_1_1.tar.gz',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.3.1+1.tar.gz.sha256sum.txt',
-		shafn => 'jtreg_7_3_1_1.tar.gz.sha256sum.txt',
+		sha256 => '2a96c5bca4e63189b9c4e5be2855ac398a5de25ea1e94ff14d1b7d3c29dddce0',
 		shaalg => '256'
 	},
 	jtreg_7_4_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.4+1.tar.gz',
 		fname => 'jtreg_7_4_1.tar.gz',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.4+1.tar.gz.sha256sum.txt',
-		shafn => 'jtreg_7_4_1.tar.gz.sha256sum.txt',
+		sha256 => '9fb86381e5f0c4c2ea83d9b4f12c9b19f5281a08001ee8e44c45010149187a67',
 		shaalg => '256'
 	},
 	jtreg_7_5_2_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.5.2+1.tar.gz',
 		fname => 'jtreg_7_5_2_1.tar.gz',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.5.2+1.tar.gz.sha256sum.txt',
-		shafn => 'jtreg_7_5_2_1.tar.gz.sha256sum.txt',
+		sha256 => '32e73856b7cdc4613cbb804b55b4feef8178203f4b6722255f8c96e3894e8a03',
 		shaalg => '256'
 	},
 	jtreg_8_2 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8+2.tar.gz',
 		fname => 'jtreg_8_2.tar.gz',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8+2.tar.gz.sha256sum.txt',
-		shafn => 'jtreg_8_2.tar.gz.sha256sum.txt',
+		sha256 => '5e69a93f5ac988267befc8c027296038f58ca59153b854111f0291292f98c677',
 		shaalg => '256'
 	},
 	jtreg_8_1_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.1+1.tar.gz',
 		fname => 'jtreg_8_1_1.tar.gz',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.1+1.tar.gz.sha256sum.txt',
-		shafn => 'jtreg_8_1_1.tar.gz.sha256sum.txt',
+		sha256 => 'c6d7653a0edd0458c823b819e257ef0afe3a23adc043061fabd14489f6d61463',
 		shaalg => '256'
 	},
 	jtreg_8_2_1_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.2.1+1.tar.gz',
 		fname => 'jtreg_8_2_1_1.tar.gz',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.2.1+1.tar.gz.sha256sum.txt',
-		shafn => 'jtreg_8_2_1_1.tar.gz.sha256sum.txt',
+		sha256 => '02e16762eac114fa03d4b140fcb7168715ca87f3f82ff839d4062e91dca45d57',
 		shaalg => '256'
 	},
 	jtreg_8_3_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.3+1.tar.gz',
 		fname => 'jtreg_8_3_1.tar.gz',
-		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.3+1.tar.gz.sha256sum.txt',
-		shafn => 'jtreg_8_3_1.tar.gz.sha256sum.txt',
+		sha256 => 'd7b2f70627b3b5a519f9520d05fe4c225a2a551b3fa168092a22db5891bba27e',
 		shaalg => '256'
 	},
 	jython => {
@@ -897,11 +887,11 @@ sub downloadFile {
 		# .txt SHA files are in ISO8859-1
 		# note _ENCODE_FILE_NEW flag is set for zos
 		if ('.txt' eq substr $filename, -length('.txt')) {
-			$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl $curlOpts -k -o $filename $url 2>&1};
+			$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl $curlOpts -o $filename $url 2>&1};
 		} elsif ('.jar' eq substr $filename, -length('.jar')) {
-			$output = qx{_ENCODE_FILE_NEW=BINARY curl $curlOpts -k -o $filename $url 2>&1};
+			$output = qx{_ENCODE_FILE_NEW=BINARY curl $curlOpts -o $filename $url 2>&1};
 		} else {
-			$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl $curlOpts -k -o $filename $url 2>&1};
+			$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl $curlOpts -o $filename $url 2>&1};
 		}
 		$returnCode = $?;
 		last if $returnCode == 0;
