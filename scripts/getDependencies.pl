@@ -601,10 +601,18 @@ my %system_jars = (
 		is_system_test => 1
 	},
 	asm => {
-		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar',
+		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm/9.7.1/asm-9.7.1.jar',
 		dir => 'asm',
 		fname => 'asm.jar',
-		sha256 => '0df97574914aee92fd349d0cb4e00f3345d45b2c239e0bb50f0a90ead47888e0',
+		sha256 => '8cadd43ac5eb6d09de05faecca38b917a040bb9139c7edeb4cc81c740b713281',
+		shaalg => '256',
+		is_system_test => 1
+	},
+	asm_commons => {
+		url => 'https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.7.1/asm-commons-9.7.1.jar',
+		dir => 'asm',
+		fname => 'asm-commons.jar',
+		sha256 => '9a579b54d292ad9be171d4313fd4739c635592c2b5ac3a459bbd1049cddec6a0',
 		shaalg => '256',
 		is_system_test => 1
 	},
