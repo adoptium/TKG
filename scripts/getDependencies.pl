@@ -604,6 +604,14 @@ my %system_jars = (
 		sha1 => 'af582ff60bc567c42d931500c3fdc20e0141ddf9',
 		is_system_test => 1
 	},
+	sysinternalsSuite => {
+		url => 'https://download.sysinternals.com/files/SysinternalsSuite.zip',
+		dir => 'windows_sysinternals',
+		fname => 'windows_sysinternals.zip',
+		sha256 => 'ec1c22581518e5a8661ec26886bc2eaefe9e59cf2ad7fba41926c19d356de169',
+		shaalg => '256',
+		is_system_test => 1
+	},
 	cvsclient => {
 		url => 'https://repo1.maven.org/maven2/org/netbeans/lib/cvsclient/20060125/cvsclient-20060125.jar',
 		dir => 'cvsclient',
