@@ -251,7 +251,7 @@ my %base = (
 	unicode_gb18030_2022 => {
 		url => 'https://www.unicode.org/Public/mappings/iso10646/GB18030-2022.txt',
 		fname => 'GB18030-2022.txt',
-		sha256 => '80c3fe2ae1062abf56456f52518bd670f9ec3917b7f85e152b347ac6b6faf880',
+		sha256 => 'a2e9bd9f5b0fcdef16a1556615faf472cc78c69172a8d2b957f5f258ea8676b7',
 		shaalg => '256'
 	},
 	unicode_unihan_17_0_0 => {
@@ -461,7 +461,7 @@ my %base = (
 	unicode_ucd_unicodedata_13_0_0 => {
 		url => 'https://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt',
 		fname => 'UnicodeData-13.0.0.txt',
-		sha256 => 'bdbffbbfc8ad4d3a6d01b5891510458f3d36f7170422af4ea2bed3211a73e8bb',
+		sha256 => '249deb3a88bbc6608cca13ac718fce0847350a7f05ed4c0c002efefdaee44a9c',
 		shaalg => '256'
 	},
 	unicode_ucd_blocks_13_0_0 => {
@@ -551,31 +551,31 @@ my %base = (
 	unicode_ucd_unicodedata_10_0_0 => {
 		url => 'https://www.unicode.org/Public/10.0.0/ucd/UnicodeData.txt',
 		fname => 'UnicodeData-10.0.0.txt',
-		sha256 => '52423e4d7492167b62f518f68d54db88930abbbff7f11edfcaec8f726498cab1',
+		sha256 => 'df9f725744f0f8a743ec535d2a2a5fd8cd11df1ba5011c875a389821046b7540',
 		shaalg => '256'
 	},
 	unicode_ucd_blocks_10_0_0 => {
 		url => 'https://www.unicode.org/Public/10.0.0/ucd/Blocks.txt',
 		fname => 'Blocks-10.0.0.txt',
-		sha256 => '5ae1649a42ed8ae8cb885af79563f00a9ae17e602405a56ed8aca214da14eea7',
+		sha256 => 'a427303fd38e44f2286ffc907ddecd1c59a268ce3dc360ea40b77ec06acb0679',
 		shaalg => '256'
 	},
 	unicode_ucd_scripts_10_0_0 => {
 		url => 'https://www.unicode.org/Public/10.0.0/ucd/Scripts.txt',
 		fname => 'Scripts-10.0.0.txt',
-		sha256 => 'd02e24e4c516e9090b6bc9c2d2c8f4c89510b6ed8c5e859d0a861b0dc5cf372d',
+		sha256 => 'b2c4231d67e7e7fbd253a2c0421f2d7479e8e0756264fb26d38c0e4120d2f303',
 		shaalg => '256'
 	},
 	unicode_ucd_normalization_10_0_0 => {
 		url => 'https://www.unicode.org/Public/10.0.0/ucd/NormalizationTest.txt',
 		fname => 'NormalizationTest-10.0.0.txt',
-		sha256 => '05307ec5bcbd3af3f1687b4da5443658bf72644a5cd4106c20d12b0a3a0818c9',
+		sha256 => '640cc83d65ae15ab660d9128d0b9aed137bbd852cf6d5dc772d4d0f3efb86aa0',
 		shaalg => '256'
 	},
 	unicode_ucd_propvalaliases_10_0_0 => {
 		url => 'https://www.unicode.org/Public/10.0.0/ucd/PropertyValueAliases.txt',
 		fname => 'PropertyValueAliases-10.0.0.txt',
-		sha256 => 'a6b0467c3cc7aa4e57d4e5cc7f6e9562b79cf4426dfe438517c28b368ed3e673',
+		sha256 => '7c85de48d77df9435a98bd2959c729b03af01fecbd8b1928fa967617e2a8bb4c',
 		shaalg => '256'
 	});
 
