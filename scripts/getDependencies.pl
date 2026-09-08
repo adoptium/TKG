@@ -479,7 +479,7 @@ my %base = (
 	unicode_ucd_normalization_13_0_0 => {
 		url => 'https://www.unicode.org/Public/13.0.0/ucd/NormalizationTest.txt',
 		fname => 'NormalizationTest-13.0.0.txt',
-		sha256 => 'd60ee55dd9169444652e48d337109cc814ecc59a9d3122eedddf7de388f2e01d',
+		sha256 => '8f462264f53c31114fdcfb24fb1a9d62e7e524326018a677913cb90a82932ac7',
 		shaalg => '256'
 	},
 	unicode_ucd_propvalaliases_13_0_0 => {
