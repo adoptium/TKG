@@ -129,7 +129,8 @@ my %base = (
 	asmtools => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/asmtools/asmtools-core-7.0.b10-ea.jar',
 		fname => 'asmtools.jar',
-		sha256 => 'c26c9218577ad72fe8e233647ca8b6b5d6dbd1c307b55ea29574aca405a18894',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/asmtools/asmtools-core-7.0.b10-ea.jar.sha256sum.txt',
+		shafn  => 'asmtools.jar.sha256sum.txt',
 		shaalg => '256'
 	},
 	jaxb_api => {
@@ -145,7 +146,8 @@ my %base = (
 	tohandler_simple => {
 		url => 'https://openj9-jenkins.osuosl.org/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar',
 		fname => 'openj9jtregtimeouthandler.jar',
-		sha256 => '82dfb52124abbb13926abaa26c27a253555f060cee049575fde927c69f7822d4',
+		shaurl => 'https://openj9-jenkins.osuosl.org/job/Build_JDK_Timeout_Handler/lastSuccessfulBuild/artifact/openj9jtregtimeouthandler.jar.sha256sum.txt',
+		shafn  => 'openj9jtregtimeouthandler.jar.sha256sum.txt',
 		shaalg => '256'
 	},
 	osgi => {
@@ -156,49 +158,57 @@ my %base = (
 	jtreg_5_1_b01 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg5.1-b01.tar.gz',
 		fname => 'jtreg_5_1_b01.tar.gz',
-		sha256 => '1eb80c8ebf3b7ba5adf276a98a8c98b1e3a6e124ac6120c2c6a19fa8653efca1',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg5.1-b01.tar.gz.sha256sum.txt',
+		shafn  => 'jtreg_5_1_b01.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
 	jtreg_7_3_1_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.3.1+1.tar.gz',
 		fname => 'jtreg_7_3_1_1.tar.gz',
-		sha256 => 'c0f1ec834ab5d67b55170123a52230f4aa44708ba360cddd7fc6223c9b67af01',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.3.1+1.tar.gz.sha256sum.txt',
+		shafn  => 'jtreg_7_3_1_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
 	jtreg_7_4_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.4+1.tar.gz',
 		fname => 'jtreg_7_4_1.tar.gz',
-		sha256 => 'ed2cd06ca5e08160eb199e3f4a8a8afbf403c11a11c76ce486c798c360d1dadf',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.4+1.tar.gz.sha256sum.txt',
+		shafn  => 'jtreg_7_4_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
 	jtreg_7_5_2_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.5.2+1.tar.gz',
 		fname => 'jtreg_7_5_2_1.tar.gz',
-		sha256 => 'c84da97f803215168e7e2329c21a65fc1daea36d3077f948215660a838de19e8',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-7.5.2+1.tar.gz.sha256sum.txt',
+		shafn  => 'jtreg_7_5_2_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
 	jtreg_8_2 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8+2.tar.gz',
 		fname => 'jtreg_8_2.tar.gz',
-		sha256 => '1db550d21033335f7f5204866924defbd478ceee18a2bdb560c8201ec3d9a478',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8+2.tar.gz.sha256sum.txt',
+		shafn  => 'jtreg_8_2.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
 	jtreg_8_1_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.1+1.tar.gz',
 		fname => 'jtreg_8_1_1.tar.gz',
-		sha256 => '1f692d7c8aac9f4fe4189015254826ed8ab04afb57f9e7dd9be9b57d95b09b97',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.1+1.tar.gz.sha256sum.txt',
+		shafn  => 'jtreg_8_1_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
 	jtreg_8_2_1_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.2.1+1.tar.gz',
 		fname => 'jtreg_8_2_1_1.tar.gz',
-		sha256 => '6bdce469f478a702fdcdbb8af5d5ba5a26d3f5015846f4587bf62ef685719005',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.2.1+1.tar.gz.sha256sum.txt',
+		shafn  => 'jtreg_8_2_1_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
 	jtreg_8_3_1 => {
 		url => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.3+1.tar.gz',
 		fname => 'jtreg_8_3_1.tar.gz',
-		sha256 => 'cad931b523080a7dd3002b7bd3de58e34e95c006156063459b5a90522327e338',
+		shaurl => 'https://ci.adoptium.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/jtreg-8.3+1.tar.gz.sha256sum.txt',
+		shafn  => 'jtreg_8_3_1.tar.gz.sha256sum.txt',
 		shaalg => '256'
 	},
 	jython => {
