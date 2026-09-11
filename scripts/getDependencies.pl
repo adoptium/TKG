@@ -913,7 +913,7 @@ sub downloadFile {
 		# .txt SHA files are in ISO8859-1
 		# note _ENCODE_FILE_NEW flag is set for zos
 		if ('.txt' eq substr $filename, -length('.txt')) {
-			$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl $curlOpts -o $filename $url 2>&1};
+			$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl $curlOpts -o $filename $url 2>&1};
 		} elsif ('.jar' eq substr $filename, -length('.jar')) {
 			$output = qx{_ENCODE_FILE_NEW=BINARY curl $curlOpts -o $filename $url 2>&1};
 		} else {
