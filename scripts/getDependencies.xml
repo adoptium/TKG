@@ -104,8 +104,20 @@
 	<target name="getDependentLibs" unless="skipDependency">
 		<!-- default LIB to all if not set by getJtregVersion or caller -->
 		<property name="LIB" value="all"/>
+		<!-- On z/OS, curl has no system trust store for modern CA roots (e.g. Let's Encrypt).
+		     Pass the cacert option pointing at CURL_CA_BUNDLE if that env var is set, so
+		     downloads from ci.adoptium.net and openj9-jenkins.osuosl.org succeed. -->
+		<condition property="is.zos">
+			<contains string="${SPEC}" substring="zos"/>
+		</condition>
+		<condition property="curlOptsArg" value="-curlOpts &quot;--cacert ${env.CURL_CA_BUNDLE}&quot;" else="">
+			<and>
+				<isset property="is.zos"/>
+				<isset property="env.CURL_CA_BUNDLE"/>
+			</and>
+		</condition>
 		<exec executable="perl" failonerror="true">
-			<arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${LIB_DIR} -task default -dependencyList ${LIB}"/>
+			<arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${LIB_DIR} -task default -dependencyList ${LIB} ${curlOptsArg}"/>
 		</exec>
 	</target>
 </project>
