@@ -610,7 +610,7 @@ my %system_jars = (
 		url => 'https://download.sysinternals.com/files/SysinternalsSuite.zip',
 		dir => 'windows_sysinternals',
 		fname => 'windows_sysinternals.zip',
-		sha256 => 'ec1c22581518e5a8661ec26886bc2eaefe9e59cf2ad7fba41926c19d356de169',
+		sha256 => 'e1c73a31b575c9cb216a94484a5b162bd585deb8bd1a8775c8103ced39cc67ce',
 		shaalg => '256',
 		is_system_test => 1
 	},
