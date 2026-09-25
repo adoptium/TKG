@@ -37,6 +37,40 @@ GetOptions ("path=s" => \$path,
 			"curlOpts=s" => \$curlOpts)
 	or die("Error in command line arguments\n");
 
+# On z/OS, curl has no system trust store for modern CA roots (e.g. Let's Encrypt).
+# Append --cacert automatically when it has not already been supplied, using the first
+# available bundle found via CURL_CA_BUNDLE or a list of known per-node locations.
+# Candidate paths cover: z/Fyre nodes, stlab94/95 (Rocket),
+# stlab6e/6f, and stlab98 (zopen pki tree).
+if ($curlOpts !~ /--cacert/) {
+	my $cacert = '';
+	if (defined($ENV{'CURL_CA_BUNDLE'}) && $ENV{'CURL_CA_BUNDLE'} ne '') {
+		$cacert = $ENV{'CURL_CA_BUNDLE'};
+	} else {
+		my @candidates = (
+			"$ENV{'HOME'}/certs/cacert.pem",
+			'/rocket/miniconda/ssl/cacert.pem',
+			'/usr/lpp/rsusr/miniconda/ssl/cacert.pem',
+			'/u/home/JENKINS/openj9_resources/zopen/etc/pki/tls/certs/cacert.pem',
+			'/jenkins/openj9_resources/zopen/etc/pki/tls/certs/cacert.pem',
+		);
+		for my $c (@candidates) {
+			if (-f $c) {
+				$cacert = $c;
+				last;
+			}
+		}
+	}
+	if ($cacert ne '') {
+		$curlOpts .= " --cacert $cacert";
+	}
+}
+
+# Allow overriding the curl binary path per-node (e.g. z/OS nodes where curl
+# isn't on the default PATH). Defaults to "curl" so behavior is unchanged
+# on every other platform.
+my $curlBin = $ENV{'CURL_BIN'} // 'curl';
+
 if (not defined $path) {
 	die "ERROR: Download path not defined!\n"
 }
@@ -864,7 +898,7 @@ sub toolsJarDownloader {
 	my ( $dir, $url ) = @_;
 	print "Checksum verification skipped for systemtest_prereqs/tools/tools.jar \n";
 	print "downloading $url \n";
-	qx{_ENCODE_FILE_NEW=BINARY curl -LfsS --create-dirs -o "$dir/jdk8/jdk8.tar.gz" $url 2>&1};
+	qx{_ENCODE_FILE_NEW=BINARY $curlBin -LfsS --create-dirs -o "$dir/jdk8/jdk8.tar.gz" $url 2>&1};
 	qx{tar --directory "$dir/jdk8" -xzf "$dir/jdk8/jdk8.tar.gz" --strip-components 1};
 	qx{cp "$dir/jdk8/lib/tools.jar" "$dir"};
 	qx{rm -rf "$dir/jdk8"};
@@ -903,11 +937,11 @@ sub downloadFile {
 		# .txt SHA files are in ISO8859-1
 		# note _ENCODE_FILE_NEW flag is set for zos
 		if ('.txt' eq substr $filename, -length('.txt')) {
-			$output = qx{_ENCODE_FILE_NEW=ISO8859-1 curl $curlOpts -o $filename $url 2>&1};
+			$output = qx{_ENCODE_FILE_NEW=ISO8859-1 $curlBin $curlOpts -o $filename $url 2>&1};
 		} elsif ('.jar' eq substr $filename, -length('.jar')) {
-			$output = qx{_ENCODE_FILE_NEW=BINARY curl $curlOpts -o $filename $url 2>&1};
+			$output = qx{_ENCODE_FILE_NEW=BINARY $curlBin $curlOpts -o $filename $url 2>&1};
 		} else {
-			$output = qx{_ENCODE_FILE_NEW=UNTAGGED curl $curlOpts -o $filename $url 2>&1};
+			$output = qx{_ENCODE_FILE_NEW=UNTAGGED $curlBin $curlOpts -o $filename $url 2>&1};
 		}
 		$returnCode = $?;
 		last if $returnCode == 0;
