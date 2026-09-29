@@ -23,7 +23,7 @@
 		<!--
 		# Versions 11, 17, 21, 25 on z/OS need to use jtreg_8_2 which uses defaultCharset() to parse TEST.group files.
 		-->
-		<condition property="jtregTar" value="jtreg_8_2">
+		<condition property="jtregTar" value="jtreg_8_2_1_1">
 			<and>
 				<contains string="${SPEC}" substring="zos"/>
 				<matches pattern="^(11|17|21|25)$" string="${JDK_VERSION}"/>
